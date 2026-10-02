@@ -8,7 +8,7 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 
 | Kod | Oyun | Ne yapılıyor? | Film |
 |---|---|---|---|
-| MAT.5.3.1 – 5.3.2 | [Araç Ustası](oyunlar/arac-ustasi.html) | Doğru aracı seç (ölçüsüz cetvel, pergel, gönye, açıölçer), yelkenliyi çiz: doğru, doğru parçası, ışın, çember, açı, dikme, paralel. Sonunda çizimlerden çıkarım soruları var. | Noktadan Çembere |
+| MAT.5.3.1 – 5.3.2 | [Araç Ustası](oyunlar/arac-ustasi.html) | Doğru aracı seç (ölçüsüz cetvel, pergel, gönye) ve kullan: cetvelle sürükle, pergeli döndür, gönyeyi kaydır. Doğru, doğru parçası, ışın, çember, açı, dikme ve paralel çizildikçe yelkenli sahnesi canlanır. Sonunda çizimlerden çıkarım soruları var. | Noktadan Çembere |
 | MAT.5.3.3 | [Açı Avcısı](oyunlar/aci-avcisi.html) | Önce tahmin et, sonra sürüklenip döndürülebilen açıölçerle ölç. Açıyı sınıflandır, verilen ölçüde açı ve eş açı kur. | Kaç Derece? |
 | MAT.5.3.4 | [Kesişme Dedektifi](oyunlar/kesisme-dedektifi.html) | Paralel, kesişen, dik ve çakışık doğrular. Açı bulmacalarında ters, komşu bütünler ve tümler açılar. Doğruları çevirerek “6 dar açı” gibi görevleri tamamla. | Doğrular Kesişince |
 | MAT.5.3.5 | [Şekli Kapat](oyunlar/sekli-kapat.html) | Doğruları ardışık kesiştir; son doğru ilkini kesince çokgen kapanır. Üçgenden altıgene kadar çokgen kur, n doğru → n kenar genellemesini yap. | Doğrulardan Çokgene |

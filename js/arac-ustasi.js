@@ -13,7 +13,6 @@
     D: { x: 70, y: SEA, lx: -4, ly: -22 }, E: { x: 930, y: SEA, lx: 4, ly: -22 },
     A: { x: 500, y: 440, lx: -20, ly: 4 }, B: { x: 500, y: 170, lx: -18, ly: -14 }, C: { x: 652, y: 412, lx: 20, ly: -4 },
     O: { x: 820, y: 130, lx: -18, ly: -18 }, R: { x: 870, y: 130, lx: 18, ly: -12 },
-    T: { x: 845, y: 173.3, lx: -16, ly: 14 }, S: { x: 895, y: 260, lx: -18, ly: 4 },
     M: { x: 240, y: 214, lx: -2, ly: 28 }, U: { x: 160, y: 168, lx: -10, ly: -18 }, V: { x: 320, y: 168, lx: 10, ly: -18 },
     W: { x: 150, y: FLOOR, lx: -20, ly: -14 },
   };
@@ -24,7 +23,6 @@
     cetvel: { ad: 'Ölçüsüz cetvel', alt: 'çizgeç', svg: '<rect x="3" y="15" width="58" height="13" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M10 21.5h44" stroke="currentColor" stroke-width="1.2" opacity=".35"/>' },
     pergel: { ad: 'Pergel', alt: 'çember', svg: '<circle cx="32" cy="7" r="3.4" fill="currentColor"/><path d="M32 9 L19 40 M32 9 L45 38" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/><path d="M45 38 l1.5 4" stroke="#e8a33d" stroke-width="3" stroke-linecap="round"/><circle cx="19" cy="40" r="1.6" fill="currentColor"/>' },
     gonye: { ad: 'Gönye', alt: 'dik açı', svg: '<path d="M12 40 L12 5 L56 40 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M19 33 L19 22 L33 33 Z" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/><path d="M12 33 h7 v7" fill="none" stroke="#e8a33d" stroke-width="2.2"/>' },
-    aciolcer: { ad: 'Açıölçer', alt: 'derece', svg: '<path d="M7 38 A25 25 0 0 1 57 38 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M32 38 L32 31 M14 21 l4 4 M50 21 l-4 4 M32 13 v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="32" cy="38" r="2.2" fill="#e8a33d"/>' },
   };
 
   const TASKS = [
@@ -44,14 +42,10 @@
       say: 'Güneş doğsun: merkezi <b>O</b>, <b>R</b>’den geçen bir <em>çember</em>.',
       go: 'Pergelin sivri ucunu <b>O</b>’ya batır, kalemi <b>R</b>’ye kadar aç, sonra <em>tam bir tur döndür</em>!',
       done: 'Güneş parladı! Çemberin her noktası O’ya eşit uzaklıkta; |OR| <b>yarıçap</b>.' },
-    { id: 'isik', tool: 'cetvel', kind: 'ray', pts: ['T', 'S'], name: 'Işık',
-      say: 'Güneşten bir ışık huzmesi: <b>T</b>’den başlayıp <b>S</b>’den geçen <em>[TS ışını</em>.',
-      go: 'Işın başlangıç noktasından çizilir: <b>T</b>’den <b>S</b>’ye sürükle.',
-      done: 'Işık yayıldı! Işının bir başlangıç noktası var, öbür yanı sonsuza gider.' },
     { id: 'marti', tool: 'cetvel', kind: 'angle', pts: ['M', 'U', 'V'], name: 'Martı',
-      say: 'Bir martı geliyor! Kanatları bir <em>açı</em>: köşesi <b>M</b>, kolları <b>[MU</b> ve <b>[MV</b>.',
-      go: 'Köşeden başla: <b>M</b>’den <b>U</b>’ya, sonra yine <b>M</b>’den <b>V</b>’ye sürükle.',
-      done: 'Martı kanat çırpıyor! Aynı noktadan çıkan iki ışın <b>UMV açısını</b> oluşturdu.' },
+      say: 'Bir martı geliyor! Her kanadı bir <em>ışın</em>: <b>M</b>’den başlayıp sonsuza gider. İki ışın birlikte bir <em>açı</em> oluşturur.',
+      go: 'Işın başlangıç noktasından çizilir: <b>M</b>’den <b>U</b>’ya, sonra yine <b>M</b>’den <b>V</b>’ye sürükle.',
+      done: 'Martı kanat çırpıyor! <b>[MU</b> ve <b>[MV</b> ışınlarının bir başlangıç noktası var, öbür yanları sonsuza gider. Aynı noktadan çıkan bu iki ışın <b>UMV açısını</b> oluşturdu.' },
     { id: 'dalis', tool: 'gonye', kind: 'perp', pts: ['M'], name: 'Dalış',
       say: 'Martı balık gördü! Denize <em>en kısa yoldan</em> dalacak: M’den denize bir <em>dikme</em>.',
       go: '<b>M</b>’ye bas ve gönyeyi denize doğru sürükle. Dik köşe yerine oturunca kehribar olur; orada bırak.',
@@ -107,15 +101,6 @@
     c.globalAlpha = a; c.fillStyle = N.INK;
     c.beginPath(); c.arc(o.x - 15, o.y - 6, 3.2, 0, Math.PI * 2); c.arc(o.x + 15, o.y - 6, 3.2, 0, Math.PI * 2); c.fill();
     c.beginPath(); c.arc(o.x, o.y + 6, 13, .2 * Math.PI, .8 * Math.PI); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.stroke(); c.globalAlpha = 1;
-  }
-  function drawBeam(c) {
-    const a = A('isik'); if (!a) return;
-    const u = g.unit(g.sub(P.S, P.T)), n = { x: -u.y, y: u.x }, L = 520;
-    const tip = g.add(P.T, g.mul(u, L));
-    c.beginPath(); c.moveTo(P.T.x, P.T.y); c.lineTo(tip.x + n.x * 46, tip.y + n.y * 46); c.lineTo(tip.x - n.x * 46, tip.y - n.y * 46); c.closePath();
-    const gr = c.createLinearGradient(P.T.x, P.T.y, tip.x, tip.y); gr.addColorStop(0, `rgba(232,163,61,${.38 * a})`); gr.addColorStop(1, 'rgba(232,163,61,0)');
-    c.fillStyle = gr; c.fill();
-    for (let i = 0; i < 4; i++) { const k = ((st.t * .35 + i / 4) % 1), p = g.add(P.T, g.mul(u, 40 + k * 300)); c.globalAlpha = a * (1 - k); d.dot(c, p, { r: 3, color: N.AMBER }); c.globalAlpha = 1; }
   }
   function drawSea(c) {
     const a = A('deniz'); if (!a) return;
@@ -198,7 +183,7 @@
 
   /* ══════════ ÇİZİM DÖNGÜSÜ ══════════ */
   S.draw = (c) => {
-    drawSky(c); drawSun(c); drawBeam(c); drawSea(c); drawFloor(c);
+    drawSky(c); drawSun(c); drawSea(c); drawFloor(c);
     c.save(); c.translate(0, bob());
     drawHull(c); drawMastSail(c);
     for (const o of st.objs) if (o.boat) drawObj(c, o);
@@ -292,12 +277,11 @@
   function toolPanel() {
     const T = TASKS[st.ti];
     const el = N.panel(`<div class="card"><span class="label">${st.ti + 1} / ${TASKS.length} · ${st.subPar ? 'Birleştir' : T.name}${st.streak >= 2 ? ` · seri ×${st.streak}` : ''}</span><h3>Hangi araç?</h3>
-      <div class="tools">${Object.entries(TOOLS).map(([k, t]) => `<button class="tool" type="button" data-tool="${k}"><svg viewBox="0 0 64 44" aria-hidden="true">${t.svg}</svg>${t.ad}<small>${t.alt}</small></button>`).join('')}</div>
+      <div class="tools" style="grid-template-columns:repeat(3,minmax(0,1fr))">${Object.entries(TOOLS).map(([k, t]) => `<button class="tool" type="button" data-tool="${k}"><svg viewBox="0 0 64 44" aria-hidden="true">${t.svg}</svg>${t.ad}<small>${t.alt}</small></button>`).join('')}</div>
       ${stepsHtml()}</div>`);
     el.querySelectorAll('.tool').forEach((b) => b.addEventListener('click', () => pickTool(b.dataset.tool, b)));
   }
   function wrongTool(need, got) {
-    if (got === 'aciolcer') return 'Açıölçer açıları <b>ölçer</b>; çizgi ya da çember çizmez.';
     if (need === 'cetvel') return got === 'pergel' ? 'Pergel <b>çember</b> çizer. Burada dümdüz bir çizgi lazım.' : 'Gönyenin işi <b>dik açı</b>. Düz bir çizgi için ölçüsüz cetvel yeter.';
     if (need === 'pergel') return 'Cetvelle düz çizilir. O’ya <b>eşit uzaklıktaki</b> tüm noktalar için hangi araç?';
     return got === 'pergel' ? 'Pergel çember çizer. Bize köşesi <b>dik açı</b> olan bir araç lazım.' : 'Cetvel dik açıyı garanti etmez. Köşesi <b>dik açı</b> olan araç hangisi?';
@@ -320,8 +304,7 @@
     const T = TASKS[st.ti];
     if (st.subPar) return { pairs: [['P1', 'P2'], ['P2', 'P1']] };
     if (T.kind === 'segs') { const [a, b] = T.pairs[st.pair]; return { pairs: [[a, b], [b, a]] }; }
-    if (T.kind === 'ray') return { pairs: [['T', 'S']], wrongStart: { S: 'Işın <b>başlangıç noktasından</b> çizilir. T’den başla.' } };
-    if (T.kind === 'angle') { const p = []; if (!st.done.has('MU')) p.push(['M', 'U']); if (!st.done.has('MV')) p.push(['M', 'V']); return { pairs: p, wrongStart: { U: 'Açı çizerken <b>köşeden</b> başla: M.', V: 'Açı çizerken <b>köşeden</b> başla: M.' } }; }
+    if (T.kind === 'angle') { const p = []; if (!st.done.has('MU')) p.push(['M', 'U']); if (!st.done.has('MV')) p.push(['M', 'V']); return { pairs: p, wrongStart: { U: 'Işın <b>başlangıç noktasından</b> çizilir: M’den başla.', V: 'Işın <b>başlangıç noktasından</b> çizilir: M’den başla.' } }; }
     return { pairs: [[T.pts[0], T.pts[1]], [T.pts[1], T.pts[0]]] };
   }
 
@@ -414,7 +397,7 @@
     else if (T.kind === 'seg' || T.kind === 'segs') await add({ k: 'seg', a: pa, b: pb, boat: true });
     else if (T.kind === 'ray') await add({ k: 'ray', a: pa, b: pb, ext: 150 });
     else if (T.kind === 'angle') {
-      await add({ k: 'ray', a: P.M, b: pb, ext: 50, w: 2.4, color: 'rgba(23,20,17,.6)' }); st.done.add('M' + b);
+      await add({ k: 'ray', a: P.M, b: pb, ext: 60, w: 3 }); st.done.add('M' + b);
       st.busy = false;
       if (st.done.has('MU') && st.done.has('MV')) { await add({ k: 'arc', v: P.M, a1: g.ang(P.M, P.V), a2: g.ang(P.M, P.U), r: 34 }, 250); return taskDone(); }
       N.say(`Bir kol tamam! Şimdi yine <b>M</b>’den <b>${b === 'U' ? 'V' : 'U'}</b>’ye sürükle.`, 'good'); return;
@@ -460,7 +443,7 @@
     N.say('Doğru, doğru parçası, ışın, açı, çember, dikme ve paralel: hepsi bir arada. <b>Yelkenli denizde!</b>', 'good');
     await N.tween(1200, (t) => { st.finale = t; }); N.sfx.win(); N.splash({ x: 520, y: 320 });
     const total = st.stars.reduce((s, x) => s + (x || 0), 0);
-    const el = N.panel(`<div class="card"><span class="label">Resim tamam · ${total} / 24 yıldız</span><h3>Çizimlerinden ne öğrendin?</h3>
+    const el = N.panel(`<div class="card"><span class="label">Resim tamam · ${total} / ${TASKS.length * 3} yıldız</span><h3>Çizimlerinden ne öğrendin?</h3>
       <p class="small">Altı kısa soru, her biri 50 puan. Cevaplayınca tahtada küçük bir gösteri var.</p>
       <button class="btn primary big" id="qgo" type="button">Sorulara geç →</button>${stepsHtml()}</div>`);
     el.querySelector('#qgo').addEventListener('click', () => { st.phase = 'quiz'; quiz(0); });
@@ -522,7 +505,7 @@
   N.say('Merhaba, ben <b>Nokta</b>! Teknemin gövdesi hazır ama denizi, direği, yelkeni… hepsi eksik. Araçlarımla bana yardım eder misin?');
   const el = N.panel(`<div class="card"><span class="label">Nasıl oynanır?</span>
     <p>Her adımda önce <b>doğru aracı</b> seç, sonra aracı kullan: cetvelle <b>sürükle</b>, pergeli <b>döndür</b>, gönyeyi <b>kaydır</b>. Her çizim sahnede canlanır!</p>
-    <p class="small">Hatasız adım = 3 yıldız. Art arda hatasız adımlar seri bonusu getirir.</p>
+    <p class="small">Araçlar: ölçüsüz cetvel, pergel, gönye. Hatasız adım = 3 yıldız. Art arda hatasız adımlar seri bonusu getirir.</p>
     <button class="btn primary big" id="go" type="button">Başla →</button></div>`);
   el.querySelector('#go').addEventListener('click', startTask);
 
@@ -530,7 +513,7 @@
     TASKS.forEach((T) => { T.pts.forEach((k) => st.shown.add(k)); st.alive[T.id] = 1; });
     st.objs = [
       { k: 'line', a: P.D, b: P.E, ext: 26, t: 1 }, { k: 'seg', a: P.B, b: P.C, t: 1, boat: true }, { k: 'seg', a: P.C, b: P.A, t: 1, boat: true },
-      { k: 'circle', c: P.O, r: 50, t: 1 }, { k: 'ray', a: P.T, b: P.S, ext: 150, t: 1 }, { k: 'seg', a: P.M, b: FOOT, t: 1 }, { k: 'right', v: FOOT, u: { x: 0, y: -1 }, w2: { x: 1, y: 0 }, t: 1 },
+      { k: 'circle', c: P.O, r: 50, t: 1 }, { k: 'seg', a: P.M, b: FOOT, t: 1 }, { k: 'right', v: FOOT, u: { x: 0, y: -1 }, w2: { x: 1, y: 0 }, t: 1 },
       { k: 'line', a: { x: 150, y: FLOOR }, b: { x: 700, y: FLOOR }, ext: 900, t: 1 },
     ];
     st.t = 1.3; st.finale = 1;
