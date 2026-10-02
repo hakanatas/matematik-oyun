@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nokta'nın Kasabası · Geometri gözlem ortamı</title>
+<meta name="description" content="Nokta'nın rehberliğinde bir kasabada geometri gözlemi: saat kulesinde açılar, kavşakta kesişen ve paralel sokaklar, çeşmede çemberlerle üçgen.">
+<link rel="icon" href="../img/nokta.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/oyun.css">
+<link rel="stylesheet" href="../css/kasaba.css">
+</head>
+<body>
+<canvas id="world" aria-label="Kasaba manzarası: sürükleyerek gez, nesnelere dokun"></canvas>
+
+<header class="ui top">
+  <div class="brand"><a href="../index.html" aria-label="Ana sayfaya dön">←</a><h1>Nokta'nın Kasabası</h1></div>
+  <nav class="stations" id="stations" aria-label="Gözlem noktaları"></nav>
+  <div class="tools-r">
+    <button class="chip-btn" id="avBtn" type="button" title="Kasabada saklı şekiller">şekil avı 0/6</button>
+    <span class="seg" id="havaBtns" role="group" aria-label="Hava">
+      <button class="chip-btn" data-hava="sabah" type="button">sabah</button><button class="chip-btn" data-hava="aksam" type="button">akşam</button><button class="chip-btn" data-hava="yagmur" type="button">yağmur</button>
+    </span>
+    <button class="chip-btn" id="defterBtn" type="button">defter</button>
+    <button class="chip-btn" id="ogretmenBtn" type="button">öğretmen</button>
+    <button class="chip-btn" id="sunumBtn" type="button" aria-pressed="false">sunum</button>
+    <button class="chip-btn" id="mute" type="button">ses</button>
+    <button class="chip-btn" id="yardimBtn" type="button" aria-label="Tanıtımı aç">?</button>
+  </div>
+</header>
+
+<div class="ui present" id="present"><small id="presentKod"></small><div id="presentSoru"></div></div>
+<section class="ui scard" id="scard" aria-live="polite"></section>
+<div class="ui toast" id="toast"></div>
+
+<div class="zoom" id="zoom" role="dialog" aria-modal="true" aria-labelledby="zTitle">
+  <div class="zbox">
+    <section class="board"><canvas id="zcv"></canvas><div class="fx"></div></section>
+    <aside class="zside" id="zside"></aside>
+  </div>
+</div>
+<div class="sheet" id="defter" role="dialog" aria-modal="true"><div class="sbox" id="defterBox"></div></div>
+<div class="sheet" id="ogretmen" role="dialog" aria-modal="true"><div class="sbox" id="ogretmenBox"></div></div>
+
+<script src="../js/ortak.js"></script>
+<script src="../js/kasaba.js"></script>
+</body>
+</html>

@@ -79,6 +79,9 @@
   .theme-soon div:last-child { border: 2.5px dashed var(--ink-faint); border-radius: 8px; padding: 14px 18px; color: var(--ink-soft); font-size: 15.5px; }
   .theme-soon b { font-family: var(--brush); font-weight: 400; font-size: 24px; color: var(--ink); margin-right: 8px; }
 
+  .featured { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 26px; align-items: center; margin: 0 0 26px; padding: 22px; border-radius: 14px; background: rgba(255, 252, 244, .6); box-shadow: 0 0 0 1.5px var(--ink), 0 18px 34px -26px rgba(60,40,10,.6); }
+  .featured .tag { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #fbeee6; background: var(--seal); padding: 3px 8px; border-radius: 4px; }
+  @media (max-width: 820px) { .featured { grid-template-columns: 1fr; padding: 16px; } }
   .teach { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; margin-top: 8px; }
   .teach div { padding-top: 14px; border-top: 3px solid var(--ink); }
   .teach h4 { font-family: var(--brush); font-weight: 400; font-size: 28px; margin: 0 0 6px; line-height: 1.05; }
@@ -134,6 +137,16 @@
 <main class="wrap">
   <h2 class="section-title">Konu sırasıyla oyna</h2>
   <p class="section-sub">Önce sınıfı seç. Her oyun bir öğrenme çıktısına karşılık gelir ve aynı konunun filmiyle eşleşir: önce filmi izle, sonra oyunla pekiştir.</p>
+  <div class="featured stage" style="--i:4">
+    <a class="thumb" href="oyunlar/kasaba.html" aria-label="Nokta'nın Kasabası'nı aç"><img src="img/kasaba.jpg" alt="" loading="lazy" width="960" height="540"><span class="play"><i></i>GEZ · gözlem</span></a>
+    <div class="meta">
+      <span class="tag">yeni · deneme</span> <span class="code">MAT.5.3.3 · 5.3.4 · 5.3.7</span>
+      <h3>Nokta'nın Kasabası</h3>
+      <p class="en">A town to observe</p>
+      <p class="what">Puan yok, gözlem var. Kasabada gez: saat kulesinde akrep ile yelkovan arasındaki açıyı ölç, kavşakta sokakları çevirip karşılıklı köşeleri karşılaştır, çeşmede iki taşın halkalarından üçgen kur. Önce “Sence?”, sonra dene; gözlemler deftere yazılır. Kasabada 6 şekil de saklı.</p>
+      <div class="links"><a class="primary" href="oyunlar/kasaba.html">▶ Kasabaya gir</a></div>
+    </div>
+  </div>
   <div class="grades" id="grades" role="tablist" aria-label="Sınıf"></div>
   <ol class="journey" id="journey"></ol>
 

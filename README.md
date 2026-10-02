@@ -15,6 +15,16 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 | MAT.5.3.6 | [Üçgenin Sırrı](oyunlar/ucgenin-sirri.html) | Köşeleri yırtıp 180°’yi bul, kayıp açıyı hesapla. 3 × 3 üçgen tablosunu doldur, imkânsız hücreleri yakala, düzgün çokgenleri ayırt et. | Üçgenin Sırrı |
 | MAT.5.3.7 | [Pergel Ustası](oyunlar/pergel-ustasi.html) | İki çember ve bir kesişim noktasıyla hiç ölçmeden eşkenar, ikizkenar ve çeşitkenar üçgen kur. Ödül: yaşam çiçeği. | Çemberlerle Üçgen |
 
+## Nokta'nın Kasabası (deneme)
+
+[Polen'in Vadisi](https://github.com/hakanatas/polen-vadisi)'nden esinlenen bir **gözlem ortamı**: [oyunlar/kasaba.html](oyunlar/kasaba.html). Puan yok. Nokta'nın rehberliğinde kasabada gezilir; her noktada gözlem, “Sence?” tahmini, yakından inceleme ve görevler var. Gözlemler deftere yazılır, rapor indirilir.
+
+- **Saat Kulesi** (MAT.5.3.3): akrep ve yelkovanı çevir, açıölçerle ölç.
+- **Kavşak** (MAT.5.3.4): sokakları döndür; ters açılar, dik ve paralel sokaklar.
+- **Çeşme Meydanı** (MAT.5.3.7): iki taşın halkalarından ölçmeden üçgen.
+
+Ayrıca: şekil avı (6 saklı şekil), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba.js` başındaki `KASABA_METINLERI` nesnesinde.
+
 ## Çalıştırma
 
 Kurulum gerekmez. `index.html` dosyasını tarayıcıda açmanız yeterli; internet olmadan da çalışır (yazı tipleri internet yoksa yedek yazı tipine düşer). GitHub Pages için depo kökünden yayımlayabilirsiniz.
