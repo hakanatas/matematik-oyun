@@ -10,13 +10,13 @@ const KASABA_METINLERI = {
     { hedef: '#stations', metin: 'Üç gözlem noktası var. Numaraya dokununca oraya giderim.' },
     { hedef: '#scard', metin: 'Her noktada önce bir gözlem, sonra bir <b>“Sence?”</b> sorusu ve görevler var. Tahminini seç, sonra dene.' },
     { hedef: '#zoomBtn', metin: '<b>Yakından incele</b> ile saatin kollarını, sokakları ya da havuzdaki taşları kendin değiştirirsin.' },
-    { hedef: '#avBtn', metin: 'Kasabada <b>6 şekil</b> saklı: üçgen çatı, paralel çit… Gördüğünde üstüne dokun!' },
+    { hedef: '#avBtn', metin: 'Kasabada <b>8 şekil</b> saklı: üçgen çatı, paralel çit… İkisi hareket ediyor! Gördüğünde üstüne dokun.' },
     { hedef: '#defterBtn', metin: 'Tahminlerin ve gözlemlerin <b>deftere</b> yazılır. Sonunda raporunu indirebilirsin.' },
     { hedef: '#havaBtns', metin: 'Havayı değiştir: akşam pencereler yanar, yağmurda havuzda çemberler oluşur. Hadi başlayalım!' },
   ],
   istasyonlar: [
     {
-      id: 'saat', ad: 'Saat Kulesi', kod: 'MAT.5.3.3', x: 650,
+      id: 'saat', ad: 'Saat Kulesi', kod: 'MAT.5.3.3', x: 650, varis: 'Tik tak! Kolların arasında hangi açı saklı?',
       gozlem: 'Kule saatinin iki kolu var: kısa olan akrep, uzun olan yelkovan. Kollar döndükçe aralarında bir açı oluşuyor ve bu açı sürekli değişiyor.',
       soru: 'Saat tam 3:00 iken kollar arasındaki açı nasıl bir açıdır?',
       secenekler: ['Dar açı', 'Dik açı', 'Geniş açı'], dogru: 1,
@@ -32,7 +32,7 @@ const KASABA_METINLERI = {
       ogretmen: 'MAT.5.3.3 Açıları ölçmek için matematiksel araç ve teknolojiden yararlanabilme. Süreç: açıölçeri tanır, uygun aracı belirler ve kullanır; dik açı 90°, doğru açı 180°, tam açı 360°. Saatin 12 eş parçası derece birimine köprü kurar.',
     },
     {
-      id: 'kavsak', ad: 'Kavşak', kod: 'MAT.5.3.4', x: 1700,
+      id: 'kavsak', ad: 'Kavşak', kod: 'MAT.5.3.4', x: 1700, varis: 'İki sokak kesişince dört köşe olur. Say bakalım!',
       gozlem: 'Kasabanın ortasında Çınar Sokağı ile Gül Sokağı kesişiyor. Kesiştikleri yerde dört köşe, yani dört açı oluşuyor. Panodaki haritaya bakalım.',
       soru: 'Gül Sokağı’nı döndürürsek karşılıklı köşelerdeki a ve c açıları ne olur?',
       secenekler: ['Her zaman eşit kalır', 'Biri büyür, öbürü küçülür', 'Hiçbir kural yok'], dogru: 0,
@@ -48,7 +48,7 @@ const KASABA_METINLERI = {
       ogretmen: 'MAT.5.3.4 Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme. Süreç: varsayım (Sence?), açıları belirleyip tablo temsilinde listeleme (deftere yaz), varsayımla karşılaştırma, önerme sunma (açıklama). Paralel, kesişen ve dik doğrular.',
     },
     {
-      id: 'cesme', ad: 'Çeşme Meydanı', kod: 'MAT.5.3.7', x: 2750,
+      id: 'cesme', ad: 'Çeşme Meydanı', kod: 'MAT.5.3.7', x: 2750, varis: 'Taş atınca su halka halka açılır. Çember!',
       gozlem: 'Havuza bir taş atınca su yüzeyinde halkalar yayılıyor. Her halka, taşın düştüğü noktadan eşit uzaklıktaki noktalardan oluşuyor: bir çember!',
       soru: 'İki taşı aynı anda atarsak, halkaların buluştuğu C noktası nerede olur?',
       secenekler: ['A’ya daha yakın', 'B’ye daha yakın', 'İkisine eşit uzaklıkta'], dogru: 2,
@@ -70,6 +70,8 @@ const KASABA_METINLERI = {
     { id: 'cit', ad: 'Paralel doğrular', metin: 'Çitin çubukları <b>paralel</b>: hiç kesişmez, aralarındaki uzaklık hep aynı.', x: 1360, y: 562, r: 60 },
     { id: 'tabela', ad: 'Işın', metin: 'Yön tabelasındaki ok bir <b>ışın</b> gibi: bir noktadan başlar, bir yöne doğru gider.', x: 1560, y: 452, r: 40 },
     { id: 'petek', ad: 'Düzgün altıgen', metin: 'Bal dükkânının tabelası <b>düzgün altıgen</b>: 6 eş kenar, 6 eş açı. Arı peteği gibi!', x: 2160, y: 448, r: 36 },
+    { id: 'kuslar', ad: 'Açı', metin: 'Kuş sürüsü <b>V</b> biçiminde uçuyor: iki kol öndeki kuşta birleşiyor. Bu bir <b>açı</b>, köşesi öndeki kuş!', dyn: true },
+    { id: 'tekerlek', ad: 'Çember', metin: 'Bisiklet tekerleği bir <b>çember</b>. Teller merkezden çembere gidiyor: hepsi eşit uzunlukta <b>yarıçaplar</b>!', dyn: true },
     { id: 'kapi', ad: 'Dik açı', metin: 'Kapının köşesi <b>dik açı</b>: 90°. Gönyeyle kontrol edebilirsin.', x: 2392, y: 598, r: 30 },
   ],
   ogretmenGenel: [
@@ -156,16 +158,45 @@ const KASABA_METINLERI = {
     ctx.arc(0, 0, 24, Math.PI * .9, Math.PI * 1.95); ctx.arc(34, -12, 30, Math.PI * 1.05, Math.PI * 1.9); ctx.arc(70, 0, 22, Math.PI * 1.2, Math.PI * .1); ctx.closePath();
     ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = 'rgba(23,20,17,.18)'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
   }
+  const toLayer = (cx, cy, p) => ({ x: (cx - innerWidth / 2) / s + cam.x * p, y: cy / s });
+
+  /* ── uzak katman: tepeler, cami, yel değirmeni ── */
   function farLayer() {
     layer(.3); const P = PAL[st.hava];
     ctx.beginPath(); ctx.moveTo(-800, WH);
     for (let x = -800; x <= 2200; x += 20) ctx.lineTo(x, 420 - wobble(x) * .9 - 30);
     ctx.lineTo(2200, WH); ctx.closePath(); ctx.fillStyle = P.far; ctx.fill();
-    // uzakta cami silueti
     const cx = 760, by = 420 - wobble(760) * .9 - 30;
     ctx.fillStyle = P.far;
     ctx.fillRect(cx - 70, by - 50, 140, 50); ctx.beginPath(); ctx.arc(cx, by - 50, 52, Math.PI, 0); ctx.fill();
     [cx - 92, cx + 92].forEach((mx) => { ctx.fillRect(mx - 6, by - 150, 12, 150); ctx.beginPath(); ctx.moveTo(mx - 8, by - 150); ctx.lineTo(mx, by - 182); ctx.lineTo(mx + 8, by - 150); ctx.fill(); });
+    // uzak ağaçlar
+    for (let i = 0; i < 26; i++) { const x = -500 + i * 105 + (i % 4) * 17, y = 420 - wobble(x) * .9 - 26; ctx.beginPath(); ctx.arc(x, y - 14, 13 + (i % 3) * 4, 0, 7); ctx.fill(); }
+    // yel değirmeni: kanatlar hep dik açıyla
+    const wx = 1460, wy = 420 - wobble(1460) * .9 - 30;
+    ctx.fillStyle = P.mid; ctx.beginPath(); ctx.moveTo(wx - 20, wy + 4); ctx.lineTo(wx - 11, wy - 92); ctx.lineTo(wx + 11, wy - 92); ctx.lineTo(wx + 20, wy + 4); ctx.fill();
+    ctx.save(); ctx.translate(wx, wy - 92); ctx.rotate(st.t * .6);
+    for (let k = 0; k < 4; k++) { ctx.rotate(Math.PI / 2); ctx.fillRect(-2, 0, 4, 70); ctx.fillRect(2, 18, 13, 50); }
+    ctx.restore(); ctx.beginPath(); ctx.arc(wx, wy - 92, 6, 0, 7); ctx.fill();
+  }
+  function balloon() {
+    if (st.hava === 'yagmur') return;
+    layer(.1); const x = ((st.t * 7) % 2000) - 400, y = 160 + Math.sin(st.t * .5) * 14;
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, 34, 0, 7); ctx.clip();
+    for (let k = -3; k <= 3; k++) { ctx.fillStyle = k % 2 ? N.AMBER : N.SEAL; ctx.fillRect(x + k * 11 - 5.5, y - 40, 11, 80); }
+    ctx.restore(); ctx.beginPath(); ctx.arc(x, y, 34, 0, 7); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 20, y + 27); ctx.lineTo(x - 8, y + 52); ctx.moveTo(x + 20, y + 27); ctx.lineTo(x + 8, y + 52); ctx.stroke();
+    ctx.fillStyle = '#9b7653'; ctx.fillRect(x - 9, y + 52, 18, 13); ctx.strokeRect(x - 9, y + 52, 18, 13);
+  }
+  /* kuş sürüsü (V = açı) */
+  const birdsAt = () => ({ x: ((st.t * 55) % 2600) - 500, y: 200 + Math.sin(st.t * .3) * 20 });
+  function birds() {
+    if (st.hava === 'yagmur') return;
+    layer(.2); const b = birdsAt(), pts = [{ x: b.x, y: b.y }];
+    for (let k = 1; k <= 3; k++) { pts.push({ x: b.x - 30 * k, y: b.y - 17 * k }); pts.push({ x: b.x - 30 * k, y: b.y + 17 * k }); }
+    if (st.av.kuslar) { ctx.setLineDash([6, 6]); ctx.strokeStyle = N.AMBER; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(pts[5].x, pts[5].y); ctx.lineTo(b.x, b.y); ctx.lineTo(pts[6].x, pts[6].y); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.strokeStyle = st.hava === 'aksam' ? '#e9e2d0' : N.INK; ctx.lineWidth = 2.6;
+    pts.forEach((p, i) => { const f = Math.sin(st.t * 9 + i) * 6; ctx.beginPath(); ctx.moveTo(p.x - 11, p.y - 2 + f); ctx.quadraticCurveTo(p.x - 5, p.y - 7 - f * .3, p.x, p.y); ctx.quadraticCurveTo(p.x + 5, p.y - 7 - f * .3, p.x + 11, p.y - 2 + f); ctx.stroke(); });
   }
   function midLayer() {
     layer(.6); const P = PAL[st.hava];
@@ -173,34 +204,57 @@ const KASABA_METINLERI = {
       const x = -400 + i * 145 + (i % 3) * 20, w = 90 + (i % 4) * 18, h = 110 + ((i * 37) % 70), base = 560;
       ctx.fillStyle = P.mid; ctx.fillRect(x, base - h, w, h);
       ctx.beginPath(); ctx.moveTo(x - 8, base - h); ctx.lineTo(x + w / 2, base - h - 46 - (i % 2) * 14); ctx.lineTo(x + w + 8, base - h); ctx.fill();
+      if (i % 3 === 0) ctx.fillRect(x + w * .7, base - h - 40, 12, 30);
       const lit = st.hava === 'aksam';
       for (let k = 0; k < 2; k++) for (let j = 0; j < 2; j++) {
-        ctx.fillStyle = lit ? ((i + k + j) % 3 ? 'rgba(244,190,96,.85)' : 'rgba(255,240,200,.25)') : 'rgba(255,250,240,.35)';
+        const on = lit && (i + k + j) % 3 && Math.sin(st.t * .2 + i * 3 + k) > -.85;
+        ctx.fillStyle = on ? 'rgba(244,190,96,.85)' : lit ? 'rgba(255,240,200,.18)' : 'rgba(255,250,240,.35)';
         ctx.fillRect(x + 16 + j * (w - 48), base - h + 22 + k * 40, 16, 22);
       }
     }
   }
 
-  // ── ana katman nesneleri
+  /* ── ana katman nesneleri ── */
   function inkRect(x, y, w, h, fill, lw = 3) { ctx.fillStyle = fill; ctx.fillRect(x, y, w, h); ctx.strokeStyle = N.INK; ctx.lineWidth = lw; ctx.strokeRect(x, y, w, h); }
+  function smoke(x, y) {
+    for (let k = 0; k < 5; k++) { const ph = (st.t * .3 + k / 5) % 1; ctx.beginPath(); ctx.arc(x + ph * 26 + Math.sin(st.t + k) * 4, y - ph * 90, 6 + ph * 14, 0, 7); ctx.fillStyle = `rgba(${st.hava === 'aksam' ? '200,200,215' : '120,110,100'},${.32 * (1 - ph)})`; ctx.fill(); }
+  }
   function house(x, w, h, roof, opts = {}) {
-    const top = GROUND - h;
+    const top = GROUND - h, rh = opts.rh || 70, lit = st.hava === 'aksam';
+    if (opts.chimney != null) { const cx = x + opts.chimney; inkRect(cx, top - rh * .62, 18, rh * .45, '#b65a3f'); smoke(cx + 9, top - rh * .62 - 6); }
     inkRect(x, top, w, h, opts.wall || '#f6ecd8');
-    ctx.beginPath(); ctx.moveTo(x - 14, top); ctx.lineTo(x + w / 2, top - (opts.rh || 70)); ctx.lineTo(x + w + 14, top); ctx.closePath();
-    ctx.fillStyle = roof; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
-    const lit = st.hava === 'aksam';
-    const win = (wx, wy, ww, wh) => { ctx.fillStyle = lit ? '#f5c06a' : '#d7e1e4'; ctx.fillRect(wx, wy, ww, wh); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.strokeRect(wx, wy, ww, wh); ctx.beginPath(); ctx.moveTo(wx + ww / 2, wy); ctx.lineTo(wx + ww / 2, wy + wh); ctx.moveTo(wx, wy + wh / 2); ctx.lineTo(wx + ww, wy + wh / 2); ctx.lineWidth = 1.5; ctx.stroke(); };
+    // kiremit çizgileri
+    ctx.beginPath(); ctx.moveTo(x - 14, top); ctx.lineTo(x + w / 2, top - rh); ctx.lineTo(x + w + 14, top); ctx.closePath();
+    ctx.fillStyle = roof; ctx.fill(); ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(23,20,17,.22)'; ctx.lineWidth = 1.5;
+    for (let yy = top - rh + 14; yy < top; yy += 13) { ctx.beginPath(); for (let xx = x - 20 + ((yy / 13) % 2) * 8; xx < x + w + 20; xx += 16) { ctx.moveTo(xx, yy); ctx.arc(xx + 8, yy, 8, Math.PI, 0); } ctx.stroke(); }
+    ctx.restore(); ctx.beginPath(); ctx.moveTo(x - 14, top); ctx.lineTo(x + w / 2, top - rh); ctx.lineTo(x + w + 14, top); ctx.closePath(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
+    const win = (wx, wy, ww, wh) => {
+      const on = lit && Math.sin(st.t * .15 + wx * .7) > -.6;
+      ctx.fillStyle = on ? '#f5c06a' : lit ? '#55607a' : '#d7e1e4'; ctx.fillRect(wx, wy, ww, wh); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.strokeRect(wx, wy, ww, wh);
+      ctx.beginPath(); ctx.moveTo(wx + ww / 2, wy); ctx.lineTo(wx + ww / 2, wy + wh); ctx.moveTo(wx, wy + wh / 2); ctx.lineTo(wx + ww, wy + wh / 2); ctx.lineWidth = 1.5; ctx.stroke();
+      if (opts.shutters) { ctx.fillStyle = opts.shutters; [wx - 12, wx + ww].forEach((sx) => { ctx.fillRect(sx, wy, 12, wh); ctx.strokeRect(sx, wy, 12, wh); }); }
+      if (opts.box) { ctx.fillStyle = '#9b7653'; ctx.fillRect(wx - 4, wy + wh, ww + 8, 8); ctx.strokeRect(wx - 4, wy + wh, ww + 8, 8); for (let f = 0; f < 4; f++) { ctx.beginPath(); ctx.arc(wx + 3 + f * (ww / 3), wy + wh - 2 + Math.sin(st.t * 2 + f + wx) * .8, 4, 0, 7); ctx.fillStyle = f % 2 ? N.SEAL : N.AMBER; ctx.fill(); } }
+    };
     const rows = Math.max(1, Math.floor((h - 70) / 60));
-    for (let r = 0; r < rows; r++) { win(x + 16, top + 22 + r * 60, 30, 34); if (w > 110) win(x + w - 46, top + 22 + r * 60, 30, 34); }
-    // kapı
+    for (let r = 0; r < rows; r++) { if (opts.bay && r === rows - 1 && rows > 1) continue; win(x + 18, top + 22 + r * 60, 30, 34); if (w > 110) win(x + w - 48, top + 22 + r * 60, 30, 34); }
+    if (opts.bay) { // cumba
+      const by = top + 18, bw = w + 24; inkRect(x - 12, by, bw, 64, opts.wall || '#f6ecd8'); ctx.fillStyle = '#9b7653'; ctx.fillRect(x - 16, by + 64, bw + 8, 8); ctx.strokeRect(x - 16, by + 64, bw + 8, 8);
+      for (let k = 0; k < 3; k++) win(x - 2 + k * (bw - 20) / 3, by + 12, 30, 40);
+      [0, 1, 2].forEach((k) => { ctx.beginPath(); ctx.moveTo(x - 6 + k * bw / 2.6, by + 72); ctx.lineTo(x + 6 + k * bw / 2.6, by + 92); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke(); });
+    }
     const dx = x + w / 2 - 20; ctx.fillStyle = '#7b5a3c'; ctx.fillRect(dx, GROUND - 62, 40, 62); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.strokeRect(dx, GROUND - 62, 40, 62);
     ctx.beginPath(); ctx.arc(dx + 31, GROUND - 30, 2.5, 0, 7); ctx.fillStyle = N.INK; ctx.fill();
+    if (opts.awning) { ctx.save(); ctx.beginPath(); ctx.moveTo(dx - 26, GROUND - 92); ctx.lineTo(dx + 66, GROUND - 92); ctx.lineTo(dx + 76, GROUND - 70); ctx.lineTo(dx - 36, GROUND - 70); ctx.closePath(); ctx.clip(); for (let k = 0; k < 9; k++) { ctx.fillStyle = k % 2 ? '#fffaf0' : opts.awning; ctx.fillRect(dx - 36 + k * 13, GROUND - 92, 13, 24); } ctx.restore(); ctx.beginPath(); ctx.moveTo(dx - 26, GROUND - 92); ctx.lineTo(dx + 66, GROUND - 92); ctx.lineTo(dx + 76, GROUND - 70); ctx.lineTo(dx - 36, GROUND - 70); ctx.closePath(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke(); }
     if (opts.sign) opts.sign();
   }
   function tree(x, k = 1) {
     ctx.fillStyle = '#6b4f35'; ctx.fillRect(x - 7 * k, GROUND - 90 * k, 14 * k, 90 * k); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.strokeRect(x - 7 * k, GROUND - 90 * k, 14 * k, 90 * k);
-    const sway = Math.sin(st.t * 1.2 + x) * 2;
-    [[0, -120, 46], [-34, -98, 34], [34, -100, 36], [0, -158, 34]].forEach(([dx, dy, r]) => { ctx.beginPath(); ctx.arc(x + dx * k + sway, GROUND + dy * k, r * k, 0, 7); ctx.fillStyle = st.hava === 'aksam' ? '#4f6150' : '#87a074'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke(); });
+    const sway = Math.sin(st.t * 1.2 + x) * 2.5;
+    [[0, -120, 46], [-34, -98, 34], [34, -100, 36], [0, -158, 34]].forEach(([dx, dy, r], i) => { ctx.beginPath(); ctx.arc(x + dx * k + sway * (1 + i * .3), GROUND + dy * k, r * k, 0, 7); ctx.fillStyle = st.hava === 'aksam' ? '#4f6150' : i === 3 ? '#9bb383' : '#87a074'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke(); });
+    if (st.hava !== 'yagmur') for (let i = 0; i < 3; i++) { // düşen yapraklar
+      const ph = (st.t * .12 + i / 3 + x * .001) % 1, lx = x + Math.sin(st.t * 1.3 + i * 2) * 34 + (i - 1) * 24, ly = GROUND - 150 * k + ph * 150 * k;
+      ctx.save(); ctx.translate(lx, ly); ctx.rotate(st.t * 2 + i); ctx.beginPath(); ctx.ellipse(0, 0, 6, 3, 0, 0, 7); ctx.fillStyle = i % 2 ? N.AMBER : '#87a074'; ctx.globalAlpha = 1 - ph * .6; ctx.fill(); ctx.restore(); ctx.globalAlpha = 1;
+    }
   }
   function lamp(x) {
     ctx.strokeStyle = N.INK; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, GROUND); ctx.lineTo(x, GROUND - 150); ctx.stroke();
@@ -211,27 +265,70 @@ const KASABA_METINLERI = {
     const gl = ctx.createRadialGradient(x, GROUND - 163, 4, x, GROUND - 163, 120); gl.addColorStop(0, 'rgba(255,200,110,.55)'); gl.addColorStop(1, 'rgba(255,200,110,0)');
     ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(x, GROUND - 163, 120, 0, 7); ctx.fill();
   }
+  let bellAmp = 0;
   function clockTower() {
     const x = 650, cl = clock;
     inkRect(x - 62, 170, 124, GROUND - 170, '#efe0c2');
     ctx.strokeStyle = 'rgba(23,20,17,.25)'; ctx.lineWidth = 1.5;
-    for (let y = 200; y < GROUND; y += 26) { ctx.beginPath(); ctx.moveTo(x - 62, y); ctx.lineTo(x + 62, y); ctx.stroke(); }
-    ctx.beginPath(); ctx.moveTo(x - 80, 170); ctx.lineTo(x, 70); ctx.lineTo(x + 80, 170); ctx.closePath(); ctx.fillStyle = '#c4432b'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x, 70); ctx.lineTo(x, 44); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, 46); ctx.lineTo(x + 20, 52); ctx.lineTo(x, 58); ctx.fillStyle = N.AMBER; ctx.fill();
-    // saat
+    for (let y = 196; y < GROUND; y += 26) { ctx.beginPath(); ctx.moveTo(x - 62, y); ctx.lineTo(x + 62, y); ctx.stroke(); for (let xx = x - 62 + ((y / 26) % 2) * 20; xx < x + 62; xx += 40) { ctx.beginPath(); ctx.moveTo(xx, y); ctx.lineTo(xx, y + 26); ctx.stroke(); } }
+    // çan
+    ctx.fillStyle = '#3b3530'; ctx.fillRect(x - 40, 106, 80, 64); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.strokeRect(x - 40, 106, 80, 64);
+    const sw = Math.sin(st.t * 7) * .45 * bellAmp; bellAmp *= .985;
+    ctx.save(); ctx.translate(x, 112); ctx.rotate(sw); ctx.beginPath(); ctx.moveTo(-16, 40); ctx.quadraticCurveTo(-16, 6, 0, 6); ctx.quadraticCurveTo(16, 6, 16, 40); ctx.lineTo(20, 46); ctx.lineTo(-20, 46); ctx.closePath(); ctx.fillStyle = N.AMBER; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke(); ctx.beginPath(); ctx.arc(0, 48, 4, 0, 7); ctx.fillStyle = N.INK; ctx.fill(); ctx.restore();
+    ctx.beginPath(); ctx.moveTo(x - 84, 108); ctx.lineTo(x, 34); ctx.lineTo(x + 84, 108); ctx.closePath(); ctx.fillStyle = '#c4432b'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x, 34); ctx.lineTo(x, 8); ctx.stroke(); const fl = Math.sin(st.t * 5) * 3; ctx.beginPath(); ctx.moveTo(x, 10); ctx.quadraticCurveTo(x + 12, 12 + fl, x + 24, 15 + fl); ctx.lineTo(x, 22); ctx.fillStyle = N.AMBER; ctx.fill(); ctx.stroke();
+    // saat (yelkovan ve akrep yakın plandaki ayarı gösterir; saniye kolu gerçek zamanla döner)
     const c = { x, y: 250 }, R = 50;
-    ctx.beginPath(); ctx.arc(c.x, c.y, R, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 4; ctx.strokeStyle = N.INK; ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x, c.y, R + 6, 0, 7); ctx.fillStyle = '#c9b48d'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = N.INK; ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x, c.y, R, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
     for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; ctx.beginPath(); ctx.moveTo(c.x + Math.sin(a) * (R - 4), c.y - Math.cos(a) * (R - 4)); ctx.lineTo(c.x + Math.sin(a) * (R - 11), c.y - Math.cos(a) * (R - 11)); ctx.lineWidth = 2.5; ctx.stroke(); }
-    const hand = (deg, L, w) => { const a = g.rad(deg); ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + Math.sin(a) * L, c.y - Math.cos(a) * L); ctx.lineWidth = w; ctx.stroke(); };
-    hand(cl.h, 28, 6); hand(cl.m, 40, 3.5);
-    // yuvarlak pencere ve kapı
-    ctx.beginPath(); ctx.arc(x, 415, 22, 0, 7); ctx.fillStyle = st.hava === 'aksam' ? '#f5c06a' : '#d7e1e4'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x - 26, GROUND); ctx.lineTo(x - 26, GROUND - 60); ctx.arc(x, GROUND - 60, 26, Math.PI, 0); ctx.lineTo(x + 26, GROUND); ctx.fillStyle = '#7b5a3c'; ctx.fill(); ctx.stroke();
+    const hand = (deg, L, w, col) => { const a = g.rad(deg); ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(c.x + Math.sin(a) * L, c.y - Math.cos(a) * L); ctx.lineWidth = w; ctx.strokeStyle = col || N.INK; ctx.stroke(); };
+    hand(cl.h, 28, 6); hand(cl.m, 40, 3.5); hand((Date.now() / 1000 % 60) * 6, 44, 1.5, N.SEAL);
+    ctx.beginPath(); ctx.arc(c.x, c.y, 4, 0, 7); ctx.fillStyle = N.INK; ctx.fill();
+    ctx.beginPath(); ctx.arc(x, 415, 22, 0, 7); ctx.fillStyle = st.hava === 'aksam' ? '#f5c06a' : '#d7e1e4'; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = N.INK; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 22, 415); ctx.lineTo(x + 22, 415); ctx.moveTo(x, 393); ctx.lineTo(x, 437); ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x - 26, GROUND); ctx.lineTo(x - 26, GROUND - 60); ctx.arc(x, GROUND - 60, 26, Math.PI, 0); ctx.lineTo(x + 26, GROUND); ctx.fillStyle = '#7b5a3c'; ctx.fill(); ctx.lineWidth = 3; ctx.stroke();
+  }
+  function bunting(a, b, sag, n) {
+    const P = (t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t + Math.sin(Math.PI * t) * sag });
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 1.8; ctx.beginPath(); for (let i = 0; i <= 30; i++) { const p = P(i / 30); i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } ctx.stroke();
+    for (let i = 1; i < n; i++) { const p = P(i / n), q = P((i + .5) / n), w = Math.sin(st.t * 3 + i) * 3; ctx.beginPath(); ctx.moveTo(p.x - 9, p.y); ctx.lineTo(p.x + 9, p.y); ctx.lineTo((p.x + q.x) / 2 * 0 + p.x + w, p.y + 22); ctx.closePath(); ctx.fillStyle = [N.AMBER, N.SEAL, '#fffaf0', '#87a074'][i % 4]; ctx.fill(); ctx.lineWidth = 1.5; ctx.stroke(); }
+  }
+  function laundry(a, b) {
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo((a.x + b.x) / 2, (a.y + b.y) / 2 + 20, b.x, b.y); ctx.stroke();
+    [.25, .5, .75].forEach((t, i) => {
+      const x = a.x + (b.x - a.x) * t, y = a.y + (b.y - a.y) * t + Math.sin(Math.PI * t) * 10, sw = Math.sin(st.t * 2.2 + i) * .12;
+      ctx.save(); ctx.translate(x, y); ctx.rotate(sw); ctx.fillStyle = ['#fffaf0', N.AMBER, '#8fb0bd'][i];
+      ctx.beginPath(); ctx.moveTo(-14, 0); ctx.lineTo(14, 0); ctx.lineTo(20, 10); ctx.lineTo(12, 12); ctx.lineTo(11, 32); ctx.lineTo(-11, 32); ctx.lineTo(-12, 12); ctx.lineTo(-20, 10); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+    });
+  }
+  function trafficLight(x) {
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x, GROUND); ctx.lineTo(x, 470); ctx.stroke();
+    inkRect(x - 12, 412, 24, 62, '#2f2a26', 2.5);
+    const ph = st.t % 9, on = ph < 4 ? 2 : ph < 5 ? 1 : 0;
+    ['#c4432b', '#e8a33d', '#6ba05b'].forEach((col, i) => { ctx.beginPath(); ctx.arc(x, 424 + i * 19, 7, 0, 7); ctx.fillStyle = i === on ? col : 'rgba(255,255,255,.12)'; ctx.fill(); });
+    return on;
+  }
+  function car(x, y, k, col, back, lit) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+    ctx.beginPath(); ctx.moveTo(-36, 0); ctx.lineTo(-36, -24); ctx.quadraticCurveTo(-30, -48, 0, -48); ctx.quadraticCurveTo(30, -48, 36, -24); ctx.lineTo(36, 0); ctx.closePath();
+    ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3 / Math.max(.5, k); ctx.stroke();
+    ctx.fillStyle = lit ? '#f5c06a' : '#d7e1e4'; ctx.fillRect(-24, -42, 48, 16); ctx.strokeRect(-24, -42, 48, 16);
+    ctx.fillStyle = N.INK; ctx.fillRect(-34, -2, 14, 10); ctx.fillRect(20, -2, 14, 10);
+    [-24, 24].forEach((lx) => { ctx.beginPath(); ctx.arc(lx, -14, 6, 0, 7); ctx.fillStyle = back ? N.SEAL : (st.hava === 'aksam' ? '#fff3c4' : '#fffaf0'); ctx.fill(); ctx.stroke(); });
+    ctx.restore();
   }
   function crossroad() {
-    // derine giden sokak (perspektif)
     ctx.beginPath(); ctx.moveTo(1600, GROUND); ctx.lineTo(1690, 470); ctx.lineTo(1730, 470); ctx.lineTo(1830, GROUND); ctx.closePath(); ctx.fillStyle = 'rgba(23,20,17,.12)'; ctx.fill();
     ctx.setLineDash([16, 14]); ctx.strokeStyle = 'rgba(255,250,240,.9)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(1715, GROUND); ctx.lineTo(1710, 474); ctx.stroke(); ctx.setLineDash([]);
+    // yaya geçidi
+    for (let k = 0; k < 6; k++) { ctx.fillStyle = 'rgba(255,250,240,.85)'; ctx.fillRect(1612 + k * 36, GROUND + 6, 22, 30); }
+    // arabalar: biri uzaklaşır, biri yaklaşır (ışık kırmızıyken yaklaşan bekler)
+    const on = trafficLight(1640);
+    const cars = [];
+    const ph1 = (st.t * .11) % 1; cars.push({ u: ph1, lane: 1, col: N.AMBER, back: true });
+    carT += on === 0 && carU > .55 && carU < .62 ? 0 : 1 / 60 * .13; carU = 1 - (carT % 1); cars.push({ u: carU, lane: -1, col: '#5b7a8c', back: false });
+    cars.sort((a, b) => b.u - a.u).forEach((C) => { const u = C.u, k = 1 - .82 * u; car(1714 - 4 * u + C.lane * 30 * (1 - u * .85), GROUND + 2 - 130 * u, k, C.col, C.back, st.hava === 'aksam'); });
     // yön tabelası
     ctx.strokeStyle = N.INK; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(1560, GROUND); ctx.lineTo(1560, 420); ctx.stroke();
     const arrowSign = (y, dir, txt, rot) => {
@@ -245,39 +342,120 @@ const KASABA_METINLERI = {
     ctx.lineWidth = 5; [1780, 1900].forEach((x) => { ctx.beginPath(); ctx.moveTo(x, GROUND); ctx.lineTo(x, 420); ctx.stroke(); });
     inkRect(1760, 390, 160, 110, '#fffaf0', 3.5);
     ctx.save(); ctx.beginPath(); ctx.rect(1762, 392, 156, 106); ctx.clip();
+    ctx.fillStyle = '#e4e8d4'; ctx.fillRect(1762, 392, 156, 106);
     const o = { x: 1840, y: 445 };
-    const st2 = (deg, col) => { const u = g.dir(g.rad(deg)); ctx.strokeStyle = col; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(o.x - u.x * 120, o.y - u.y * 120); ctx.lineTo(o.x + u.x * 120, o.y + u.y * 120); ctx.stroke(); };
-    st2(20, '#d9c9a6'); st2(map.gul, '#d9c9a6'); ctx.restore();
+    const st2 = (deg, col, oo = o) => { const u = g.dir(g.rad(deg)); ctx.strokeStyle = col; ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(oo.x - u.x * 120, oo.y - u.y * 120); ctx.lineTo(oo.x + u.x * 120, oo.y + u.y * 120); ctx.stroke(); };
+    st2(20, '#cbbd9e'); st2(map.gul, '#cbbd9e'); if (map.laleOn) st2(map.lale, '#cbbd9e', { x: 1840, y: 408 });
+    const blink = Math.sin(st.t * 4) > 0; ctx.beginPath(); ctx.arc(o.x, o.y, 5, 0, 7); ctx.fillStyle = blink ? N.SEAL : N.INK; ctx.fill();
+    ctx.restore();
     ctx.font = `400 22px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.fillText('HARİTA', 1840, 380);
+  }
+  let carT = 0, carU = 1;
+  /* güvercinler ve ördekler */
+  const PIGEONS = [2560, 2610, 2650, 2880, 2925, 2965].map((x, i) => ({ x, fly: -99, i }));
+  function pigeons() {
+    PIGEONS.forEach((pg) => {
+      if (Math.abs(nokta.x - pg.x) < 110 && st.t - pg.fly > 9) { pg.fly = st.t; }
+      const f = (st.t - pg.fly) / 7, flying = f >= 0 && f < 1;
+      const x = pg.x + (flying ? Math.sin(f * Math.PI) * 160 * (pg.i % 2 ? 1 : -1) : 0), y = GROUND + 16 - (flying ? Math.sin(f * Math.PI) * 300 : 0);
+      ctx.save(); ctx.translate(x, y); if (pg.i % 2) ctx.scale(-1, 1);
+      ctx.beginPath(); ctx.ellipse(0, -9, 13, 9, 0, 0, 7); ctx.fillStyle = '#9a9aa0'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke();
+      if (flying) { const w = Math.sin(st.t * 18) * 12; ctx.beginPath(); ctx.moveTo(-4, -12); ctx.lineTo(-10, -26 - w); ctx.moveTo(4, -12); ctx.lineTo(10, -26 - w); ctx.stroke(); }
+      const peck = !flying && Math.sin(st.t * 3 + pg.i * 2) > .7 ? 8 : 0;
+      ctx.beginPath(); ctx.arc(11, -18 + peck, 6, 0, 7); ctx.fillStyle = '#7f7f88'; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(16, -18 + peck); ctx.lineTo(22, -16 + peck); ctx.lineTo(16, -15 + peck); ctx.fillStyle = N.AMBER; ctx.fill();
+      if (!flying) { ctx.beginPath(); ctx.moveTo(-2, 0); ctx.lineTo(-2, 4); ctx.moveTo(4, 0); ctx.lineTo(4, 4); ctx.strokeStyle = N.SEAL; ctx.stroke(); }
+      ctx.restore();
+    });
+  }
+  function ducks(cx, cy) {
+    for (let k = 0; k < 2; k++) {
+      const a = st.t * .28 + k * Math.PI, x = cx + Math.cos(a) * 128, y = cy - 4 + Math.sin(a) * 15, dir = -Math.sin(a) >= 0 ? 1 : -1;
+      ctx.save(); ctx.translate(x, y); ctx.scale(dir, 1);
+      ctx.beginPath(); ctx.ellipse(0, -6, 15, 8, 0, 0, Math.PI * 2); ctx.fillStyle = k ? '#fffaf0' : '#f1d27a'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath(); ctx.arc(11, -16, 6, 0, 7); ctx.fill(); ctx.stroke(); ctx.beginPath(); ctx.moveTo(16, -16); ctx.lineTo(23, -14); ctx.lineTo(16, -12); ctx.fillStyle = N.AMBER; ctx.fill();
+      ctx.restore();
+    }
   }
   function fountain() {
     const cx = 2750, cy = 585, P = st.hava;
     ctx.beginPath(); ctx.ellipse(cx, cy, 190, 40, 0, 0, 7); ctx.fillStyle = '#d9cbb0'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
     ctx.beginPath(); ctx.ellipse(cx, cy - 6, 170, 30, 0, 0, 7); ctx.fillStyle = P === 'aksam' ? '#3f5a6b' : '#8fb0bd'; ctx.fill(); ctx.lineWidth = 2; ctx.stroke();
-    // halkalar: yağmurda çok, normalde sütundan
-    const rings = P === 'yagmur' ? 9 : 3;
+    const rings = P === 'yagmur' ? 10 : 4;
     for (let i = 0; i < rings; i++) {
       const per = 2.4, k = ((st.t / per + i * .37) % 1), seed = Math.floor(st.t / per + i * .37) * 13 + i * 7;
-      const rx = P === 'yagmur' ? cx + ((seed * 53) % 280) - 140 : cx + (i - 1) * 70, ry = cy - 6 + (P === 'yagmur' ? ((seed * 29) % 30) - 15 : 6);
+      const rx = P === 'yagmur' ? cx + ((seed * 53) % 280) - 140 : cx + [-70, 70, -30, 40][i], ry = cy - 6 + (P === 'yagmur' ? ((seed * 29) % 30) - 15 : 6);
       ctx.beginPath(); ctx.ellipse(rx, ry, 4 + k * 34, 1.5 + k * 7, 0, 0, 7); ctx.strokeStyle = `rgba(255,255,255,${.8 * (1 - k)})`; ctx.lineWidth = 2; ctx.stroke();
     }
+    ducks(cx, cy);
     inkRect(cx - 14, cy - 110, 28, 104, '#e8dcc2');
     ctx.beginPath(); ctx.ellipse(cx, cy - 112, 50, 12, 0, 0, 7); ctx.fillStyle = '#e8dcc2'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
-    // su fıskiyesi
     ctx.strokeStyle = P === 'aksam' ? 'rgba(170,200,215,.8)' : 'rgba(110,160,180,.85)'; ctx.lineWidth = 3;
     for (const sd of [-1, 1]) for (let j = 0; j < 3; j++) { const w = 40 + j * 22; ctx.beginPath(); ctx.moveTo(cx, cy - 130); ctx.quadraticCurveTo(cx + sd * w * .6, cy - 190 + j * 8 + Math.sin(st.t * 3 + j) * 3, cx + sd * w * 1.6, cy - 30); ctx.stroke(); }
-    // banklar
+    for (let i = 0; i < 10; i++) { const ph = (st.t * .9 + i / 10) % 1, sd = i % 2 ? 1 : -1, w = 40 + (i % 3) * 22; const x = cx + sd * w * 1.6 * ph, y = cy - 130 - Math.sin(ph * Math.PI) * 50 + ph * 100; ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 7); ctx.fillStyle = 'rgba(200,225,235,.9)'; ctx.fill(); }
     [cx - 300, cx + 240].forEach((bx) => { ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.fillStyle = '#9b7653'; ctx.fillRect(bx, GROUND - 34, 70, 9); ctx.strokeRect(bx, GROUND - 34, 70, 9); ctx.fillRect(bx, GROUND - 58, 70, 8); ctx.strokeRect(bx, GROUND - 58, 70, 8); ctx.beginPath(); ctx.moveTo(bx + 8, GROUND - 25); ctx.lineTo(bx + 8, GROUND); ctx.moveTo(bx + 62, GROUND - 25); ctx.lineTo(bx + 62, GROUND); ctx.stroke(); });
   }
   function fence() {
     ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.fillStyle = '#f6ecd8';
-    for (let x = 1300; x <= 1430; x += 18) { ctx.fillRect(x, GROUND - 70, 9, 70); ctx.strokeRect(x, GROUND - 70, 9, 70); }
+    for (let x = 1300; x <= 1430; x += 18) { ctx.beginPath(); ctx.moveTo(x, GROUND); ctx.lineTo(x, GROUND - 66); ctx.lineTo(x + 4.5, GROUND - 74); ctx.lineTo(x + 9, GROUND - 66); ctx.lineTo(x + 9, GROUND); ctx.closePath(); ctx.fill(); ctx.stroke(); }
     ctx.beginPath(); ctx.moveTo(1294, GROUND - 52); ctx.lineTo(1442, GROUND - 52); ctx.moveTo(1294, GROUND - 22); ctx.lineTo(1442, GROUND - 22); ctx.stroke();
+    // çitin üstünde kedi
+    const tail = Math.sin(st.t * 2) * .5, cx = 1395, cy = GROUND - 74;
+    ctx.fillStyle = '#3b3530'; ctx.beginPath(); ctx.ellipse(cx, cy - 10, 16, 10, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(cx + 15, cy - 20, 8, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(cx + 9, cy - 25); ctx.lineTo(cx + 11, cy - 34); ctx.lineTo(cx + 15, cy - 27); ctx.moveTo(cx + 16, cy - 27); ctx.lineTo(cx + 20, cy - 34); ctx.lineTo(cx + 22, cy - 24); ctx.fill();
+    ctx.save(); ctx.translate(cx - 14, cy - 8); ctx.rotate(tail); ctx.strokeStyle = '#3b3530'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(-14, 4, -12, 22); ctx.stroke(); ctx.restore();
+    const blink = (st.t % 4) < .15; if (!blink) { ctx.fillStyle = N.AMBER; ctx.beginPath(); ctx.arc(cx + 13, cy - 21, 1.8, 0, 7); ctx.arc(cx + 19, cy - 21, 1.8, 0, 7); ctx.fill(); }
   }
   function hexSign() {
-    const c = { x: 2160, y: 448 }; ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(c.x, 412); ctx.lineTo(c.x, 380); ctx.stroke();
+    const c = { x: 2160, y: 448 }, sw = Math.sin(st.t * 1.5) * .05; ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(c.x - 30, 380); ctx.lineTo(c.x + 4, 380); ctx.stroke();
+    ctx.save(); ctx.translate(c.x, 380); ctx.rotate(sw); ctx.translate(-c.x, -380);
+    ctx.beginPath(); ctx.moveTo(c.x, 380); ctx.lineTo(c.x, 414); ctx.stroke();
     ctx.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; const p = { x: c.x + Math.cos(a) * 34, y: c.y + Math.sin(a) * 34 }; i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y); } ctx.closePath();
-    ctx.fillStyle = N.AMBER; ctx.fill(); ctx.stroke(); ctx.font = `400 20px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('BAL', c.x, c.y + 1);
+    ctx.fillStyle = N.AMBER; ctx.fill(); ctx.stroke(); ctx.font = `400 20px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('BAL', c.x, c.y + 1); ctx.restore();
+    // arı
+    const bx = c.x + Math.cos(st.t * 2.3) * 52, by = c.y + Math.sin(st.t * 3.1) * 30; ctx.beginPath(); ctx.ellipse(bx, by, 5, 3.5, 0, 0, 7); ctx.fillStyle = N.AMBER; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(bx - 1, by - 5, 3, 4, 0, 0, 7); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fill();
+  }
+  function bakerySign() { // fırın: simit tabelası (çember)
+    const x = 905, y = 488, sw = Math.sin(st.t * 1.4) * .06;
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 50, 470); ctx.lineTo(x + 92, 470); ctx.stroke();
+    ctx.save(); ctx.translate(x + 82, 470); ctx.rotate(sw);
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 8); ctx.stroke();
+    ctx.beginPath(); ctx.arc(0, 30, 22, 0, 7); ctx.arc(0, 30, 9, 0, 7, true); ctx.fillStyle = '#c98a3d'; ctx.fill('evenodd'); ctx.stroke(); ctx.beginPath(); ctx.arc(0, 30, 9, 0, 7); ctx.stroke();
+    ctx.fillStyle = '#fffaf0'; for (let i = 0; i < 9; i++) { const a = i * .7; ctx.fillRect(Math.cos(a) * 15 - 1, 30 + Math.sin(a) * 15 - 1, 2.5, 2.5); }
+    ctx.restore();
+  }
+  /* kasabalılar */
+  const WALKERS = [
+    { a: 120, b: 560, sp: 30, col: N.AMBER, ph: .1 }, { a: 940, b: 1520, sp: 26, col: N.SEAL, ph: .5 },
+    { a: 1960, b: 2500, sp: 36, col: '#5b7a8c', ph: .3 }, { a: 2950, b: 3320, sp: 24, col: '#87a074', ph: .7 },
+  ];
+  function person(x, y, dir, col, step, umbrella) {
+    const lg = Math.sin(step) * 7;
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y - 20); ctx.lineTo(x + lg, y); ctx.moveTo(x, y - 20); ctx.lineTo(x - lg, y); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y - 34, 15, 0, 7); ctx.fillStyle = '#e9e1d3'; ctx.fill(); ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y - 34, 15, Math.PI * .15, Math.PI * .85); ctx.strokeStyle = col; ctx.lineWidth = 5; ctx.stroke();
+    ctx.fillStyle = N.INK; ctx.beginPath(); ctx.arc(x + dir * 6, y - 38, 1.8, 0, 7); ctx.arc(x + dir * 11, y - 38, 1.8, 0, 7); ctx.fill();
+    if (umbrella) { ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(x - dir * 4, y - 34); ctx.lineTo(x - dir * 4, y - 80); ctx.stroke(); ctx.beginPath(); ctx.arc(x - dir * 4, y - 80, 30, Math.PI, 0); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); ctx.stroke(); }
+  }
+  function walkers() {
+    WALKERS.forEach((W) => {
+      const L = W.b - W.a, dd = (st.t * W.sp + W.ph * 2 * L) % (2 * L), fwd = dd < L, x = fwd ? W.a + dd : W.b - (dd - L);
+      person(x, GROUND + 26, fwd ? 1 : -1, W.col, st.t * W.sp * .25, st.hava === 'yagmur');
+    });
+  }
+  const bikeAt = () => { const x = ((st.t * 95) % (WW + 800)) - 400; return { x, y: GROUND + 44 }; };
+  function bike() {
+    const { x, y } = bikeAt(), R = 21, rot = x / R;
+    [x - 30, x + 30].forEach((wx, i) => {
+      ctx.beginPath(); ctx.arc(wx, y - R, R, 0, 7); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
+      ctx.lineWidth = 1.4; ctx.strokeStyle = i === 0 && st.av.tekerlek ? N.DEEP : 'rgba(23,20,17,.7)';
+      for (let k = 0; k < 8; k++) { const a = rot + k * Math.PI / 4; ctx.beginPath(); ctx.moveTo(wx, y - R); ctx.lineTo(wx + Math.cos(a) * R, y - R + Math.sin(a) * R); ctx.stroke(); }
+    });
+    ctx.strokeStyle = N.SEAL; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.moveTo(x - 30, y - R); ctx.lineTo(x - 6, y - R - 26); ctx.lineTo(x + 20, y - R - 26); ctx.lineTo(x + 30, y - R); ctx.moveTo(x - 6, y - R - 26); ctx.lineTo(x, y - R); ctx.lineTo(x - 30, y - R); ctx.stroke();
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x + 20, y - R - 26); ctx.lineTo(x + 16, y - R - 40); ctx.lineTo(x + 26, y - R - 42); ctx.stroke();
+    const pd = Math.sin(rot) * 8; ctx.beginPath(); ctx.moveTo(x - 6, y - R - 30); ctx.lineTo(x + pd, y - R + 2); ctx.stroke();
+    person(x - 6, y - R - 28, 1, N.AMBER, 0, false);
   }
   function groundLayer() {
     layer(1); const P = PAL[st.hava];
@@ -285,17 +463,19 @@ const KASABA_METINLERI = {
     ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-200, GROUND); ctx.lineTo(WW + 200, GROUND); ctx.stroke();
     ctx.strokeStyle = 'rgba(23,20,17,.18)'; ctx.lineWidth = 1.5;
     for (let r = 0; r < 4; r++) { const y = GROUND + 18 + r * 22; ctx.beginPath(); for (let x = -200 + (r % 2) * 22; x < WW + 200; x += 44) { ctx.moveTo(x, y); ctx.arc(x + 20, y, 20, Math.PI, 0); } ctx.stroke(); }
-    if (st.hava === 'yagmur') for (let i = 0; i < 14; i++) { const k = ((st.t * .6 + i * .29) % 1), x = (i * 263) % WW, y = GROUND + 30 + (i * 37) % 100; ctx.beginPath(); ctx.ellipse(x, y, 4 + k * 26, 1 + k * 5, 0, 0, 7); ctx.strokeStyle = `rgba(255,255,255,${.7 * (1 - k)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
-    // binalar
-    house(150, 150, 210, '#b8741a'); tree(370, .9);
+    if (st.hava === 'yagmur') for (let i = 0; i < 18; i++) { const k = ((st.t * .6 + i * .29) % 1), x = (i * 263) % WW, y = GROUND + 30 + (i * 37) % 100; ctx.beginPath(); ctx.ellipse(x, y, 4 + k * 26, 1 + k * 5, 0, 0, 7); ctx.strokeStyle = `rgba(255,255,255,${.7 * (1 - k)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+    bunting({ x: 300, y: 395 }, { x: 588, y: 330 }, 40, 9);
+    house(150, 150, 210, '#b8741a', { chimney: 105, box: true }); tree(370, .9);
     clockTower();
-    house(840, 130, 170, '#c4432b', { rh: 80 }); house(1020, 150, 240, '#8a6a4a');
+    house(840, 130, 170, '#c4432b', { rh: 80, awning: N.SEAL, sign: bakerySign }); house(1020, 150, 240, '#8a6a4a', { bay: true, chimney: 20 });
     tree(1220); fence();
     crossroad();
-    house(1990, 140, 200, '#b8741a'); hexSign(); house(2100, 120, 150, '#c4432b', { wall: '#efe2c8' });
-    house(2330, 140, 190, '#8a6a4a'); tree(2530, .95);
-    fountain(); tree(3040, 1.05); house(3150, 160, 230, '#b8741a');
+    house(1990, 140, 200, '#b8741a', { chimney: 96, shutters: '#87a074' }); hexSign(); house(2100, 120, 150, '#c4432b', { wall: '#efe2c8', box: true });
+    laundry({ x: 2222, y: 470 }, { x: 2330, y: 432 });
+    house(2330, 140, 190, '#8a6a4a', { shutters: '#5b7a8c' }); tree(2530, .95);
+    fountain(); tree(3040, 1.05); house(3150, 160, 230, '#b8741a', { chimney: 30, box: true });
     [470, 1120, 1480, 2240, 2980].forEach(lamp);
+    walkers(); pigeons(); bike();
   }
   function foreground() {
     layer(1.15);
@@ -303,37 +483,60 @@ const KASABA_METINLERI = {
       const x = i * 90 + (i % 3) * 23 - 200, y = WH - 8, h = 22 + (i % 4) * 10, sw = Math.sin(st.t * 1.4 + i) * 3;
       ctx.strokeStyle = st.hava === 'aksam' ? '#3d4a3d' : '#5d7a4e'; ctx.lineWidth = 3;
       ctx.beginPath(); for (let k = -2; k <= 2; k++) { ctx.moveTo(x + k * 6, y); ctx.quadraticCurveTo(x + k * 8 + sw, y - h * .6, x + k * 11 + sw * 1.5, y - h + Math.abs(k) * 4); } ctx.stroke();
+      if (i % 5 === 2 && st.hava !== 'aksam') { ctx.beginPath(); ctx.arc(x + 8 + sw * 1.5, y - h - 2, 5, 0, 7); ctx.fillStyle = i % 2 ? N.SEAL : N.AMBER; ctx.fill(); }
     }
+    // kelebek
+    if (st.hava === 'sabah') { layer(1); const bx = 1000 + Math.sin(st.t * .4) * 900, by = 520 + Math.sin(st.t * 1.7) * 40, w = Math.abs(Math.sin(st.t * 12)); ctx.fillStyle = N.AMBER; ctx.strokeStyle = N.INK; ctx.lineWidth = 1.5; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.ellipse(bx + sd * 7 * w, by, 7 * w + 1, 9, 0, 0, 7); ctx.fill(); ctx.stroke(); }); }
   }
+  /* Nokta ve konuşma balonu */
   function noktaDraw() {
     layer(1);
     const moving = Math.abs(nokta.tx - nokta.x) > 2, bob = moving ? Math.abs(Math.sin(st.t * 9)) * 16 : Math.abs(Math.sin(st.t * 2)) * 3;
     const h = 112, w = h * 280 / 347;
-    if (img.complete) ctx.drawImage(img, nokta.x - w / 2, GROUND - h + 6 - bob, w, h);
-    if (st.hava === 'yagmur') { // şemsiye
+    ctx.beginPath(); ctx.ellipse(nokta.x, GROUND + 4, 30 - bob * .6, 6, 0, 0, 7); ctx.fillStyle = 'rgba(23,20,17,.15)'; ctx.fill();
+    if (img.complete) { ctx.save(); if (moving && nokta.tx < nokta.x) { ctx.translate(nokta.x * 2, 0); ctx.scale(-1, 1); } ctx.drawImage(img, nokta.x - w / 2, GROUND - h + 6 - bob, w, h); ctx.restore(); }
+    if (st.hava === 'yagmur') {
       const ux = nokta.x + 6, uy = GROUND - h - 10 - bob;
       ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(ux, uy); ctx.lineTo(ux, uy + 64); ctx.stroke();
       ctx.beginPath(); ctx.arc(ux, uy, 56, Math.PI, 0); ctx.closePath(); ctx.fillStyle = N.SEAL; ctx.fill(); ctx.stroke();
     }
+    if (bubble && st.t < bubble.until && !moving) {
+      ctx.font = `400 21px ${N.BRUSH}`; const words = bubble.text.split(' '), lines = []; let ln = '';
+      words.forEach((wd) => { const tst = ln ? ln + ' ' + wd : wd; if (ctx.measureText(tst).width > 210 && ln) { lines.push(ln); ln = wd; } else ln = tst; }); lines.push(ln);
+      const bw = Math.max(...lines.map((l) => ctx.measureText(l).width)) + 26, bh = lines.length * 24 + 16, bx = nokta.x + 20, by = GROUND - h - 30 - bh;
+      const a = Math.min(1, (bubble.until - st.t) * 2, (st.t - bubble.from) * 4); ctx.globalAlpha = a;
+      ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 12) : ctx.rect(bx, by, bw, bh); ctx.fillStyle = N.SHEET; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx + 14, by + bh - 1); ctx.lineTo(bx + 4, by + bh + 16); ctx.lineTo(bx + 30, by + bh - 1); ctx.fillStyle = N.SHEET; ctx.fill(); ctx.beginPath(); ctx.moveTo(bx + 14, by + bh); ctx.lineTo(bx + 4, by + bh + 16); ctx.lineTo(bx + 30, by + bh); ctx.stroke();
+      ctx.fillStyle = N.INK; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; lines.forEach((l, i) => ctx.fillText(l, bx + 13, by + 9 + i * 24)); ctx.globalAlpha = 1;
+    }
   }
+  let bubble = null;
+  const speak = (text, sec = 4.5) => { bubble = { text, from: st.t, until: st.t + sec }; };
   function markers() {
     layer(1);
     STS.forEach((S, i) => {
       const y = i === 0 ? 150 : i === 1 ? 300 : 400, x = i === 0 ? 770 : i === 1 ? 1840 : S.x, b = Math.sin(st.t * 2.5 + i) * 6, done = stationDone(S), cur = i === st.cur;
+      if (cur) { const ph = (st.t * .8) % 1; ctx.beginPath(); ctx.arc(x, y + b, 20 + ph * 22, 0, 7); ctx.strokeStyle = `rgba(232,163,61,${1 - ph})`; ctx.lineWidth = 3; ctx.stroke(); }
       ctx.beginPath(); ctx.arc(x, y + b, 20, 0, 7); ctx.fillStyle = done ? N.AMBER : cur ? N.INK : N.SHEET; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
       ctx.font = `400 24px ${N.BRUSH}`; ctx.fillStyle = cur && !done ? N.SHEET : N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(done ? '✓' : String(i + 1), x, y + b + 1);
     });
-    // bulunan şekiller
     T.avlar.forEach((A) => {
-      if (!st.av[A.id]) return;
+      if (!st.av[A.id] || A.dyn) return;
       ctx.beginPath(); ctx.arc(A.x, A.y, A.r, 0, 7); ctx.strokeStyle = N.AMBER; ctx.lineWidth = 3; ctx.setLineDash([6, 6]); ctx.stroke(); ctx.setLineDash([]);
-      ctx.font = `400 22px ${N.BRUSH}`; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(255,250,240,.95)'; ctx.textAlign = 'center'; ctx.strokeText(A.ad, A.x, A.y - A.r - 12); ctx.fillStyle = N.DEEP; ctx.fillText(A.ad, A.x, A.y - A.r - 12);
+      ctx.font = `400 22px ${N.BRUSH}`; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(255,250,240,.95)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.strokeText(A.ad, A.x, A.y - A.r - 12); ctx.fillStyle = N.DEEP; ctx.fillText(A.ad, A.x, A.y - A.r - 12);
     });
   }
   function overlayFx() {
     const P = PAL[st.hava]; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (P.tint) { ctx.fillStyle = P.tint; ctx.fillRect(0, 0, innerWidth, innerHeight); }
-    if (st.hava === 'aksam') { layer(1); ctx.globalCompositeOperation = 'lighter'; [470, 1120, 1480, 2240, 2980].forEach(lampGlow); ctx.globalCompositeOperation = 'source-over'; }
+    if (st.hava === 'aksam') {
+      layer(1); ctx.globalCompositeOperation = 'lighter'; [470, 1120, 1480, 2240, 2980].forEach(lampGlow);
+      for (let i = 0; i < 34; i++) { // ateş böcekleri
+        const bx = [370, 1220, 2530, 3040, 2750][i % 5] + Math.sin(st.t * .5 + i * 1.7) * 90, by = GROUND - 70 + Math.cos(st.t * .7 + i * 1.3) * 60, a = .5 + .5 * Math.sin(st.t * 3 + i);
+        const gl = ctx.createRadialGradient(bx, by, 0, bx, by, 9); gl.addColorStop(0, `rgba(255,230,120,${a})`); gl.addColorStop(1, 'rgba(255,230,120,0)'); ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.fill();
+      }
+      ctx.globalCompositeOperation = 'source-over';
+    }
     if (st.hava === 'yagmur') {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.strokeStyle = 'rgba(60,70,85,.35)'; ctx.lineWidth = 1.4; ctx.beginPath();
       const n = Math.round(innerWidth / 9);
@@ -347,43 +550,54 @@ const KASABA_METINLERI = {
     const dt = Math.min(.05, (now - last) / 1000); last = now; if (!N.reduced) st.t += dt; else st.t += dt * .25;
     const k = N.reduced ? 1 : 1 - Math.pow(.002, dt);
     if (!panning) cam.x += (cam.tx - cam.x) * k;
-    const sp = 260 * dt; nokta.x += Math.max(-sp, Math.min(sp, nokta.tx - nokta.x));
+    const sp = 260 * dt, wasMoving = Math.abs(nokta.tx - nokta.x) > 2; nokta.x += Math.max(-sp, Math.min(sp, nokta.tx - nokta.x));
+    if (wasMoving && Math.abs(nokta.tx - nokta.x) <= 2 && pendingSay) { speak(pendingSay); pendingSay = null; }
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
-    sky(); farLayer(); midLayer(); groundLayer(); noktaDraw(); overlayFx(); markers(); foreground();
+    sky(); balloon(); birds(); farLayer(); midLayer(); groundLayer(); noktaDraw(); overlayFx(); markers(); foreground();
+    if (zoomOpen) Z.render();
     requestAnimationFrame(frame);
   }
+  let pendingSay = null;
 
   /* ══════════ dünyada gezinme ══════════ */
   let panning = false, pdown = null;
   cv.addEventListener('pointerdown', (e) => { pdown = { x: e.clientX, y: e.clientY, cam: cam.x, moved: false }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} });
   cv.addEventListener('pointermove', (e) => {
-    if (!pdown) { const w = toWorld(e.clientX, e.clientY); cv.style.cursor = hitWorld(w) ? 'pointer' : 'grab'; return; }
+    if (!pdown) { cv.style.cursor = hitWorld(e.clientX, e.clientY) ? 'pointer' : 'grab'; return; }
     const dx = e.clientX - pdown.x; if (Math.abs(dx) > 6) pdown.moved = true;
     if (pdown.moved) { panning = true; cv.classList.add('grabbing'); cam.x = cam.tx = clampCam(pdown.cam - dx / s); }
   });
   const pup = (e) => {
     if (!pdown) return; const p = pdown; pdown = null; panning = false; cv.classList.remove('grabbing');
-    if (!p.moved) { const h = hitWorld(toWorld(e.clientX, e.clientY)); if (h) onHit(h); }
+    if (!p.moved) { const h = hitWorld(e.clientX, e.clientY); if (h) onHit(h); }
   };
   cv.addEventListener('pointerup', pup); cv.addEventListener('pointercancel', () => { pdown = null; panning = false; });
   cv.addEventListener('wheel', (e) => { e.preventDefault(); cam.tx = clampCam(cam.tx + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / s); }, { passive: false });
 
-  function hitWorld(w) {
-    for (const A of T.avlar) if (g.dist(w, A) < A.r) return { av: A };
+  function hitWorld(cx, cy) {
+    const w = toWorld(cx, cy);
+    const av = (id) => T.avlar.find((A) => A.id === id);
+    if (st.hava !== 'yagmur') { const b = birdsAt(), q = toLayer(cx, cy, .2); if (g.dist(q, { x: b.x - 45, y: b.y }) < 75) return { av: av('kuslar') }; }
+    const bk = bikeAt(); if (g.dist(w, { x: bk.x - 30, y: bk.y - 21 }) < 30 || g.dist(w, { x: bk.x + 30, y: bk.y - 21 }) < 30) return { av: av('tekerlek') };
+    for (const A of T.avlar) if (!A.dyn && g.dist(w, A) < A.r) return { av: A };
+    if (g.dist(w, { x: 650, y: 140 }) < 36) return { bell: true };
     if (w.x > 580 && w.x < 720 && w.y > 60 && w.y < GROUND) return { st: 0 };
     if (w.x > 1540 && w.x < 1930 && w.y > 360 && w.y < GROUND + 30) return { st: 1 };
     if (w.x > 2550 && w.x < 2950 && w.y > 440 && w.y < GROUND + 50) return { st: 2 };
     if (Math.abs(w.x - nokta.x) < 50 && w.y > GROUND - 120 && w.y < GROUND) return { nokta: true };
     return null;
   }
-  const NOKTA_SOZ = ['Kasabada <b>6 şekil</b> sakladım. Çatılara, pencerelere, tabelalara iyi bak!', 'Sence bir doğru hiç biter mi?', 'Bir noktadan sonsuz doğru geçer. Ben de bir noktayım!', 'Yorulduysan bankta oturup havuzu izleyebilirsin.'];
+  const NOKTA_SOZ = ['Kasabada 8 şekil sakladım. Bazıları hareket ediyor!', 'Sence bir doğru hiç biter mi?', 'Bir noktadan sonsuz doğru geçer. Ben de bir noktayım!', 'Kuşlar V biçiminde uçuyor. O V bir açı!', 'Bisikletin tekerleğine bak: teller birer yarıçap.', 'Güvercinleri ürkütmeden yürümek zor!'];
   let soz = 0;
+  function ring() { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => setTimeout(() => N.sfx.tick && toneBell(f), i * 380)); }
+  function toneBell(f) { try { const ac = toneBell.ac || (toneBell.ac = new (window.AudioContext || window.webkitAudioContext)()); if (localStorage.getItem('nokta-ses') === 'kapali') return; const o = ac.createOscillator(), gn = ac.createGain(); o.type = 'sine'; o.frequency.value = f; gn.gain.setValueAtTime(.0001, ac.currentTime); gn.gain.exponentialRampToValueAtTime(.12, ac.currentTime + .01); gn.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + 1.2); o.connect(gn).connect(ac.destination); o.start(); o.stop(ac.currentTime + 1.3); } catch (_) {} }
   function onHit(h) {
     if (h.av) {
       if (!st.av[h.av.id]) { st.av[h.av.id] = true; persist(); N.sfx.good(); addLog('av', `${h.av.ad}: ${h.av.metin.replace(/<[^>]+>/g, '')}`); }
       toast(h.av.metin); renderAv(); return;
     }
-    if (h.nokta) { toast(NOKTA_SOZ[soz++ % NOKTA_SOZ.length]); N.sfx.tick(); return; }
+    if (h.bell) { ring(); speak('Dan, dan! Saat kaç acaba? Kolların arasındaki açıya bak.'); return; }
+    if (h.nokta) { speak(NOKTA_SOZ[soz++ % NOKTA_SOZ.length]); N.sfx.tick(); return; }
     if (h.st != null) { if (h.st === st.cur) openZoom(); else go(h.st); }
   }
 
@@ -420,6 +634,7 @@ const KASABA_METINLERI = {
   function go(i) {
     if (i < 0 || i >= STS.length) return;
     st.cur = i; st.showExp = null; cam.tx = focusX(i); nokta.tx = STS[i].x + [-150, 195, -265][i];
+    if (Math.abs(nokta.tx - nokta.x) <= 2) speak(STS[i].varis); else { pendingSay = STS[i].varis; bubble = null; }
     renderStations(); renderCard(); N.sfx.tick();
     const im = $('#cardImg'); if (im) { im.classList.remove('hop'); void im.offsetWidth; im.classList.add('hop'); }
   }
@@ -428,7 +643,8 @@ const KASABA_METINLERI = {
   const ZW = 900, ZH = 600;
   const Z = (N.stage = new N.Stage($('#zcv'), ZW, ZH));
   let zoomOpen = false;
-  const clock = { h: 60, m: 0, prot: false, rot: 0 };
+  const clock = { h: 60, m: 0, prot: false, rot: 0, run: null };
+  const hourTxt = () => { const a = Math.floor(clock.h / 30) || 12, b = a % 12 + 1; return clock.h % 30 ? `${a} ile ${b} arası` : String(a); };
   const map = { gul: 75, lale: 145, measures: false, rows: [], laleOn: false };
   const pool = { A: null, B: null, t: 0, delay: false, play: null };
 
@@ -439,7 +655,7 @@ const KASABA_METINLERI = {
     renderZSide(); setTimeout(() => { Z.resize(); }, 30);
     addEventListener('keydown', zoomEsc);
   }
-  function closeZoom() { zoomOpen = false; $('#zoom').classList.remove('open'); if (pool.play) { clearInterval(pool.play); pool.play = null; } removeEventListener('keydown', zoomEsc); renderCard(); }
+  function closeZoom() { stopClock(); zoomOpen = false; $('#zoom').classList.remove('open'); if (pool.play) { clearInterval(pool.play); pool.play = null; } removeEventListener('keydown', zoomEsc); renderCard(); }
   const zoomEsc = (e) => { if (e.key === 'Escape') closeZoom(); };
   $('#zoom').addEventListener('click', (e) => { if (e.target.id === 'zoom') closeZoom(); });
   function hint(html) { const h = $('#zhint'); if (!h) return; h.innerHTML = html; h.classList.remove('pop'); void h.offsetWidth; h.classList.add('pop'); }
@@ -479,13 +695,13 @@ const KASABA_METINLERI = {
       d.seg(c, CC, ph, { w: 13 }); d.seg(c, CC, pm, { w: 7 });
       [[ph, 'akrep'], [pm, 'yelkovan']].forEach(([p, k]) => { c.beginPath(); c.arc(p.x, p.y, 15, 0, 7); c.fillStyle = Z.dragK === k ? N.AMBER : N.SHEET; c.fill(); c.lineWidth = 3; c.strokeStyle = N.DEEP; c.stroke(); });
       d.dot(c, CC, { r: 9 });
-      d.text(c, `akrep: ${clock.h / 30 || 12} · yelkovan: ${clock.m === 0 ? '12' : `${clock.m / 6}. dakika`}`, 450, 585, { size: 24, color: N.SOFT, font: N.SERIF });
+      d.text(c, `akrep: ${hourTxt()} · yelkovan: ${clock.m === 0 ? '12' : `${clock.m / 6}. dakika`}`, 450, 585, { size: 24, color: N.SOFT, font: N.SERIF });
     };
     Z.onDown = (p) => {
       if (clock.prot) { const kn = g.polar(CC, 235, clock.rot + Math.PI / 2); if (g.dist(p, kn) < Z.hit(26)) { Z.dragK = 'prot'; return; } }
       const ph = g.polar(CC, 140, cw2math(clock.h)), pm = g.polar(CC, 205, cw2math(clock.m));
       const dh = Math.min(g.dist(p, ph), g.distSeg(p, CC, ph) + 6), dm = Math.min(g.dist(p, pm), g.distSeg(p, CC, pm) + 6);
-      if (Math.min(dh, dm) < Z.hit(30)) Z.dragK = dm <= dh ? 'yelkovan' : 'akrep';
+      if (Math.min(dh, dm) < Z.hit(30)) { Z.dragK = dm <= dh ? 'yelkovan' : 'akrep'; stopClock(); }
     };
     Z.onMove = (p) => {
       if (!p || !Z.dragK || !Z.down) return;
@@ -515,15 +731,30 @@ const KASABA_METINLERI = {
     if (!clock.prot) return;
     for (const a of [cw2math(clock.h), cw2math(clock.m)]) for (const k of [0, Math.PI]) { let df = g.nd(g.deg(clock.rot - a - k)); if (df > 180) df -= 360; if (Math.abs(df) < 3) { if (clock.rot !== a + k) N.sfx.snap(); clock.rot = a + k; } }
   }
+  function stopClock() { if (clock.run) { clearInterval(clock.run); clock.run = null; const b = $('#runBtn'); if (b) b.textContent = '▶ Zamanı akıt'; } }
   function checkClock() {
     if (clock.h === 90 && clock.m === 0 && !isDone('saat', 'uc')) { say('Saat 3:00! Kollar arasında <b>3 rakam aralığı</b> var. Sence kaç derece? Açıölçerle ölç.'); markDone('saat', 'uc'); }
-    if (between() === 180 && !isDone('saat', 'dogru')) { say('Kollar bir doğru oluşturdu: <b>doğru açı</b>, 180°. Saat 6:00 gibi!'); addLog('saat', `Akrep ${clock.h / 30 || 12}, yelkovan ${clock.m / 6 || 60}. dk: 180° (doğru açı)`); markDone('saat', 'dogru'); }
+    if (between() === 180 && !isDone('saat', 'dogru')) { say('Kollar bir doğru oluşturdu: <b>doğru açı</b>, 180°. Saat 6:00 gibi!'); addLog('saat', `Akrep ${hourTxt()}, yelkovan ${clock.m / 6 || 60}. dk: 180° (doğru açı)`); markDone('saat', 'dogru'); }
   }
   function ctlClock(host) {
-    host.innerHTML = `<div class="row"><button class="btn ${clock.prot ? 'primary' : ''}" id="protBtn" type="button">${clock.prot ? 'Açıölçeri kaldır' : 'Açıölçeri koy'}</button>
+    host.innerHTML = `<div class="row"><button class="btn" id="runBtn" type="button">${clock.run ? '❚❚ Zamanı durdur' : '▶ Zamanı akıt'}</button></div>
+      <div class="row"><button class="btn ${clock.prot ? 'primary' : ''}" id="protBtn" type="button">${clock.prot ? 'Açıölçeri kaldır' : 'Açıölçeri koy'}</button>
       ${clock.prot ? '<button class="btn" data-r="1" type="button">↺ 1°</button><button class="btn" data-r="-1" type="button">↻ 1°</button>' : ''}</div>
       <div class="row" style="margin-top:6px"><span>Ölçtüğüm açı:</span><input class="num-in" id="aci" inputmode="numeric" style="width:90px;font-size:26px"><span class="big-read" style="font-size:26px">°</span></div>
       <button class="btn primary" id="yaz" type="button" style="margin-top:6px">Deftere yaz</button>`;
+    $('#runBtn').onclick = () => {
+      if (clock.run) { stopClock(); return; }
+      say('Zaman akıyor: yelkovan bir tur dönerken akrep bir rakam ilerliyor. Kollar arasındaki açının nasıl değiştiğini izle; <b>dik</b> ve <b>doğru açıları</b> yakala!');
+      let lastB = between();
+      clock.run = setInterval(() => {
+        clock.m = (clock.m + 6) % 360; clock.h = (clock.h + .5) % 360; const b = between();
+        if (b === 90 && lastB !== 90) { N.sfx.snap(); say(`Şimdi <b>dik açı</b>! akrep: ${hourTxt()}, yelkovan: ${clock.m / 6 || 60}. dakika.`); }
+        if (b === 180 && lastB !== 180) { N.sfx.snap(); say('Şimdi <b>doğru açı</b>: kollar bir doğru oluşturdu!'); }
+        if (b === 0 && lastB !== 0) say('Kollar üst üste: aralarında açı yok (0°).');
+        lastB = b; snapProt(); checkClock();
+      }, 90);
+      renderZSide();
+    };
     $('#protBtn').onclick = () => { clock.prot = !clock.prot; if (clock.prot) { clock.rot = cw2math(clock.m) - .3; say('Açıölçerin merkezi saatin merkezinde. Siyah tutamaktan çevirip <b>sıfır çizgisini</b> bir kolun üstüne getir.'); } renderZSide(); Z.ask(); };
     host.querySelectorAll('[data-r]').forEach((b) => (b.onclick = () => { clock.rot += g.rad(+b.dataset.r); snapProt(); Z.ask(); }));
     const inp = $('#aci');
@@ -532,7 +763,7 @@ const KASABA_METINLERI = {
       inp.classList.remove('ok', 'no'); void inp.offsetWidth;
       if (Math.abs(v - b) <= 1) {
         inp.classList.add('ok'); const tur = b < 90 ? 'dar açı' : b === 90 ? 'dik açı' : b < 180 ? 'geniş açı' : 'doğru açı';
-        addLog('saat', `Akrep ${clock.h / 30 || 12}, yelkovan ${clock.m / 6 || 60}. dk: ${b}° (${tur})`);
+        addLog('saat', `Akrep ${hourTxt()}, yelkovan ${clock.m / 6 || 60}. dk: ${b}° (${tur})`);
         say(`Doğru ölçtün: <b>${b}°</b>, ${tur}. Deftere yazdım.`);
         if (!clock.prot) say(`<b>${b}°</b> doğru! Ama bu görev için açıölçeri kullanmayı dene.`); else markDone('saat', 'olc');
         if (b > 90 && b < 180 && clock.prot) markDone('saat', 'genis');
@@ -555,6 +786,13 @@ const KASABA_METINLERI = {
       street(c, MO, CINAR, 'Çınar Sokağı');
       street(c, MO, map.gul, 'Gül Sokağı', true);
       if (map.laleOn) street(c, LQ, map.lale, 'Lale Sokağı', true, true);
+      [[MO, CINAR, 0, '#c4432b'], [MO, map.gul, .37, '#5b7a8c'], [MO, CINAR, .62, '#e8a33d'], [MO, map.gul, .85, '#87a074']].concat(map.laleOn ? [[LQ, map.lale, .2, '#9b7653']] : []).forEach(([o, deg, off, col], i) => {
+        const dir = i % 2 ? 1 : -1, sPos = (((st.t * .06 + off) % 1) * 1300 - 650) * dir, u = g.dir(g.rad(deg)), n = { x: -u.y, y: u.x };
+        const p = g.add(g.add(o, g.mul(u, sPos)), g.mul(n, 13 * dir));
+        c.save(); c.translate(p.x, p.y); c.rotate(-g.rad(deg) + (dir < 0 ? Math.PI : 0));
+        c.fillStyle = col; c.strokeStyle = N.INK; c.lineWidth = 2; c.beginPath(); c.roundRect ? c.roundRect(-17, -9, 34, 18, 5) : c.rect(-17, -9, 34, 18); c.fill(); c.stroke();
+        c.fillStyle = 'rgba(215,225,228,.95)'; c.fillRect(4, -6, 7, 12); c.fillRect(-12, -6, 5, 12); c.restore();
+      });
       // açılar
       if (map.measures) {
         const lab = [['a', CINAR, map.gul], ['b', map.gul, CINAR + 180], ['c', CINAR + 180, map.gul + 180], ['d', map.gul + 180, CINAR + 360]];
@@ -645,6 +883,15 @@ const KASABA_METINLERI = {
       c.beginPath(); c.arc(PC.x, PC.y, PR, 0, 7); c.fillStyle = gr; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 3.5; c.stroke();
       c.save(); c.beginPath(); c.arc(PC.x, PC.y, PR - 2, 0, 7); c.clip();
       if (st.hava === 'yagmur') for (let i = 0; i < 10; i++) { const k = ((st.t * .5 + i * .31) % 1), x = PC.x - 230 + (i * 151) % 460, y = PC.y - 200 + (i * 97) % 400; c.beginPath(); c.arc(x, y, 3 + k * 26, 0, 7); c.strokeStyle = `rgba(255,255,255,${.55 * (1 - k)})`; c.lineWidth = 1.5; c.stroke(); }
+      for (let k = 0; k < 4; k++) { // balıklar
+        const sg = k % 2 ? 1 : -1, a = st.t * .35 * sg + k * 1.7, rr = 150 + Math.sin(st.t * .3 + k) * 50, x = PC.x + Math.cos(a) * rr, y = PC.y + Math.sin(a) * rr * .8;
+        const vx = -Math.sin(a) * sg, vy = Math.cos(a) * .8 * sg; c.save(); c.translate(x, y); c.rotate(Math.atan2(vy, vx)); c.globalAlpha = .75;
+        c.beginPath(); c.ellipse(0, 0, 17, 7, 0, 0, 7); c.fillStyle = k % 2 ? '#e8a33d' : '#d9603f'; c.fill();
+        c.beginPath(); c.moveTo(-14, 0); c.lineTo(-26, -7 + Math.sin(st.t * 9 + k) * 3); c.lineTo(-26, 7 + Math.sin(st.t * 9 + k) * 3); c.closePath(); c.fill(); c.restore(); c.globalAlpha = 1;
+      }
+      [[205, .5], [230, 2.3], [190, 4.1]].forEach(([r, a], i) => { const p = g.polar(PC, r, a); c.beginPath(); c.moveTo(p.x, p.y); c.arc(p.x, p.y, 26 - i * 3, .3 + i, Math.PI * 2 - .3 + i); c.closePath(); c.fillStyle = '#7fa06a'; c.fill(); c.strokeStyle = 'rgba(23,20,17,.5)'; c.lineWidth = 1.5; c.stroke(); if (i === 0) { c.beginPath(); c.arc(p.x + 6, p.y - 4, 7, 0, 7); c.fillStyle = '#eaa9b6'; c.fill(); } });
+      pool.splash = (pool.splash || []).filter((sp) => st.t - sp.t0 < .7);
+      pool.splash.forEach((sp) => { const k = (st.t - sp.t0) / .7; for (let j = 0; j < 10; j++) { const a = j / 10 * Math.PI * 2, r = 8 + k * 40, h = Math.sin(k * Math.PI) * 26; c.beginPath(); c.arc(sp.p.x + Math.cos(a) * r, sp.p.y + Math.sin(a) * r * .6 - h, 3 * (1 - k) + 1, 0, 7); c.fillStyle = 'rgba(235,245,250,.9)'; c.fill(); } c.beginPath(); c.arc(sp.p.x, sp.p.y, 6 + k * 30, 0, 7); c.strokeStyle = `rgba(255,255,255,${1 - k})`; c.lineWidth = 2.5; c.stroke(); });
       const ripple = (p, r) => { if (r <= 0) return; for (let j = 0; j < 3; j++) { const rr = (r - j * .7) * UNIT; if (rr <= 0) continue; c.beginPath(); c.arc(p.x, p.y, rr, 0, 7); c.strokeStyle = j ? `rgba(255,255,255,${.5 - j * .15})` : 'rgba(23,40,52,.9)'; c.lineWidth = j ? 2 : 3; c.stroke(); } };
       if (pool.A) ripple(pool.A, r1()); if (pool.B) ripple(pool.B, r2());
       const ti = triInfo();
@@ -663,12 +910,12 @@ const KASABA_METINLERI = {
     Z.onDown = (p) => {
       if (g.dist(p, PC) > PR - 20) return;
       if (pool.A && pool.B) { say('İki taş zaten havuzda. Yeniden denemek için <b>taşları topla</b>.'); return; }
-      if (!pool.A) { pool.A = p; pool.t = 0; N.sfx.tick(); say('A taşı suda! Şimdi biraz uzağa <b>B</b> taşını at.'); }
+      if (!pool.A) { pool.A = p; pool.t = 0; N.sfx.draw(); pool.splash = [{ p, t0: st.t }]; say('A taşı suda! Şimdi biraz uzağa <b>B</b> taşını at.'); }
       else {
         let L = g.dist(pool.A, p) / UNIT; if (L < 4) { say('B taşını A’dan biraz <b>daha uzağa</b> at.'); return; }
         L = Math.min(10, Math.round(L * 2) / 2); pool.B = g.add(pool.A, g.mul(g.unit(g.sub(p, pool.A)), L * UNIT));
         if (g.dist(pool.B, PC) > PR - 16) { pool.B = null; say('B taşı havuzun dışına düşecekti. Biraz içeriye at.'); return; }
-        N.sfx.tick(); say(`İki taş da suda! |AB| = <b>${N.fmt(L)} birim</b>. Şimdi <b>zamanı ilerlet</b> ya da ▶ ile oynat.`); markDone('cesme', 'ikitas');
+        N.sfx.draw(); (pool.splash = pool.splash || []).push({ p: pool.B, t0: st.t }); say(`İki taş da suda! |AB| = <b>${N.fmt(L)} birim</b>. Şimdi <b>zamanı ilerlet</b> ya da ▶ ile oynat.`); markDone('cesme', 'ikitas');
       }
       renderZSide(); Z.ask();
     };

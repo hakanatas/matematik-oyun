@@ -23,7 +23,7 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 - **Kavşak** (MAT.5.3.4): sokakları döndür; ters açılar, dik ve paralel sokaklar.
 - **Çeşme Meydanı** (MAT.5.3.7): iki taşın halkalarından ölçmeden üçgen.
 
-Ayrıca: şekil avı (6 saklı şekil), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba.js` başındaki `KASABA_METINLERI` nesnesinde.
+Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba.js` başındaki `KASABA_METINLERI` nesnesinde.
 
 ## Çalıştırma
 
