@@ -1,0 +1,147 @@
+/* Nokta'nın Oyunları · ortak stil (Nokta'nın Filmleri ile aynı mürekkep dünyası) */
+:root {
+  --paper: #f1eadc;
+  --paper-2: #e9dfcb;
+  --sheet: #fffaf0;
+  --ink: #171411;
+  --ink-soft: rgba(23, 20, 17, .68);
+  --ink-faint: rgba(23, 20, 17, .16);
+  --amber: #e8a33d;
+  --amber-deep: #b8741a;
+  --amber-wash: rgba(232, 163, 61, .16);
+  --seal: #c4432b;
+  --brush: "Caveat Brush", "Comic Sans MS", cursive;
+  --serif: "Fraunces", Georgia, serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --gutter: clamp(16px, 3vw, 36px);
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--serif); font-size: 17px; line-height: 1.5;
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse at 18% 8%, rgba(255, 252, 244, .75), transparent 55%),
+    radial-gradient(ellipse at 90% 60%, rgba(214, 196, 164, .35), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(120, 96, 60, .18), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .08  0 0 0 0 .05  0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+a { color: inherit; }
+b { font-weight: 600; }
+.wrap { max-width: 1280px; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ── üst şerit ───────────────────────────── */
+.topbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 22px; padding-top: 18px; padding-bottom: 12px; }
+.back { font-family: var(--mono); font-size: 13px; text-decoration: none; padding: 8px 12px; border-radius: 6px; border: 1.5px solid var(--ink); transition: background .2s, color .2s; white-space: nowrap; }
+.back:hover { background: var(--ink); color: var(--paper); }
+.ttl { flex: 1; min-width: 220px; }
+.ttl .code { font-family: var(--mono); font-size: 12.5px; letter-spacing: .06em; color: var(--amber-deep); background: var(--amber-wash); padding: 3px 8px; border-radius: 4px; }
+.ttl h1 { font-family: var(--brush); font-weight: 400; font-size: clamp(34px, 5vw, 54px); line-height: .95; margin: 6px 0 0; }
+.hud { display: flex; align-items: center; gap: 16px; font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
+.hud .score b { font-family: var(--brush); font-weight: 400; font-size: 34px; color: var(--ink); margin-right: 4px; display: inline-block; }
+.hud .score b.bump { animation: bump .45s cubic-bezier(.2,.8,.2,1); }
+.dots { display: flex; gap: 5px; align-items: center; }
+.dots i { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink); display: block; }
+.dots i.on { background: var(--amber); border-color: var(--amber-deep); }
+.dots i.now { background: var(--ink); }
+.mute { font-family: var(--mono); font-size: 12px; padding: 6px 9px; border-radius: 6px; border: 1.5px solid var(--ink-faint); background: transparent; cursor: pointer; color: var(--ink-soft); }
+.mute:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ── oyun alanı ──────────────────────────── */
+.game { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 22px; align-items: start; padding-bottom: 36px; }
+.board { position: relative; background: rgba(255, 252, 244, .66); border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 0 0 1px rgba(23,20,17,.1), 0 18px 34px -24px rgba(60, 40, 10, .55); }
+.board canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.board .fx { position: absolute; inset: 0; pointer-events: none; }
+.float { position: absolute; transform: translate(-50%, -50%); font-family: var(--brush); font-size: 32px; color: var(--amber-deep); text-shadow: 0 2px 0 var(--sheet); animation: floatUp 1.2s cubic-bezier(.2,.8,.2,1) forwards; white-space: nowrap; }
+.float.bad { color: var(--seal); }
+.side { display: flex; flex-direction: column; gap: 14px; }
+.say { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; align-items: start; }
+.say img { width: 78px; height: auto; transform-origin: 50% 92%; }
+.say img.hop { animation: hop .9s ease-in-out 1; }
+.say img.shake { animation: shake .5s ease-in-out 1; }
+.say p { position: relative; margin: 6px 0 0; background: var(--sheet); border-radius: 14px; padding: 12px 15px; box-shadow: 0 0 0 1.8px var(--ink), 0 10px 22px -18px rgba(60,40,10,.7); font-size: 16.5px; line-height: 1.45; min-height: 70px; }
+.say p::before { content: ""; position: absolute; left: -11px; top: 22px; border-right: 11px solid var(--ink); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
+.say p::after { content: ""; position: absolute; left: -8px; top: 23.5px; border-right: 9px solid var(--sheet); border-top: 6.5px solid transparent; border-bottom: 6.5px solid transparent; }
+.say p.pop { animation: pop .35s cubic-bezier(.2,.8,.2,1); }
+.say p em { font-style: normal; color: var(--amber-deep); font-weight: 600; }
+.panel { display: flex; flex-direction: column; gap: 12px; }
+.card { background: rgba(255, 252, 244, .62); border-radius: 10px; padding: 14px 15px; box-shadow: 0 0 0 1px rgba(23,20,17,.1); }
+.card h3 { font-family: var(--brush); font-weight: 400; font-size: 27px; line-height: 1.05; margin: 0 0 6px; }
+.card p { margin: 0 0 8px; }
+.small { font-size: 14.5px; color: var(--ink-soft); }
+.label { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber-deep); margin: 0 0 6px; display: block; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* ── düğmeler ────────────────────────────── */
+.btn { font-family: var(--mono); font-size: 14px; line-height: 1.2; padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background .2s, color .2s, transform .2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn:active { transform: translateY(1px); }
+.btn:focus-visible, .tool:focus-visible, .choice:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--amber); border-color: var(--amber); color: var(--ink); }
+.btn.big { font-size: 15px; padding: 13px 18px; }
+.btn:disabled { opacity: .38; cursor: default; background: transparent; color: var(--ink); }
+.btn.primary:disabled { background: var(--ink); color: var(--paper); }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.choices.one { grid-template-columns: 1fr; }
+.choices.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.choice { font-family: var(--brush); font-size: 23px; line-height: 1.05; padding: 11px 10px; border-radius: 10px; border: 2px solid var(--ink); background: rgba(255,252,244,.7); color: var(--ink); cursor: pointer; transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s, color .2s; text-align: center; }
+.choices.one .choice { text-align: left; font-family: var(--serif); font-size: 16px; padding: 10px 13px; }
+.choice:hover { transform: translateY(-2px) rotate(-.5deg); }
+.choice.ok { background: var(--amber); border-color: var(--amber-deep); }
+.choice.no { background: var(--seal); border-color: var(--seal); color: #fbeee6; animation: shake .45s; }
+.choice.dim { opacity: .4; }
+.choice:disabled { cursor: default; transform: none; }
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tool { display: grid; justify-items: center; gap: 2px; padding: 10px 6px 8px; border-radius: 10px; border: 2px solid var(--ink); background: rgba(255,252,244,.7); color: var(--ink); cursor: pointer; font-family: var(--brush); font-size: 21px; line-height: 1; transition: transform .2s cubic-bezier(.2,.8,.2,1), background .2s, color .2s; }
+.tool svg { width: 64px; height: 44px; }
+.tool small { font-family: var(--mono); font-size: 10.5px; color: var(--ink-soft); letter-spacing: .04em; }
+.tool:hover { transform: translateY(-2px) rotate(-.6deg); }
+.tool.on { background: var(--ink); color: var(--paper); }
+.tool.on small { color: var(--amber); }
+.tool.no { animation: shake .45s; background: var(--seal); border-color: var(--seal); color: #fbeee6; }
+.num-in { font-family: var(--brush); font-size: 30px; width: 112px; padding: 3px 10px; border: 2px solid var(--ink); border-radius: 8px; background: var(--sheet); color: var(--ink); text-align: center; }
+.num-in:focus { outline: 3px solid var(--amber); outline-offset: 1px; }
+.num-in.ok { border-color: var(--amber-deep); background: var(--amber-wash); }
+.num-in.no { border-color: var(--seal); animation: shake .45s; }
+input[type=range] { width: 100%; accent-color: var(--ink); }
+.big-read { font-family: var(--brush); font-size: 46px; line-height: 1; }
+.big-read small { font-size: 24px; color: var(--ink-soft); }
+
+/* ── bitiş penceresi ─────────────────────── */
+dialog.end { border: 0; padding: 0; background: transparent; max-width: min(520px, 92vw); width: 100%; }
+dialog.end::backdrop { background: rgba(18, 15, 12, .7); backdrop-filter: blur(2px); }
+.end-card { background: var(--paper); border-radius: 14px; padding: 26px 26px 22px; text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,.45); position: relative; }
+.end-card img { width: 120px; margin: -8px auto 0; display: block; animation: hop 1.2s ease-in-out 2; transform-origin: 50% 92%; }
+.end-card h2 { font-family: var(--brush); font-weight: 400; font-size: 46px; line-height: 1; margin: 8px 0 4px; }
+.end-card p { margin: 6px 0; color: var(--ink-soft); }
+.stars { display: flex; justify-content: center; gap: 10px; margin: 10px 0 6px; }
+.stars svg { width: 48px; height: 48px; }
+.stars svg.got { animation: starIn .6s cubic-bezier(.2,.8,.2,1) both; }
+.end-card .row { justify-content: center; margin-top: 16px; }
+
+/* ── hareket ─────────────────────────────── */
+@keyframes hop { 0%, 100% { transform: translateY(0) } 40% { transform: translateY(-14px) scaleY(1.04) } 60% { transform: translateY(0) scaleY(.96) } }
+@keyframes shake { 0%, 100% { transform: translateX(0) } 20% { transform: translateX(-6px) rotate(-2deg) } 45% { transform: translateX(5px) rotate(1.5deg) } 70% { transform: translateX(-3px) } }
+@keyframes pop { from { transform: scale(.96); opacity: .4 } to { transform: none; opacity: 1 } }
+@keyframes bump { 0% { transform: scale(1) } 40% { transform: scale(1.35) rotate(-4deg); color: var(--amber-deep) } 100% { transform: scale(1) } }
+@keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.7) } 20% { opacity: 1; transform: translate(-50%, -60%) scale(1.1) } 100% { opacity: 0; transform: translate(-50%, -190%) scale(1) } }
+@keyframes starIn { from { transform: scale(0) rotate(-40deg); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.stage { animation: rise .7s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 90ms); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+@media (max-width: 960px) {
+  .game { grid-template-columns: 1fr; }
+  .say { grid-template-columns: 60px minmax(0, 1fr); }
+  .say img { width: 60px; }
+}
+@media (max-width: 520px) {
+  .hud { width: 100%; justify-content: space-between; }
+  .tool svg { width: 52px; height: 36px; }
+}

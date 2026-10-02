@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Üçgenin Sırrı · Nokta'nın Oyunları</title>
+<meta name="description" content="Kayıp açıyı bul, üçgen tablosunu doldur, düzgün çokgenleri ayırt et.">
+<link rel="icon" href="../img/nokta.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/oyun.css">
+</head>
+<body>
+<header class="topbar wrap">
+  <a class="back" href="../index.html">← Oyunlar</a>
+  <div class="ttl"><span class="code">MAT.5.3.6</span><h1>Üçgenin Sırrı</h1></div>
+  <div class="hud"><span class="dots" id="dots"></span><span class="score"><b id="score">0</b>puan</span><button class="mute" id="mute" type="button">ses</button></div>
+</header>
+<main class="wrap game">
+  <section class="board" aria-label="Çizim tahtası"><canvas id="cv"></canvas><div class="fx"></div></section>
+  <aside class="side">
+    <div class="say"><img id="noktaImg" src="../img/nokta.png" alt="Nokta"><p id="say" aria-live="polite"></p></div>
+    <div class="panel" id="panel"></div>
+  </aside>
+</main>
+<script src="../js/ortak.js"></script>
+<script src="../js/ucgenin-sirri.js"></script>
+</body>
+</html>
