@@ -2,6 +2,8 @@
 
 Ortaokul matematik için mürekkep oyunları. [Nokta'nın Filmleri](https://hakanatas.github.io/nokta-filmleri/) ile aynı görsel dünyada; Türkiye Yüzyılı Maarif Modeli öğrenme çıktılarına göre hazırlandı. Her oyun aynı döngüyü izler: **tahmin et → dene → gerekçelendir**.
 
+Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
+
 İlk tema: **5. sınıf · MAT.5.3 Geometrik Şekiller**
 
 | Kod | Oyun | Ne yapılıyor? | Film |
