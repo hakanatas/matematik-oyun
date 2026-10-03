@@ -1327,31 +1327,83 @@
 
   /* ── Otogar: toplam, bölme, kalanı yorumla, doldurarak kontrol ── */
   const OT = (() => { let S, T, C; do { S = g.rnd(300, 440); T = g.rnd(15, 30); C = g.pick([40, 45, 50]); } while ((S + T) % C === 0 || Math.floor((S + T) / C) + 1 > 12 || (S + T) % C > C - 3); return { S, T, C, N: S + T, q: Math.floor((S + T) / C), r: (S + T) % C }; })();
-  const ot = { fill: 0, anim: false };
+  const ot = { anim: false, gT: -1, run: null }; // gT: gruplara ayrılma başlangıcı; run: kontrol yolculuğu
+  // her kişinin kalabalıktaki ve gruptaki yeri
+  const OT_COLS = 40, crowdPos = (i) => ({ x: 450 - (OT_COLS * 20.5) / 2 + 10 + (i % OT_COLS) * 20.5, y: 74 + Math.floor(i / OT_COLS) * 17 });
+  const OT_GC = OT.C === 40 ? 8 : OT.C === 45 ? 9 : 10, OT_GR = Math.ceil(OT.C / OT_GC), OT_NB = OT.q + 1, OT_SP = 12, OT_BW = OT_GC * OT_SP + 14, OT_BCOLS = Math.min(OT_NB, Math.floor(880 / (OT_BW + 10)));
+  const grpBox = (b) => { const bw = OT_BW, bh = OT_GR * 14 + 28, col = b % OT_BCOLS, row = Math.floor(b / OT_BCOLS); return { x: 450 - (OT_BCOLS * (bw + 10)) / 2 + col * (bw + 10) + 5, y: 58 + row * (bh + 10), w: bw, h: bh }; };
+  const grpPos = (i) => { const b = Math.floor(i / OT.C), s2 = i % OT.C, B = grpBox(b); return { x: B.x + 10 + (s2 % OT_GC) * OT_SP, y: B.y + 24 + Math.floor(s2 / OT_GC) * 14 }; };
+  const ease = (t) => (t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t));
+  function kisi(c, x, y, col, ph, sc = 1) { // küçük insan: baş + gövde, yerinde kıpırdar
+    const b = Math.sin(st.t * 4 + ph) * 1.2 * sc;
+    c.strokeStyle = col; c.lineWidth = 2.2 * sc; c.beginPath(); c.moveTo(x, y + 1 + b); c.lineTo(x, y + 7 * sc + b); c.stroke();
+    c.beginPath(); c.arc(x, y - 2 * sc + b, 3.4 * sc, 0, 7); c.fillStyle = col; c.fill();
+  }
+  function busSide(c, x, y, w, col, n, cap, lit) { // yakın plan otobüsü (yan görünüş)
+    const h = w * .42;
+    c.fillStyle = 'rgba(23,20,17,.16)'; c.beginPath(); c.ellipse(x + w / 2, y + h + 8, w * .55, 7, 0, 0, 7); c.fill();
+    d.poly(c, [{ x, y: y + h }, { x, y }, { x: x + w * .88, y }, { x: x + w, y: y + h * .3 }, { x: x + w, y: y + h }], { fill: col, w: 3 });
+    for (let k = 0; k < 6; k++) { c.fillStyle = lit && k < Math.ceil(6 * n / cap) ? '#ffe2a0' : '#d7e1e4'; c.fillRect(x + 8 + k * w * .13, y + 8, w * .11, h * .32); c.strokeStyle = N.INK; c.lineWidth = 1.6; c.strokeRect(x + 8 + k * w * .13, y + 8, w * .11, h * .32); }
+    c.fillStyle = '#5b6b78'; c.fillRect(x + w * .84, y + h * .32, w * .1, h * .6); c.strokeStyle = N.INK; c.strokeRect(x + w * .84, y + h * .32, w * .1, h * .6);
+    [x + w * .2, x + w * .76].forEach((wx) => { c.beginPath(); c.arc(wx, y + h, w * .075, 0, 7); c.fillStyle = '#2f2a26'; c.fill(); c.beginPath(); c.arc(wx, y + h, w * .03, 0, 7); c.fillStyle = '#9b8f80'; c.fill(); });
+    c.fillStyle = '#fffaf0'; c.fillRect(x + w * .22, y + h * .55, w * .5, h * .3); c.strokeStyle = N.INK; c.lineWidth = 1.5; c.strokeRect(x + w * .22, y + h * .55, w * .5, h * .3);
+    d.text(c, `${n}/${cap}`, x + w * .47, y + h * .7, { size: 20, font: N.MONO, halo: false, color: n === cap ? N.DEEP : N.INK });
+  }
   function setupOtogar() {
-    zhint = `Geziye <b>${OT.S} öğrenci</b> ve <b>${OT.T} öğretmen</b> katılıyor. Otobüsler <b>${OT.C} kişilik</b>. Adım adım çöz: sağdaki kutulara yaz.`;
+    zhint = `Geziye <b>${OT.S} öğrenci</b> ve <b>${OT.T} öğretmen</b> katılıyor. Otobüsler <b>${OT.C} kişilik</b>.`;
+    if (isDone('otogar', 'bol') && ot.gT < 0) ot.gT = -99; // önceden bölündüyse gruplar hazır
     Z.draw = (c) => {
       c.fillStyle = '#efe8d8'; c.fillRect(0, 0, ZW, ZH);
-      // kalabalık
-      const left = OT.N - ot.fill, per = 40, sp = 17;
-      d.text(c, `${OT.S} öğrenci + ${OT.T} öğretmen${isDone('otogar', 'topla') ? ` = ${OT.N} kişi` : ''}`, 450, 34, { size: 26 });
-      for (let i = 0; i < OT.N; i++) { if (i < ot.fill) continue; const k = i - ot.fill, x = 450 - (per * sp) / 2 + (k % per) * sp + 8, y = 66 + Math.floor(k / per) * sp; c.beginPath(); c.arc(x, y, 6, 0, 7); c.fillStyle = i >= OT.S ? N.SEAL : N.AMBER; c.fill(); }
-      if (!left) d.text(c, 'herkes otobüste!', 450, 110, { size: 26, color: N.DEEP });
-      // otobüsler
-      const nb = isDone('otogar', 'bol') ? OT.q + 1 : 1, bw = 136, bh = 96, cols = 6;
-      for (let b = 0; b < nb; b++) {
-        const col = b % cols, row = Math.floor(b / cols), x = 450 - (Math.min(nb, cols) * (bw + 10)) / 2 + col * (bw + 10), y = 280 + row * (bh + 46);
-        const inBus = Math.max(0, Math.min(OT.C, ot.fill - b * OT.C)), extra = b === OT.q;
-        c.fillStyle = extra && isDone('otogar', 'yorum') ? '#f6dcae' : '#fffaf0'; c.fillRect(x, y, bw, bh); d.poly(c, rectPts(x, y, bw, bh), { w: 2.5, color: extra ? N.SEAL : N.INK });
-        const sc = OT.C === 40 ? 8 : OT.C === 45 ? 9 : 10, srow = Math.ceil(OT.C / sc);
-        for (let s2 = 0; s2 < OT.C; s2++) { const sx = x + 12 + (s2 % sc) * ((bw - 24) / (sc - 1)), sy = y + 14 + Math.floor(s2 / sc) * ((bh - 28) / (srow - 1)); c.beginPath(); c.arc(sx, sy, 4.5, 0, 7); if (s2 < inBus) { c.fillStyle = b * OT.C + s2 >= OT.S ? N.SEAL : N.AMBER; c.fill(); } else { c.strokeStyle = 'rgba(23,20,17,.25)'; c.lineWidth = 1.2; c.stroke(); } }
-        [x + 26, x + bw - 26].forEach((wx) => { c.beginPath(); c.arc(wx, y + bh + 6, 9, 0, 7); c.fillStyle = '#2f2a26'; c.fill(); });
-        d.text(c, nb === 1 && !isDone('otogar', 'bol') ? `${OT.C} kişilik` : `${b + 1}.${ot.fill ? ` · ${inBus}` : ''}`, x + bw / 2, y + bh + 26, { size: 20, color: extra ? N.SEAL : N.SOFT });
+      c.fillStyle = '#d9cdb4'; c.fillRect(0, 470, ZW, 130); c.strokeStyle = N.INK; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 470); c.lineTo(ZW, 470); c.stroke();
+      c.setLineDash([26, 18]); c.strokeStyle = '#fffaf0'; c.lineWidth = 4; c.beginPath(); c.moveTo(0, 580); c.lineTo(ZW, 580); c.stroke(); c.setLineDash([]);
+      d.text(c, `${OT.S} öğrenci + ${OT.T} öğretmen${isDone('otogar', 'topla') ? ` = ${OT.N} kişi` : ''}`, 450, 30, { size: 26 });
+      const grouped = ot.gT === -99 ? 1 : ot.gT >= 0 ? ease((st.t - ot.gT) / 1.6) : 0, R = ot.run, GONE = R ? R.gone : isDone('otogar', 'kontrol') ? OT_NB : 0;
+      // gruplar (bölmeden sonra)
+      if (grouped > 0) for (let b = 0; b < OT_NB; b++) {
+        if (GONE > b) continue; const B = grpBox(b), last = b === OT.q;
+        c.globalAlpha = grouped; c.setLineDash(last ? [6, 5] : []); c.strokeStyle = last ? N.SEAL : 'rgba(23,20,17,.45)'; c.lineWidth = 2; c.strokeRect(B.x, B.y, B.w, B.h); c.setLineDash([]);
+        d.text(c, last ? `kalan ${OT.r}` : `${b + 1}. grup · ${OT.C}`, B.x + B.w / 2, B.y + 11, { size: 16, color: last ? N.SEAL : N.SOFT, halo: false }); c.globalAlpha = 1;
       }
-      if (isDone('otogar', 'kontrol')) d.text(c, `${OT.q} × ${OT.C} = ${OT.q * OT.C};  ${OT.q * OT.C} + ${OT.r} = ${OT.N}`, 450, 580, { size: 26, color: N.DEEP });
+      // kişiler
+      const bay = { x: 600, y: 380, w: 240 };
+      for (let i = 0; i < OT.N; i++) {
+        const b = Math.floor(i / OT.C); if (GONE > b) continue;
+        const a = crowdPos(i), z = grpPos(i); let x = a.x + (z.x - a.x) * grouped, y = a.y + (z.y - a.y) * grouped;
+        if (R && R.cur === b && R.board > 0) { const s2 = i % OT.C, cnt = b === OT.q ? OT.r : OT.C, tt = ease((R.board * cnt - s2) / 3); if (tt > 0) { const door = { x: bay.x + bay.w * .89 + R.dx, y: bay.y + 60 }; x += (door.x - x) * tt; y += (door.y - y) * tt - Math.sin(tt * Math.PI) * 40; if (tt >= 1) continue; } }
+        kisi(c, x, y, i >= OT.S ? N.SEAL : N.AMBER, i * .7);
+      }
+      // otobüs peronu
+      if (R) {
+        const cnt = R.cur === OT.q ? OT.r : OT.C, n = Math.min(cnt, Math.round(R.board * cnt));
+        busSide(c, bay.x + R.dx, bay.y, bay.w, R.cur === OT.q ? '#f6dcae' : N.AMBER, n, OT.C, n > 0);
+        if (R.honk > 0) d.text(c, 'dıt dıt!', bay.x + R.dx + bay.w * .1, bay.y - 18, { size: 24, color: N.SEAL });
+        d.text(c, `${R.cur + 1}. otobüs`, bay.x + R.dx + bay.w / 2, bay.y + bay.w * .42 + 34, { size: 20, color: N.SOFT, halo: false });
+      } else if (isDone('otogar', 'kontrol')) { busSide(c, bay.x, bay.y, bay.w, '#f6dcae', OT.r, OT.C, true); d.text(c, `${OT_NB}. otobüs: kalan ${OT.r} kişi`, bay.x + bay.w / 2, bay.y + bay.w * .42 + 34, { size: 20, color: N.SEAL, halo: false });
+      } else { busSide(c, bay.x, bay.y, bay.w, N.AMBER, 0, OT.C, false); d.text(c, `${OT.C} kişilik otobüs`, bay.x + bay.w / 2, bay.y + bay.w * .42 + 34, { size: 20, color: N.SOFT, halo: false }); }
+      // giden otobüs sayacı
+      const gone = GONE;
+      if (gone || R) { d.text(c, `yola çıkan otobüs: ${gone}`, 140, 405, { size: 22, color: N.DEEP, halo: false }); for (let k = 0; k < gone; k++) { const mx = 30 + (k % 14) * 30, my = 430 + Math.floor(k / 14) * 20; c.fillStyle = k === OT.q ? '#f6dcae' : N.AMBER; c.fillRect(mx, my, 24, 13); c.strokeStyle = N.INK; c.lineWidth = 1.5; c.strokeRect(mx, my, 24, 13); } }
+      if (isDone('otogar', 'kontrol') && !R) d.text(c, `${OT.q} × ${OT.C} + ${OT.r} = ${OT.N}  →  ${OT_NB} otobüs`, 450, 215, { size: 34, color: N.DEEP });
     };
     Z.onDown = null; Z.onMove = null; Z.onUp = null;
     Z.ask();
+  }
+  // kontrol yolculuğu: otobüs gelir, grup biner, korna çalar, gider
+  function runBuses() {
+    return new Promise((done) => {
+      const R = (ot.run = { cur: 0, gone: 0, board: 0, dx: 600, honk: 0 }), per = N.reduced ? .25 : OT_NB > 9 ? .75 : .95; let t0 = st.t;
+      const tick = () => {
+        if (!zoomOpen) { ot.run = null; return done(false); }
+        const t = (st.t - t0) / per, last = R.cur === OT.q;
+        if (t < .25) { R.dx = 600 * (1 - ease(t / .25)); R.board = 0; }
+        else if (t < .7) { R.dx = 0; R.board = (t - .25) / .45; if (Math.floor(R.board * 6) !== R.tk) { R.tk = Math.floor(R.board * 6); N.sfx.tick(); } }
+        else if (last) { R.board = 1; R.dx = 0; R.gone = OT_NB; R.honk = 0; return done(true); }
+        else if (t < 1) { R.board = 1; if (!R.honk) { R.honk = 1; N.sfx.snap(); } R.dx = -700 * ease((t - .7) / .3); }
+        else { R.gone = R.cur + 1; R.cur++; R.honk = 0; R.board = 0; R.dx = 600; t0 = st.t; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
   }
   function ctlOtogar(host) {
     const D = (id) => isDone('otogar', id);
@@ -1364,9 +1416,9 @@
     host.innerHTML = h;
     const num = (id) => N.num(($('#' + id) || {}).value || '');
     const tb = $('#otTopB'); if (tb) { const go2 = () => { if (num('otTop') === OT.N) { N.sfx.good(); say(`Toplam <b>${OT.N}</b> kişi: ${OT.S} öğrenci ve ${OT.T} öğretmen. Öğretmenleri unutmadın!`); addLog('otogar', `Toplam: ${OT.S} + ${OT.T} = ${OT.N}`); markDone('otogar', 'topla'); Z.ask(); } else { N.sfx.bad(); say(num('otTop') === OT.S ? 'Öğretmenler de otobüse binecek!' : 'Öğrenci ve öğretmen sayılarını topla.'); } }; tb.onclick = go2; $('#otTop').onkeydown = (e) => { if (e.key === 'Enter') go2(); }; }
-    const bb = $('#otBolB'); if (bb) bb.onclick = () => { if (num('otQ') === OT.q && num('otR') === OT.r) { N.sfx.good(); say(`${OT.N} ÷ ${OT.C}: bölüm <b>${OT.q}</b>, kalan <b>${OT.r}</b>. ${OT.q} otobüs tamamen doluyor, ${OT.r} kişi açıkta kalıyor.`); addLog('otogar', `${OT.N} ÷ ${OT.C} = ${OT.q}, kalan ${OT.r}`); markDone('otogar', 'bol'); Z.ask(); } else { N.sfx.bad(); say(`İpucu: ${OT.C} × ${OT.q} = ${OT.C * OT.q}. Kalan, bölenden (${OT.C}) küçük olmalı.`); } };
+    const bb = $('#otBolB'); if (bb) bb.onclick = () => { if (num('otQ') === OT.q && num('otR') === OT.r) { N.sfx.good(); say(`${OT.N} ÷ ${OT.C}: bölüm <b>${OT.q}</b>, kalan <b>${OT.r}</b>. ${OT.q} otobüs tamamen doluyor, ${OT.r} kişi açıkta kalıyor.`); addLog('otogar', `${OT.N} ÷ ${OT.C} = ${OT.q}, kalan ${OT.r}`); markDone('otogar', 'bol'); ot.gT = st.t; N.sfx.draw(); Z.ask(); } else { N.sfx.bad(); say(`İpucu: ${OT.C} × ${OT.q} = ${OT.C * OT.q}. Kalan, bölenden (${OT.C}) küçük olmalı.`); } };
     const yr = $('#otYor'); if (yr) N.choices(yr, g.shuffle([{ t: `${OT.q} otobüs`, k: 0 }, { t: `${OT.q + 1} otobüs`, k: 1, ok: true }, { t: `${OT.r} otobüs`, k: 2 }]), (o) => { if (o.ok) { N.sfx.good(); say(`Evet, <b>${OT.q + 1}</b>. Kalan ${OT.r} kişiyi bırakamayız: <b>kalan 0 değilse bölüme 1 ekleriz</b>.`); addLog('otogar', `Kalan ${OT.r} ≠ 0 → ${OT.q} + 1 = ${OT.q + 1} otobüs`); markDone('otogar', 'yorum'); Z.ask(); } else { N.sfx.bad(); say(o.k === 0 ? `${OT.q} otobüse ${OT.q * OT.C} kişi sığar; ${OT.r} kişi ne olacak?` : 'Kalan, açıkta kalan kişi sayısı; otobüs sayısı değil.'); } }, 'one');
-    const fb = $('#otFill'); if (fb) fb.onclick = () => { if (ot.anim) return; ot.anim = true; ot.fill = 0; fb.disabled = true; N.sfx.draw(); N.tween(N.reduced ? 200 : 3600, (t) => { ot.fill = Math.round(OT.N * t); Z.ask(); }, (t) => t).then(() => { ot.anim = false; N.sfx.good(); say(`${OT.q} otobüs dolu, ${OT.q + 1}. otobüste ${OT.r} kişi var. Çarpmayla da kontrol: ${OT.q} × ${OT.C} = ${OT.q * OT.C}, ${OT.q * OT.C} + ${OT.r} = ${OT.N}. ✓`); addLog('otogar', `Kontrol: ${OT.q} × ${OT.C} + ${OT.r} = ${OT.N}`); markDone('otogar', 'kontrol'); Z.ask(); }); };
+    const fb = $('#otFill'); if (fb) fb.onclick = () => { if (ot.anim) return; ot.anim = true; fb.disabled = true; N.sfx.draw(); runBuses().then((ok) => { ot.anim = false; if (!ok) { fb.disabled = false; return; } N.sfx.good(); say(`${OT.q} otobüs doldu ve yola çıktı, ${OT_NB}. otobüste ${OT.r} kişi var. Çarpmayla da kontrol: ${OT.q} × ${OT.C} = ${OT.q * OT.C}, ${OT.q * OT.C} + ${OT.r} = ${OT.N}. ✓`); addLog('otogar', `Kontrol: ${OT.q} × ${OT.C} + ${OT.r} = ${OT.N}`); ot.run = null; markDone('otogar', 'kontrol'); Z.ask(); }); };
   }
   /* ── kesir yardımcıları ── */
   const gcd = (a, b) => (b ? gcd(b, a % b) : a);
