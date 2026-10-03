@@ -21,26 +21,27 @@
   - Öğrenci yalnız açık bir odaya, kodla girer.
   - Odadan çıkan ya da sekmesini kapatan öğrenci listeden hemen silinir.
 
-## Kurulum (yaklaşık 10 dakika)
+## Kurulum
 
-1. **Proje oluşturun.** <https://console.firebase.google.com> adresinde okul hesabınızla **Proje ekle**’ye tıklayın, örneğin adı `nokta-oyunlari` olsun. Google Analytics gerekmez.
-2. **Google ile girişi açın.**
-   - **Build → Authentication → Get started → Sign-in method → Google**’ı etkinleştirin.
-   - **Settings → Authorized domains** bölümüne sitenin adresini ekleyin: `hakanatas.github.io`.
-3. **Veritabanını oluşturun.**
-   - **Build → Realtime Database → Create database** yolunu izleyin, konum olarak **europe-west1** seçin.
-   - **Rules** sekmesine `firebase/database.rules.json` dosyasının içeriğini yapıştırın.
-   - Dosyadaki bütün `OKUL_ALAN_ADI` yazılarını kendi alan adınızla değiştirin, örneğin `okulum.k12.tr`, ve **Publish**’e basın.
-4. **Öğretmenleri ekleyin.**
-   - Realtime Database’in **Data** sekmesinde kökte `ogretmenler` adlı bir düğüm açın.
-   - Her öğretmen için bir anahtar ekleyin. Anahtar, e-postadaki noktalar virgülle değiştirilmiş hâlidir; değeri `true` olsun.
-   - Örnek: `hakan@okulum.k12.tr` → `hakan@okulum,k12,tr` : `true`
-5. **Web uygulamasını kaydedin.**
-   - **Proje ayarları → Genel → Uygulamalarınız → Web (</>)** yolunu izleyin.
-   - Çıkan `firebaseConfig` değerlerini (`apiKey`, `authDomain`, `databaseURL`, `projectId`, `appId`) `js/cok/ayar.js` dosyasına yapıştırın.
-   - Aynı dosyada `okulAlanAdi` değerini de doldurun.
+Girebilecek hesaplar:
+- `@alkev.k12.tr` hesapları öğretmen sayılır ve oda açabilir.
+- `@stu.alkev.k12.tr` hesapları öğrencidir.
+- Başka hiçbir hesap giremez.
 
-Bu değerler gizli değildir; sitede herkese açık durur. Güvenliği 3. adımdaki kurallar sağlar.
+Bu alan adları `js/cok/ayar.js` ve `firebase/database.rules.json` dosyalarında hazır yazılıdır.
+
+1. **Google ile girişi açın.** Firebase konsolunda soldan **Build → Authentication** yolunu izleyin.
+   - **Get started**’a, sonra **Sign-in method** sekmesinde **Google**’a tıklayın.
+   - **Enable**’ı açın, destek e-postasını seçin ve **Save**’e basın.
+   - Aynı sayfada **Settings → Authorized domains → Add domain** ile `hakanatas.github.io` ekleyin.
+2. **Kuralları yapıştırın.** **Build → Realtime Database → Rules** sekmesini açın.
+   - Oradaki her şeyi silin.
+   - `firebase/database.rules.json` dosyasının içeriğini olduğu gibi yapıştırın ve **Publish**’e basın.
+3. **Web uygulamasını kaydedin.** Sol üstteki ⚙️ → **Project settings** → **General** sekmesini açın.
+   - En altta **Your apps** bölümünde **</>** (Web) simgesine tıklayın.
+   - Bir ad verin, örneğin “nokta”, ve **Register app**’e basın.
+   - Çıkan kutudaki `firebaseConfig = { … }` bölümünü kopyalayın ve `js/cok/ayar.js` içindeki `firebase` alanına yazın.
+   - Bu değerler gizli değildir. Güvenliği 2. adımdaki kurallar sağlar.
 
 ## Sınıfta kullanım
 

@@ -1,10 +1,12 @@
 /* Çok oyunculu ayarlar. Kurulum adımları: COK-OYUNCULU.md
-   1) okulAlanAdi: yalnız bu alan adındaki Google okul hesapları girebilir (ör. 'okulum.k12.tr').
-      Aynı alan adını firebase/database.rules.json içine de yazın.
+   1) okulAlanAdlari: yalnız bu alan adlarındaki Google okul hesapları girebilir.
+      ogretmenAlanAdi: bu alan adıyla girenler öğretmen sayılır (oda açabilir).
+      Alan adları firebase/database.rules.json içinde de yazılıdır; değiştirirseniz orayı da değiştirin.
    2) firebase: Firebase konsolundaki web uygulaması ayarlarını buraya yapıştırın.
    Ayarlar boşsa sayfa "test modu"nda açılır: aynı bilgisayardaki sekmeler birbirini görür. */
 window.COK_AYAR = {
-  okulAlanAdi: '',
+  okulAlanAdlari: ['alkev.k12.tr', 'stu.alkev.k12.tr'],
+  ogretmenAlanAdi: 'alkev.k12.tr',
   firebase: {
     apiKey: '',
     authDomain: '',

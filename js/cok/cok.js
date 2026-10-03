@@ -18,7 +18,7 @@
       <p>Arkadaşlarınla aynı kasabada dolaş, hazır mesajlarla konuş.</p>
       ${hata ? `<p class="cok-hata">${hata}</p>` : ''}
       ${Ag.mod === 'yerel' ? `<p class="small">Test için bir kişi seç:</p><div class="cok-liste">${Ag.testKisileri.map((a) => `<button class="btn" data-test="${esc(a)}" type="button">${esc(a)}</button>`).join('')}</div>`
-        : `<button class="btn primary big cok-google" id="cokGiris" type="button"><span class="g">G</span> Okul hesabınla gir</button>${Ag.alan ? `<p class="small">Yalnız <b>@${esc(Ag.alan)}</b> hesapları girebilir.</p>` : ''}`}
+        : `<button class="btn primary big cok-google" id="cokGiris" type="button"><span class="g">G</span> Okul hesabınla gir</button>${Ag.alanlar.length ? `<p class="small">Yalnız ${Ag.alanlar.map((x) => `<b>@${esc(x)}</b>`).join(' ve ')} hesapları girebilir.</p>` : ''}`}
       ${testRozet}<p class="small"><a href="kasaba.html">Tek başıma gezmek istiyorum →</a></p>`);
     const g = $('#cokGiris'); if (g) g.onclick = () => Ag.giris().catch((e) => girisEkrani(e && e.code === 'auth/popup-closed-by-user' ? '' : 'Giriş yapılamadı. Bir daha dene.'));
     document.querySelectorAll('[data-test]').forEach((b) => (b.onclick = () => Ag.giris(b.dataset.test)));

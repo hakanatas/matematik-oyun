@@ -3,11 +3,12 @@
 (() => {
   const A = window.COK_AYAR || {}, F = A.firebase || {};
   const yerel = /[?&]yerel/.test(location.search) || !F.apiKey || typeof firebase === 'undefined';
-  const alan = (A.okulAlanAdi || '').toLowerCase();
-  const okulMu = (e) => !alan || (e || '').toLowerCase().endsWith('@' + alan);
-  const key = (e) => (e || '').toLowerCase().replace(/\./g, ',');
+  const alanlar = (A.okulAlanAdlari || []).map((a) => a.toLowerCase()), ogrAlan = (A.ogretmenAlanAdi || '').toLowerCase();
+  const alanOf = (e) => (e || '').toLowerCase().split('@')[1] || '';
+  const okulMu = (e) => !alanlar.length || alanlar.includes(alanOf(e));
+  const ogretmenMi = (e) => !!ogrAlan && alanOf(e) === ogrAlan;
   const kodTemiz = (k) => String(k || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
-  const Ag = { mod: yerel ? 'yerel' : 'firebase', me: null, oda: null, ogretmen: false, alan };
+  const Ag = { mod: yerel ? 'yerel' : 'firebase', me: null, oda: null, ogretmen: false, alanlar };
 
   if (!yerel) {
     firebase.initializeApp(F);
@@ -15,12 +16,12 @@
     let presRef = null, offs = [];
     Ag.oturum = (cb) => auth.onAuthStateChanged(async (u) => {
       if (!u) { Ag.me = null; return cb(null); }
-      if (!u.emailVerified || !okulMu(u.email)) { await auth.signOut(); return cb(null, `Yalnız <b>@${alan}</b> okul hesaplarıyla girilebilir.`); }
+      if (!u.emailVerified || !okulMu(u.email)) { await auth.signOut(); return cb(null, `Bu hesapla girilemez. Yalnız ${alanlar.map((a) => `<b>@${a}</b>`).join(' ve ')} okul hesapları girebilir.`); }
       Ag.me = { uid: u.uid, ad: u.displayName || u.email, eposta: u.email };
-      try { Ag.ogretmen = (await db.ref('ogretmenler/' + key(u.email)).get()).val() === true; } catch (_) { Ag.ogretmen = false; }
+      Ag.ogretmen = ogretmenMi(u.email);
       cb(Ag.me);
     });
-    Ag.giris = async () => { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account', ...(alan ? { hd: alan } : {}) }); await auth.signInWithPopup(p); };
+    Ag.giris = async () => { const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account', ...(alanlar.length === 1 ? { hd: alanlar[0] } : alanlar.length ? { hd: '*' } : {}) }); await auth.signInWithPopup(p); };
     Ag.cikis = async () => { await Ag.ayril(); await auth.signOut(); };
     Ag.odaAc = async (ad) => { const kod = Math.random().toString(36).slice(2, 7).toUpperCase(); await db.ref(`odalar/${kod}/bilgi`).set({ sahip: Ag.me.uid, ad: ad || kod, acik: true, t: firebase.database.ServerValue.TIMESTAMP }); return kod; };
     Ag.odayaGir = async (k, durum) => {

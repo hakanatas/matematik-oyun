@@ -2,38 +2,33 @@
   "rules": {
     ".read": false,
     ".write": false,
-
-    "ogretmenler": {
-      "$eposta": {
-        ".read": "auth != null && auth.token.email_verified == true && auth.token.email.toLowerCase().replace('.', ',') === $eposta",
-        ".write": false
-      }
-    },
-
     "odalar": {
       "$oda": {
-        ".read": "auth != null && auth.token.email_verified == true && auth.token.email.toLowerCase().endsWith('@OKUL_ALAN_ADI') && data.child('bilgi').exists()",
-
+        ".read": "auth != null && auth.token.email_verified == true && (auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') || auth.token.email.toLowerCase().endsWith('@stu.alkev.k12.tr')) && data.child('bilgi').exists()",
         "bilgi": {
-          ".read": "auth != null && auth.token.email_verified == true && auth.token.email.toLowerCase().endsWith('@OKUL_ALAN_ADI')",
-          ".write": "auth != null && auth.token.email_verified == true && root.child('ogretmenler').child(auth.token.email.toLowerCase().replace('.', ',')).val() === true && (!data.exists() || data.child('sahip').val() === auth.uid)",
+          ".read": "auth != null && auth.token.email_verified == true && (auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') || auth.token.email.toLowerCase().endsWith('@stu.alkev.k12.tr'))",
+          ".write": "auth != null && auth.token.email_verified == true && auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') && (!data.exists() || data.child('sahip').val() === auth.uid)",
           ".validate": "newData.hasChildren(['sahip', 'ad', 'acik', 't']) && newData.child('sahip').val() === auth.uid && newData.child('ad').isString() && newData.child('ad').val().length <= 30 && newData.child('acik').isBoolean()"
         },
-
         "oyuncular": {
           "$uid": {
-            ".write": "auth != null && auth.uid === $uid && auth.token.email_verified == true && auth.token.email.toLowerCase().endsWith('@OKUL_ALAN_ADI') && root.child('odalar').child($oda).child('bilgi/acik').val() === true",
-            ".validate": "!newData.exists() || (newData.hasChildren(['ad', 'x', 'tx', 'yon', 't']) && newData.child('ad').val() === auth.token.name && newData.child('x').isNumber() && newData.child('tx').isNumber() && newData.child('yon').isNumber() && newData.child('t').val() === now)",
-            "$diger": { ".validate": "$diger === 'ad' || $diger === 'x' || $diger === 'tx' || $diger === 'yon' || $diger === 't'" }
+            ".write": "auth.uid === $uid && auth != null && auth.token.email_verified == true && (auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') || auth.token.email.toLowerCase().endsWith('@stu.alkev.k12.tr')) && root.child('odalar').child($oda).child('bilgi/acik').val() === true",
+            ".validate": "newData.hasChildren(['ad', 'x', 'tx', 'yon', 't']) && newData.child('ad').val() === auth.token.name && newData.child('x').isNumber() && newData.child('tx').isNumber() && newData.child('yon').isNumber() && newData.child('t').val() === now",
+            "$diger": {
+              ".validate": "$diger === 'ad' || $diger === 'x' || $diger === 'tx' || $diger === 'yon' || $diger === 't'"
+            }
           }
         },
-
         "mesajlar": {
-          ".indexOn": ["t"],
+          ".indexOn": [
+            "t"
+          ],
           "$m": {
-            ".write": "auth != null && !data.exists() && auth.token.email_verified == true && auth.token.email.toLowerCase().endsWith('@OKUL_ALAN_ADI') && root.child('odalar').child($oda).child('oyuncular').child(auth.uid).exists()",
+            ".write": "!data.exists() && auth != null && auth.token.email_verified == true && (auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') || auth.token.email.toLowerCase().endsWith('@stu.alkev.k12.tr')) && root.child('odalar').child($oda).child('oyuncular').child(auth.uid).exists()",
             ".validate": "newData.hasChildren(['uid', 'm', 't']) && newData.child('uid').val() === auth.uid && newData.child('m').isNumber() && newData.child('m').val() >= 0 && newData.child('m').val() < 24 && newData.child('t').val() === now",
-            "$diger": { ".validate": "$diger === 'uid' || $diger === 'm' || $diger === 't'" }
+            "$diger": {
+              ".validate": "$diger === 'uid' || $diger === 'm' || $diger === 't'"
+            }
           }
         }
       }
