@@ -38,14 +38,14 @@ const KASABA_METINLERI = {
       secenekler: ['Her zaman eşit kalır', 'Biri büyür, öbürü küçülür', 'Hiçbir kural yok'], dogru: 0,
       gorevler: [
         { id: 'dondur', metin: 'Ölçümleri göster ve Gül Sokağı’nı döndür.' },
-        { id: 'tablo', metin: 'Üç farklı durumu deftere yaz (a, b, c, d).' },
+        { id: 'tablo', metin: 'Gül Sokağı’nı üç farklı yöne çevir. Açılar tabloya kendiliğinden yazılır.' },
         { id: 'dik', metin: 'Sokakları dört dik açı oluşacak biçimde kesiştir.' },
         { id: 'paralel', metin: 'Lale Sokağı’nı Çınar Sokağı’na paralel yap: hiç kesişmesinler.' },
       ],
       aciklama: 'Karşılıklı köşeler <b>ters açılardır</b>; sokak nasıl dönerse dönsün <b>a = c</b> ve <b>b = d</b>. Yan yana iki köşe bir doğru üstünde durur: <b>a + b = 180°</b> (komşu bütünler). Dört açı da 90° ise sokaklar <b>diktir</b>. Hiç kesişmeyen, açı oluşturmayan sokaklar <b>paraleldir</b>.',
       sunum: 'Karşılıklı köşelerdeki açılar arasında nasıl bir ilişki var?',
       oyun: { ad: 'Kesişme Dedektifi', url: 'kesisme-dedektifi.html' },
-      ogretmen: 'MAT.5.3.4 Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme. Süreç: varsayım (Sence?), açıları belirleyip tablo temsilinde listeleme (deftere yaz), varsayımla karşılaştırma, önerme sunma (açıklama). Paralel, kesişen ve dik doğrular.',
+      ogretmen: 'MAT.5.3.4 Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme. Süreç: varsayım (Sence?), açıları belirleyip tablo temsilinde listeleme (sokak her bırakıldığında tablo kendiliğinden dolar), varsayımla karşılaştırma, önerme sunma (açıklama). Paralel, kesişen ve dik doğrular.',
     },
     {
       id: 'cesme', ad: 'Çeşme Meydanı', kod: 'MAT.5.3.7', x: 2750, varis: 'Taş atınca su halka halka açılır. Çember!',
@@ -776,7 +776,7 @@ const KASABA_METINLERI = {
   const MO = { x: 450, y: 310 }, CINAR = 20, LQ = { x: 450, y: 110 };
   const secs = () => { const a = Math.round(map.gul - CINAR); return { a, b: 180 - a, c: a, d: 180 - a }; };
   function setupMap() {
-    zhint = 'Gül Sokağı’nın ucundaki halkayı sürükleyerek sokağı döndür. <b>Ölçümleri göster</b>’e basarsan köşelerdeki açılar görünür.';
+    zhint = 'Gül Sokağı’nın ucundaki halkayı sürükleyerek sokağı döndür. <b>Ölçümleri göster</b>’e basarsan köşelerdeki açılar görünür ve her bırakışında tabloya yazılır.';
     Z.draw = (c) => {
       c.fillStyle = '#e4e8d4'; c.fillRect(0, 0, ZW, ZH);
       for (let i = 0; i < 40; i++) { const x = (i * 211) % ZW, y = (i * 137) % ZH; c.beginPath(); c.arc(x, y, 9 + (i % 3) * 3, 0, 7); c.fillStyle = 'rgba(110,140,90,.35)'; c.fill(); }
@@ -840,24 +840,22 @@ const KASABA_METINLERI = {
     const sc = secs();
     if (map.measures && Math.abs(map.gul - 75) >= 15) { if (!isDone('kavsak', 'dondur')) { say(`Döndürdün: şimdi a = ${sc.a}°, c = ${sc.c}°. Bir daha döndür ve a ile c’ye bak.`); markDone('kavsak', 'dondur'); } }
     if (sc.a === 90 && !isDone('kavsak', 'dik')) { say('Dört köşe de <b>90°</b>! Çınar ve Gül Sokağı artık <b>dik</b> kesişiyor. Şimdi Lale Sokağı’nı aç.'); addLog('kavsak', 'Sokaklar dik: a = b = c = d = 90°'); markDone('kavsak', 'dik'); map.laleOn = true; renderZSide(); }
+    if (map.measures && map.rows.length < 3 && !map.rows.some((r) => r.a === sc.a)) {
+      map.rows.push(sc); addLog('kavsak', `a = ${sc.a}°, b = ${sc.b}°, c = ${sc.c}°, d = ${sc.d}°`); N.sfx.tick();
+      if (map.rows.length >= 3) { say('Tabloya bak: her satırda <b>a = c</b> ve <b>b = d</b>. Ayrıca <b>a + b = 180°</b>. Karşılıklı köşeler eş!'); markDone('kavsak', 'tablo'); }
+      else if (!isDone('kavsak', 'dik') || sc.a !== 90) say(`Tabloya ${map.rows.length}. satır yazıldı: a = ${sc.a}°, c = ${sc.c}°. Gül Sokağı’nı <b>başka bir yöne</b> çevir.`);
+      renderZSide(); Z.ask();
+    }
     if (map.laleOn && Math.abs(((g.nd(map.lale - CINAR) + 90) % 180) - 90) < .5 && !isDone('kavsak', 'paralel')) { say('Lale ile Çınar <b>paralel</b>: hiç kesişmiyorlar, açı da oluşmuyor. Aralarındaki uzaklık her yerde aynı.'); addLog('kavsak', 'Lale Sokağı ∥ Çınar Sokağı: kesişme yok, açı yok'); markDone('kavsak', 'paralel'); }
   }
   function ctlMap(host) {
     const sc = secs();
     host.innerHTML = `<div class="row"><button class="btn ${map.measures ? 'primary' : ''}" id="msr" type="button">${map.measures ? 'Ölçümleri gizle' : 'Ölçümleri göster'}</button>
       ${map.laleOn ? '' : '<button class="btn" id="lale" type="button">Lale Sokağı’nı aç</button>'}</div>
-      <button class="btn primary" id="row" type="button" style="margin-top:6px">Bu durumu deftere yaz</button>
-      <table class="mini-table" style="margin-top:6px"><tr><th>#</th><th>a</th><th>b</th><th>c</th><th>d</th></tr>${map.rows.map((r, i) => `<tr><td>${i + 1}</td><td>${r.a}°</td><td>${r.b}°</td><td>${r.c}°</td><td>${r.d}°</td></tr>`).join('') || '<tr><td colspan="5">henüz kayıt yok</td></tr>'}</table>`;
+      <span class="label" style="margin:8px 0 0">Tablo · sokağı her bırakışında dolar</span>
+      <table class="mini-table" style="margin-top:6px"><tr><th>#</th><th>a</th><th>b</th><th>c</th><th>d</th></tr>${map.rows.map((r, i) => `<tr><td>${i + 1}</td><td>${r.a}°</td><td>${r.b}°</td><td>${r.c}°</td><td>${r.d}°</td></tr>`).join('') || `<tr><td colspan="5">${map.measures ? 'Gül Sokağı’nı çevirip bırak' : 'önce ölçümleri göster'}</td></tr>`}</table>`;
     $('#msr').onclick = () => { map.measures = !map.measures; renderZSide(); Z.ask(); checkMap(); };
     const lb = $('#lale'); if (lb) lb.onclick = () => { map.laleOn = true; say('Lale Sokağı açıldı. Uçlarındaki halkalarla çevir: Çınar Sokağı’nı hiç kesmesin.'); renderZSide(); Z.ask(); };
-    $('#row').onclick = () => {
-      if (!map.measures) { say('Önce <b>ölçümleri göster</b>; sonra değerleri deftere yazalım.'); return; }
-      if (map.rows.some((r) => r.a === sc.a)) { say('Bu durumu zaten yazdın. Gül Sokağı’nı <b>başka bir yöne</b> çevir.'); return; }
-      map.rows.push(sc); addLog('kavsak', `a = ${sc.a}°, b = ${sc.b}°, c = ${sc.c}°, d = ${sc.d}°`); N.sfx.tick();
-      if (map.rows.length >= 3) { say('Tabloya bak: her satırda <b>a = c</b> ve <b>b = d</b>. Ayrıca <b>a + b = 180°</b>. Karşılıklı köşeler eş!'); markDone('kavsak', 'tablo'); Z.ask(); }
-      else say(`${map.rows.length}. durum yazıldı. Sokağı çevirip bir tane daha yaz.`);
-      renderZSide();
-    };
   }
 
   /* ── 3. Çeşme ── */
