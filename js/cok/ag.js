@@ -35,7 +35,7 @@
       await presRef.set({ ad: Ag.me.ad, x: durum.x, tx: durum.tx, yon: durum.yon || 1, t: firebase.database.ServerValue.TIMESTAMP });
       return Ag.oda;
     };
-    Ag.konum = (d) => { if (presRef) presRef.update({ x: Math.round(d.x), tx: Math.round(d.tx), yon: d.yon, t: firebase.database.ServerValue.TIMESTAMP }).catch(() => {}); };
+    Ag.konum = (d) => { if (presRef) presRef.update({ x: Math.round(d.x), tx: Math.round(d.tx), yon: d.yon, z: d.z || 0, t: firebase.database.ServerValue.TIMESTAMP }).catch(() => {}); };
     Ag.oyuncular = (cb) => { const r = db.ref(`odalar/${Ag.oda.kod}/oyuncular`), f = (s) => cb(s.val() || {}); r.on('value', f); offs.push(() => r.off('value', f)); };
     Ag.mesaj = (m) => db.ref(`odalar/${Ag.oda.kod}/mesajlar`).push({ uid: Ag.me.uid, m, t: firebase.database.ServerValue.TIMESTAMP });
     Ag.mesajlar = (cb) => { const t0 = Date.now() - 5000, r = db.ref(`odalar/${Ag.oda.kod}/mesajlar`).orderByChild('t').startAt(t0), f = (s) => cb(s.val()); r.on('child_added', f); offs.push(() => r.off('child_added', f)); };
@@ -65,7 +65,7 @@
       addEventListener('pagehide', () => bc.postMessage({ tur: 'oy', oda: kod, uid: Ag.me.uid, cik: true }));
       return Ag.oda;
     };
-    Ag.konum = (d) => { if (!dur) return; dur = { ...dur, x: Math.round(d.x), tx: Math.round(d.tx), yon: d.yon }; bc.postMessage({ tur: 'oy', oda: Ag.oda.kod, uid: Ag.me.uid, v: dur }); yayOy(); };
+    Ag.konum = (d) => { if (!dur) return; dur = { ...dur, x: Math.round(d.x), tx: Math.round(d.tx), yon: d.yon, z: d.z || 0 }; bc.postMessage({ tur: 'oy', oda: Ag.oda.kod, uid: Ag.me.uid, v: dur }); yayOy(); };
     Ag.oyuncular = (cb) => { dinle.oy.push(cb); yayOy(); };
     Ag.mesaj = async (m) => { const v = { uid: Ag.me.uid, m, t: Date.now() }; bc.postMessage({ tur: 'ms', oda: Ag.oda.kod, v }); dinle.ms.forEach((f) => f(v)); };
     Ag.mesajlar = (cb) => dinle.ms.push(cb);
