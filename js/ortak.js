@@ -116,6 +116,106 @@
   });
   N.wait = (ms) => new Promise((r) => setTimeout(r, N.reduced ? Math.min(ms, 120) : ms));
 
+  /* ── el çizimi: sabit gürültü ve kalem izi ── */
+  N.nz = (a) => { const v = Math.sin(a * 12.9898 + 78.233) * 43758.5453; return v - Math.floor(v); };
+  N.sketch = true;
+  const ghostOk = (o) => N.sketch && o.sketch !== false && !(o.dash && o.dash.length) && (o.w || 3) >= 2 && (o.alpha == null || o.alpha > .3);
+  const ghostStyle = (c, o) => { c.strokeStyle = o.color || N.INK; c.lineWidth = (o.w || 3) * .42; c.setLineDash([]); c.globalAlpha = (o.alpha == null ? 1 : o.alpha) * .32; };
+  function ghostSeg(c, a, e, o) {
+    const L = Math.hypot(e.x - a.x, e.y - a.y); if (L < 6) return;
+    const n = { x: -(e.y - a.y) / L, y: (e.x - a.x) / L }, j = (p, k) => (N.nz(p.x * .137 + p.y * .291 + k) - .5) * 2.6;
+    const j1 = j(a, 1), j2 = j(e, 2), j3 = (N.nz(a.x * .07 + e.y * .11) - .5) * Math.min(4, L / 40);
+    const m = { x: (a.x + e.x) / 2 + n.x * j3, y: (a.y + e.y) / 2 + n.y * j3 };
+    ghostStyle(c, o); c.beginPath(); c.moveTo(a.x + n.x * j1, a.y + n.y * j1); c.quadraticCurveTo(m.x, m.y, e.x + n.x * j2, e.y + n.y * j2); c.stroke(); c.globalAlpha = 1;
+  }
+
+  /* ── Nokta karakteri: yürür, göz kırpar, sevinir, üzülür ── */
+  N.noktaChar = (c, x, gy, o) => {
+    const t = o.t, mv = o.moving, dir = o.dir || 1, happy = o.happy, sad = !happy && o.sad;
+    const step = Math.sin(t * 11), bob = mv ? Math.abs(Math.cos(t * 11)) * 5 : Math.sin(t * 2) * 1.2 + (happy ? Math.abs(Math.sin(t * 9)) * 8 : 0);
+    const legL = 24, bw = 25, bh = 31, cx = x, cy = gy - legL - bh + 4 - bob;
+    const sq = mv ? 1 + Math.cos(t * 22) * .03 : 1 + Math.sin(t * 2) * .015;
+    c.lineCap = 'round'; c.lineJoin = 'round'; c.strokeStyle = N.INK;
+    // bacaklar
+    [-1, 1].forEach((sd) => {
+      const hx = cx + sd * 9, hy = cy + bh * .82, sw = mv ? step * sd * 11 : 0, fx = hx + sw + dir * (mv ? 2 : 0), fy = gy - (mv ? Math.max(0, -step * sd) * 6 : 0);
+      c.beginPath(); c.moveTo(hx, hy); c.quadraticCurveTo((hx + fx) / 2 - sd * 1.5, (hy + fy) / 2, fx, fy - 3); c.lineWidth = 3.4; c.stroke();
+      c.beginPath(); c.ellipse(fx + dir * 3, fy - 2.5, 6, 3.6, 0, 0, 7); c.fillStyle = N.INK; c.fill();
+    });
+    // kollar
+    const arm = (sd) => {
+      const sx = cx + sd * bw * .93, sy = cy + 4; let hx, hy;
+      if (o.umbrella && sd === 1) { hx = o.umbrella.x; hy = o.umbrella.y; }
+      else if (happy) { hx = cx + sd * (bw + 16); hy = cy - 30 + Math.sin(t * 14 + sd) * 4; }
+      else if (mv) { hx = sx + sd * 8 - step * sd * 10; hy = sy + 22; }
+      else if (sad) { hx = sx + sd * 4; hy = sy + 24; }
+      else { hx = sx + sd * 10; hy = sy + 20 + Math.sin(t * 2 + sd) * 1.5; }
+      c.beginPath(); c.moveTo(sx, sy); c.quadraticCurveTo((sx + hx) / 2 + sd * 6, (sy + hy) / 2 - 4, hx, hy); c.lineWidth = 2.8; c.stroke();
+      c.beginPath(); c.arc(hx, hy, 3.8, 0, 7); c.fillStyle = N.INK; c.fill();
+    };
+    arm(-1); arm(1);
+    // gövde: yumurta
+    c.save(); c.translate(cx, cy); c.scale(1 / sq, sq); c.rotate(mv ? dir * .06 : Math.sin(t * 1.3) * .02);
+    const egg = () => { c.beginPath(); c.moveTo(0, -bh); c.bezierCurveTo(bw * .95, -bh, bw * 1.05, bh * .1, bw * .92, bh * .45); c.bezierCurveTo(bw * .8, bh * .95, -bw * .8, bh * .95, -bw * .92, bh * .45); c.bezierCurveTo(-bw * 1.05, bh * .1, -bw * .95, -bh, 0, -bh); c.closePath(); };
+    const gr = c.createRadialGradient(-bw * .35, -bh * .45, 3, 0, 0, bh * 1.2); gr.addColorStop(0, '#f1ede6'); gr.addColorStop(.6, '#d6d0c6'); gr.addColorStop(1, '#a9a196');
+    egg(); c.fillStyle = gr; c.fill();
+    c.save(); egg(); c.clip(); c.fillStyle = 'rgba(80,70,60,.18)'; for (let i = 0; i < 26; i++) { c.beginPath(); c.arc((N.nz(i * 3.1) - .5) * bw * 1.8, (N.nz(i * 5.7) - .5) * bh * 1.8, .9 + N.nz(i) * .8, 0, 7); c.fill(); }
+    c.strokeStyle = 'rgba(23,20,17,.22)'; c.lineWidth = 1.2; c.beginPath(); for (let k = 0; k < 6; k++) { const yy = bh * .15 + k * 4.5; c.moveTo(bw * .25 + k * 2, yy + 8); c.lineTo(bw * .9, yy - 4); } c.stroke(); c.restore();
+    egg(); c.strokeStyle = N.INK; c.lineWidth = 3.6; c.stroke();
+    c.save(); c.translate(.8, .6); c.rotate(.02); egg(); c.globalAlpha = .3; c.lineWidth = 1.5; c.stroke(); c.restore();
+    // saç
+    c.lineWidth = 1.8; c.beginPath(); [-4, 0, 4].forEach((hx, i) => { const w = Math.sin(t * 3 + i) * 1.5 - (mv ? dir * 3 : 0); c.moveTo(hx * .6, -bh + 1); c.quadraticCurveTo(hx + w, -bh - 6, hx * 1.6 + w * 1.4, -bh - 9 + Math.abs(hx) * .4); }); c.stroke();
+    // yüz
+    const fx = dir * 3.5 * (mv ? 1 : .5), blink = (t % 4.3) < .13;
+    if (happy || blink) { c.lineWidth = 2; [-1, 1].forEach((sd) => { c.beginPath(); c.arc(fx + sd * 8, -3, 3.6, Math.PI * 1.1, Math.PI * 1.9); c.stroke(); }); }
+    else { c.fillStyle = N.INK; [-1, 1].forEach((sd) => { c.beginPath(); c.ellipse(fx + sd * 8, -4, 2.3, 3, 0, 0, 7); c.fill(); c.beginPath(); c.arc(fx + sd * 8 + .8, -5.2, .8, 0, 7); c.fillStyle = '#fff'; c.fill(); c.fillStyle = N.INK; }); }
+    c.lineWidth = sad ? 1.8 : 1.2; c.globalAlpha = sad ? .9 : .55; [-1, 1].forEach((sd) => { c.beginPath(); c.moveTo(fx + sd * 5, -12 - (happy ? 1.5 : 0) - (sad ? 2.5 : 0)); c.lineTo(fx + sd * 11, -11.5 - (happy ? 2.5 : 0) + (sad ? 1.5 : 0)); c.stroke(); }); c.globalAlpha = 1;
+    c.fillStyle = 'rgba(196,67,43,.18)'; [-1, 1].forEach((sd) => { c.beginPath(); c.ellipse(fx + sd * 14, 4, 4, 2.4, 0, 0, 7); c.fill(); });
+    c.lineWidth = 2; c.beginPath();
+    if (happy) { c.moveTo(fx - 6, 4); c.quadraticCurveTo(fx, 13, fx + 6, 4); c.closePath(); c.fillStyle = '#5a3a2c'; c.fill(); c.stroke(); }
+    else if (sad) { c.arc(fx, 10, 5.5, Math.PI * 1.2, Math.PI * 1.8); c.stroke(); }
+    else { c.arc(fx, 2, 5.5, Math.PI * .2, Math.PI * .8); c.stroke(); }
+    c.restore();
+    // sevinç kırıntıları
+    if (happy) { c.strokeStyle = N.AMBER; c.lineWidth = 3; for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i - 2.5) * .45 + Math.sin(t * 3 + i) * .08, r = 52 + Math.sin(t * 6 + i * 2) * 5, px = cx + Math.cos(a) * r, py = cy + 8 + Math.sin(a) * r; c.beginPath(); c.moveTo(px - Math.cos(a + 1.2) * 5, py - Math.sin(a + 1.2) * 5); c.lineTo(px + Math.cos(a + 1.2) * 5, py + Math.sin(a + 1.2) * 5); c.stroke(); } }
+    c.lineCap = 'butt'; c.lineJoin = 'miter';
+  };
+
+  /* sayfadaki Nokta resimlerini canlı karaktere çevirir (hop → sevinç, shake → üzüntü) */
+  const AV = new Set(); let avRun = false;
+  function avLoop(now) {
+    const t = now / 1000 * (N.reduced ? .3 : 1);
+    AV.forEach((cv) => {
+      if (!cv.isConnected) { AV.delete(cv); return; }
+      const A = cv._av;
+      if (cv.classList.contains('hop')) { cv.classList.remove('hop'); A.happy = t + 2.2; A.sad = 0; }
+      const sh = cv.classList.contains('shake'); if (sh && !A.shook) { A.sad = t + 1.6; A.happy = 0; } A.shook = sh;
+      const w = cv.clientWidth; if (!w) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2), W = Math.round(w * dpr), H = Math.round(w * 1.24 * dpr);
+      if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+      const c = cv.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, W, H); c.setTransform(W / 100, 0, 0, W / 100, 0, 0);
+      const happy = A.always === 'happy' || t < A.happy;
+      c.beginPath(); c.ellipse(53, 117, 24, 4.5, 0, 0, 7); c.fillStyle = 'rgba(23,20,17,.14)'; c.fill();
+      N.noktaChar(c, 50, 116, { t: t + A.seed, moving: false, dir: 1, happy, sad: t < A.sad });
+    });
+    if (AV.size) requestAnimationFrame(avLoop); else avRun = false;
+  }
+  N.avatar = (cv, o = {}) => { cv._av = { happy: 0, sad: 0, seed: Math.random() * 10, ...o }; AV.add(cv); if (!avRun) { avRun = true; requestAnimationFrame(avLoop); } return cv; };
+  function swapNokta(root) {
+    if (!root.querySelectorAll) return;
+    root.querySelectorAll('img[src$="nokta.png"]:not([data-keep])').forEach((img) => {
+      const cv = document.createElement('canvas'), cs = getComputedStyle(img);
+      cv.className = img.className + ' nokta-cv'; if (img.id) cv.id = img.id;
+      cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', img.alt || 'Nokta');
+      const w = parseFloat(cs.width) || parseFloat(img.getAttribute('width')) || 78; cv.width = 100; cv.height = 124; cv.style.width = w + 'px'; cv.style.height = 'auto';
+      const end = !!img.closest('.end-card'); img.replaceWith(cv); N.avatar(cv, end ? { always: 'happy' } : {});
+    });
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    swapNokta(document.body);
+    new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((nd) => { if (nd.nodeType === 1) swapNokta(nd.matches && nd.matches('img') ? nd.parentNode || nd : nd); }))).observe(document.body, { childList: true, subtree: true });
+  });
+
   /* ── mürekkep çizimleri ── */
   const d = (N.d = {
     style(c, o = {}) {
@@ -126,6 +226,7 @@
     seg(c, a, b, o = {}) {
       const t = o.t == null ? 1 : o.t, e = g.lerp(a, b, t);
       d.style(c, o); c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(e.x, e.y); c.stroke(); d.end(c);
+      if (ghostOk(o)) ghostSeg(c, a, e, o);
     },
     arrow(c, at, dir, o = {}) {
       const s = o.size || 13, u = g.unit(dir), n = { x: -u.y, y: u.x };
@@ -154,6 +255,7 @@
       d.style(c, o); c.beginPath(); c.arc(p.x, p.y, Math.max(0, r), -s, -s - t * Math.PI * 2, true);
       if (o.fill) { c.fillStyle = o.fill; c.fill(); }
       if (!o.noStroke) c.stroke(); d.end(c);
+      if (!o.noStroke && ghostOk(o) && r > 8) { const dr = (N.nz(p.x * .3 + p.y * .7 + r) - .5) * 3, ox = (N.nz(p.y + r) - .5) * 1.6; ghostStyle(c, o); c.beginPath(); c.arc(p.x + ox, p.y - ox * .6, r + dr, -s - .35, -s - .35 - Math.min(t * Math.PI * 2, Math.PI * 2 - .2), true); c.stroke(); c.globalAlpha = 1; }
     },
     dot(c, p, o = {}) {
       c.beginPath(); c.arc(p.x, p.y, o.r || 5.5, 0, Math.PI * 2); c.fillStyle = o.color || N.INK; c.fill();
@@ -182,6 +284,7 @@
       c.beginPath(); c.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) c.lineTo(pts[i].x, pts[i].y); if (o.open !== true) c.closePath();
       if (o.fill) { c.fillStyle = o.fill; c.fill(); }
       if (!o.noStroke) { d.style(c, o); c.stroke(); d.end(c); }
+      if (!o.noStroke && ghostOk(o)) { const n = pts.length - (o.open === true ? 1 : 0); for (let i = 0; i < n; i++) ghostSeg(c, pts[i], pts[(i + 1) % pts.length], o); }
     },
     /** kenar üzerine eşlik çentikleri (n adet) */
     ticks(c, a, b, n, o = {}) {

@@ -863,55 +863,8 @@ const KASABA_METINLERI = {
     // kelebek
     if (st.hava === 'sabah') { layer(1); const bx = 2000 + Math.sin(st.t * .4) * 3000, by = 520 + Math.sin(st.t * 1.7) * 40, w = Math.abs(Math.sin(st.t * 12)); ctx.fillStyle = N.AMBER; ctx.strokeStyle = N.INK; ctx.lineWidth = 1.5; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.ellipse(bx + sd * 7 * w, by, 7 * w + 1, 9, 0, 0, 7); ctx.fill(); ctx.stroke(); }); }
   }
-  /* Nokta: çizimle canlandırılan karakter (yürür, göz kırpar, sevinir) */
-  function drawNoktaChar(x, gy, o) {
-    const t = o.t, mv = o.moving, dir = o.dir || 1, happy = o.happy;
-    const step = Math.sin(t * 11), bob = mv ? Math.abs(Math.cos(t * 11)) * 5 : Math.sin(t * 2) * 1.2 + (happy ? Math.abs(Math.sin(t * 9)) * 8 : 0);
-    const legL = 24, bw = 25, bh = 31, cx = x, cy = gy - legL - bh + 4 - bob;
-    const sq = mv ? 1 + Math.cos(t * 22) * .03 : 1 + Math.sin(t * 2) * .015;
-    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = N.INK;
-    // bacaklar
-    [-1, 1].forEach((sd) => {
-      const hx = cx + sd * 9, hy = cy + bh * .82, sw = mv ? step * sd * 11 : 0, fx = hx + sw + dir * (mv ? 2 : 0), fy = gy - (mv ? Math.max(0, -step * sd) * 6 : 0);
-      ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + fx) / 2 - sd * 1.5, (hy + fy) / 2, fx, fy - 3); ctx.lineWidth = 3.4; ctx.stroke();
-      ctx.beginPath(); ctx.ellipse(fx + dir * 3, fy - 2.5, 6, 3.6, 0, 0, 7); ctx.fillStyle = N.INK; ctx.fill();
-    });
-    // kollar
-    const arm = (sd) => {
-      const sx = cx + sd * bw * .93, sy = cy + 4; let hx, hy;
-      if (o.umbrella && sd === 1) { hx = o.umbrella.x; hy = o.umbrella.y; }
-      else if (happy) { hx = cx + sd * (bw + 16); hy = cy - 30 + Math.sin(t * 14 + sd) * 4; }
-      else if (mv) { hx = sx + sd * 8 - step * sd * 10; hy = sy + 22; }
-      else { hx = sx + sd * 10; hy = sy + 20 + Math.sin(t * 2 + sd) * 1.5; }
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo((sx + hx) / 2 + sd * 6, (sy + hy) / 2 - 4, hx, hy); ctx.lineWidth = 2.8; ctx.stroke();
-      ctx.beginPath(); ctx.arc(hx, hy, 3.8, 0, 7); ctx.fillStyle = N.INK; ctx.fill();
-    };
-    arm(-1); arm(1);
-    // gövde: yumurta
-    ctx.save(); ctx.translate(cx, cy); ctx.scale(1 / sq, sq); ctx.rotate(mv ? dir * .06 : Math.sin(t * 1.3) * .02);
-    const egg = () => { ctx.beginPath(); ctx.moveTo(0, -bh); ctx.bezierCurveTo(bw * .95, -bh, bw * 1.05, bh * .1, bw * .92, bh * .45); ctx.bezierCurveTo(bw * .8, bh * .95, -bw * .8, bh * .95, -bw * .92, bh * .45); ctx.bezierCurveTo(-bw * 1.05, bh * .1, -bw * .95, -bh, 0, -bh); ctx.closePath(); };
-    const gr = ctx.createRadialGradient(-bw * .35, -bh * .45, 3, 0, 0, bh * 1.2); gr.addColorStop(0, '#f1ede6'); gr.addColorStop(.6, '#d6d0c6'); gr.addColorStop(1, '#a9a196');
-    egg(); ctx.fillStyle = gr; ctx.fill();
-    ctx.save(); egg(); ctx.clip(); ctx.fillStyle = 'rgba(80,70,60,.18)'; for (let i = 0; i < 26; i++) { ctx.beginPath(); ctx.arc((nz(i * 3.1) - .5) * bw * 1.8, (nz(i * 5.7) - .5) * bh * 1.8, .9 + nz(i) * .8, 0, 7); ctx.fill(); }
-    ctx.strokeStyle = 'rgba(23,20,17,.22)'; ctx.lineWidth = 1.2; ctx.beginPath(); for (let k = 0; k < 6; k++) { const yy = bh * .15 + k * 4.5; ctx.moveTo(bw * .25 + k * 2, yy + 8); ctx.lineTo(bw * .9, yy - 4); } ctx.stroke(); ctx.restore();
-    egg(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3.6; ctx.stroke();
-    ctx.save(); ctx.translate(.8, .6); ctx.rotate(.02); egg(); ctx.globalAlpha = .3; ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
-    // saç
-    ctx.lineWidth = 1.8; ctx.beginPath(); [-4, 0, 4].forEach((hx, i) => { const w = Math.sin(t * 3 + i) * 1.5 - (mv ? dir * 3 : 0); ctx.moveTo(hx * .6, -bh + 1); ctx.quadraticCurveTo(hx + w, -bh - 6, hx * 1.6 + w * 1.4, -bh - 9 + Math.abs(hx) * .4); }); ctx.stroke();
-    // yüz
-    const fx = dir * 3.5 * (mv ? 1 : .5), blink = (t % 4.3) < .13;
-    if (happy || blink) { ctx.lineWidth = 2; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.arc(fx + sd * 8, -3, 3.6, Math.PI * 1.1, Math.PI * 1.9); ctx.stroke(); }); }
-    else { ctx.fillStyle = N.INK; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.ellipse(fx + sd * 8, -4, 2.3, 3, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.arc(fx + sd * 8 + .8, -5.2, .8, 0, 7); ctx.fillStyle = '#fff'; ctx.fill(); ctx.fillStyle = N.INK; }); }
-    ctx.lineWidth = 1.2; ctx.globalAlpha = .55; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.moveTo(fx + sd * 5, -12 - (happy ? 1.5 : 0)); ctx.lineTo(fx + sd * 11, -11.5 - (happy ? 2.5 : 0)); ctx.stroke(); }); ctx.globalAlpha = 1;
-    ctx.fillStyle = 'rgba(196,67,43,.18)'; [-1, 1].forEach((sd) => { ctx.beginPath(); ctx.ellipse(fx + sd * 14, 4, 4, 2.4, 0, 0, 7); ctx.fill(); });
-    ctx.lineWidth = 2; ctx.beginPath();
-    if (happy) { ctx.moveTo(fx - 6, 4); ctx.quadraticCurveTo(fx, 13, fx + 6, 4); ctx.closePath(); ctx.fillStyle = '#5a3a2c'; ctx.fill(); ctx.stroke(); }
-    else { const m = mv ? 2.5 : 3.5; ctx.arc(fx, 2, 5.5, Math.PI * .2, Math.PI * .8); ctx.stroke(); void m; }
-    ctx.restore();
-    // sevinç kırıntıları
-    if (happy) { ctx.strokeStyle = N.AMBER; ctx.lineWidth = 3; for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i - 2.5) * .45 + Math.sin(t * 3 + i) * .08, r = 52 + Math.sin(t * 6 + i * 2) * 5, px = cx + Math.cos(a) * r, py = cy + 8 + Math.sin(a) * r; ctx.beginPath(); ctx.moveTo(px - Math.cos(a + 1.2) * 5, py - Math.sin(a + 1.2) * 5); ctx.lineTo(px + Math.cos(a + 1.2) * 5, py + Math.sin(a + 1.2) * 5); ctx.stroke(); } }
-    ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
-  }
+  /* Nokta: çizimle canlandırılan karakter (ortak.js) */
+  const drawNoktaChar = (x, gy, o) => N.noktaChar(ctx, x, gy, o);
   function noktaDraw() {
     layer(1);
     const moving = Math.abs(nokta.tx - nokta.x) > 2, h = 112;

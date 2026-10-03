@@ -61,7 +61,10 @@ b { font-weight: 600; }
 .say { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; align-items: start; }
 .say img { width: 78px; height: auto; transform-origin: 50% 92%; }
 .say img.hop { animation: hop .9s ease-in-out 1; }
-.say img.shake { animation: shake .5s ease-in-out 1; }
+.say img.shake, .nokta-cv.shake { animation: shake .5s ease-in-out 1; }
+.nokta-cv { display: block; height: auto; transform-origin: 50% 92%; }
+.say .nokta-cv { width: 78px !important; }
+.end-card .nokta-cv { width: 130px !important; margin: -8px auto 0; }
 .say p { position: relative; margin: 6px 0 0; background: var(--sheet); border-radius: 14px; padding: 12px 15px; box-shadow: 0 0 0 1.8px var(--ink), 0 10px 22px -18px rgba(60,40,10,.7); font-size: 16.5px; line-height: 1.45; min-height: 70px; }
 .say p::before { content: ""; position: absolute; left: -11px; top: 22px; border-right: 11px solid var(--ink); border-top: 8px solid transparent; border-bottom: 8px solid transparent; }
 .say p::after { content: ""; position: absolute; left: -8px; top: 23.5px; border-right: 9px solid var(--sheet); border-top: 6.5px solid transparent; border-bottom: 6.5px solid transparent; }
@@ -139,7 +142,7 @@ dialog.end::backdrop { background: rgba(18, 15, 12, .7); backdrop-filter: blur(2
 @media (max-width: 960px) {
   .game { grid-template-columns: 1fr; }
   .say { grid-template-columns: 60px minmax(0, 1fr); }
-  .say img { width: 60px; }
+  .say img, .say .nokta-cv { width: 60px !important; }
 }
 @media (max-width: 520px) {
   .hud { width: 100%; justify-content: space-between; }

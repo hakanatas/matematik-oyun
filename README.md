@@ -37,7 +37,7 @@ Kurulum gerekmez. `index.html` dosyasını tarayıcıda açmanız yeterli; inter
 ```
 index.html            ana sayfa: sınıf → tema → oyun (Nokta'nın Filmleri düzeni)
 css/oyun.css          ortak mürekkep stili (kâğıt, siyah mürekkep, kehribar)
-js/ortak.js           tuval, geometri, çizim, Nokta'nın konuşması, puan, ses, yıldızlar
+js/ortak.js           tuval, geometri, el çizimi mürekkep, canlı Nokta karakteri, konuşma, puan, ses, yıldızlar
 js/<oyun>.js          her oyunun kuralları
 oyunlar/<oyun>.html   oyun sayfaları
 img/                  Nokta ve oyun önizlemeleri (oyunların ?onizleme görünümünden)

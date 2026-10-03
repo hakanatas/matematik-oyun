@@ -131,7 +131,13 @@
     c.beginPath(); c.moveTo(338, 438);
     c.lineTo(684, 438); c.quadraticCurveTo(660, 470, 616, 494); c.lineTo(404, 494); c.quadraticCurveTo(360, 470, 338, 438); c.closePath();
     const f = st.finale ? .9 : .55;
-    c.fillStyle = `rgba(107,79,53,${f})`; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 3.5; c.stroke();
+    c.fillStyle = `rgba(107,79,53,${f})`; c.fill();
+    c.save(); c.clip(); c.fillStyle = 'rgba(23,20,17,.16)'; c.fillRect(330, 476, 360, 24); // gövde altı gölge
+    c.strokeStyle = 'rgba(23,20,17,.22)'; c.lineWidth = 1.3; c.beginPath(); for (let x = 560; x < 720; x += 7) { c.moveTo(x, 500); c.lineTo(x + 60, 430); } c.stroke(); c.restore();
+    c.beginPath(); c.moveTo(338, 438); c.lineTo(684, 438); c.quadraticCurveTo(660, 470, 616, 494); c.lineTo(404, 494); c.quadraticCurveTo(360, 470, 338, 438); c.closePath();
+    c.strokeStyle = N.INK; c.lineWidth = 3.5; c.stroke();
+    c.strokeStyle = 'rgba(23,20,17,.3)'; c.lineWidth = 1.5; c.beginPath(); c.moveTo(340, 440.5); c.lineTo(686, 437); c.stroke();
+    if (A('deniz')) { c.strokeStyle = 'rgba(107,79,53,.28)'; c.lineWidth = 3; for (let k = 0; k < 4; k++) { const y = 504 + k * 9, w = 120 - k * 22, sh = Math.sin(st.t * 2 + k) * 6; c.beginPath(); c.moveTo(510 - w + sh, y); c.lineTo(510 + w + sh, y); c.stroke(); } }
     c.strokeStyle = 'rgba(23,20,17,.35)'; c.lineWidth = 1.6;
     c.beginPath(); c.moveTo(352, 456); c.lineTo(670, 456); c.moveTo(372, 476); c.lineTo(648, 476); c.stroke();
     [420, 470, 550, 600].forEach((x) => { c.beginPath(); c.arc(x, 450, 5, 0, Math.PI * 2); c.fillStyle = 'rgba(255,250,236,.9)'; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 1.6; c.stroke(); });
