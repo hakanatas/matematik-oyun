@@ -1,0 +1,26 @@
+<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Mürekkep çizim seti · örnek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f1eadc}canvas{display:block;width:100%;height:auto}</style></head><body>
+<canvas id="c" width="900" height="500"></canvas>
+<script src="murekkep.js"></script>
+<script>
+/* murekkep.js'i tek başına kullanma örneği: bir ev, bir ağaç ve canlı Nokta */
+const cv = document.getElementById('c'), ctx = cv.getContext('2d'), GROUND = 420, st = { t: 0, hava: 'sabah' };
+const M = N.murekkep(ctx, { GROUND, st }); M.SK = true;
+function cizim(now) {
+  st.t = now / 1000; ctx.clearRect(0, 0, 900, 500);
+  ctx.fillStyle = '#e6d9bd'; ctx.fillRect(0, GROUND, 900, 80); M.inkLine({ x: 0, y: GROUND }, { x: 900, y: GROUND }, 3);
+  // ev
+  M.groundShadow(260, 260); M.inkRect = (x, y, w, h, f, lw = 3) => M.inkPoly(M.rectPts(x, y, w, h), { fill: f, w: lw });
+  M.inkRect(160, 230, 200, 190, '#f6ecd8'); M.hatch(M.rectPts(320, 232, 39, 186), { gap: 6, alpha: .18 });
+  M.inkPoly([{ x: 140, y: 230 }, { x: 260, y: 150 }, { x: 380, y: 230 }], { fill: '#c4432b' }); M.hatch([{ x: 260, y: 150 }, { x: 380, y: 230 }, { x: 260, y: 230 }], { gap: 6, alpha: .2 });
+  M.inkRect(190, 260, 46, 50, '#d7e1e4', 2.5); M.inkRect(284, 260, 46, 50, '#d7e1e4', 2.5); M.inkRect(240, 350, 40, 70, '#7b5a3c', 2.5);
+  // ağaç
+  M.groundShadow(560, 120); M.inkPoly([{ x: 552, y: GROUND }, { x: 556, y: 330 }, { x: 564, y: 330 }, { x: 568, y: GROUND }], { fill: '#6b4f35', w: 2.5 });
+  [[560, 300, 52], [525, 330, 38], [598, 328, 40]].forEach(([x, y, r]) => M.inkCircle(x, y, r, { fill: '#87a074', w: 2.5 }));
+  // Nokta
+  N.noktaChar(ctx, 720, GROUND, { t: st.t, moving: false, dir: -1, happy: (st.t % 5) < 1.5 });
+  requestAnimationFrame(cizim);
+}
+requestAnimationFrame(cizim);
+</script></body></html>
