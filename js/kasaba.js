@@ -780,9 +780,7 @@ const KASABA_METINLERI = {
     Z.draw = (c) => {
       c.fillStyle = '#e4e8d4'; c.fillRect(0, 0, ZW, ZH);
       for (let i = 0; i < 40; i++) { const x = (i * 211) % ZW, y = (i * 137) % ZH; c.beginPath(); c.arc(x, y, 9 + (i % 3) * 3, 0, 7); c.fillStyle = 'rgba(110,140,90,.35)'; c.fill(); }
-      // köşelerdeki evler
-      const sc = secs(); const dirs = [CINAR, map.gul, CINAR + 180, map.gul + 180].map((x) => g.nd(x)).sort((p, q) => p - q);
-      for (let i = 0; i < 4; i++) { const a0 = dirs[i], a1 = dirs[(i + 1) % 4] + (i === 3 ? 360 : 0), mid = (a0 + a1) / 2, span = a1 - a0; if (span < 30) continue; const p = g.polar(MO, 175, g.rad(mid)); c.save(); c.translate(p.x, p.y); c.rotate(-g.rad(mid)); c.fillStyle = '#f2e3c4'; c.fillRect(-26, -22, 52, 44); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(-26, -22, 52, 44); c.fillStyle = '#c4432b'; c.fillRect(-26, -22, 52, 12); c.restore(); }
+      const sc = secs();
       street(c, MO, CINAR, 'Çınar Sokağı');
       street(c, MO, map.gul, 'Gül Sokağı', true);
       if (map.laleOn) street(c, LQ, map.lale, 'Lale Sokağı', true, true);
@@ -835,7 +833,7 @@ const KASABA_METINLERI = {
     c.strokeStyle = N.INK; c.lineWidth = 58; c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke();
     c.strokeStyle = movable ? '#ddd3bf' : '#d4c9b2'; c.lineWidth = 52; c.stroke();
     c.setLineDash([16, 14]); c.strokeStyle = 'rgba(255,255,255,.9)'; c.lineWidth = 3; c.stroke(); c.setLineDash([]); c.lineCap = 'round';
-    const t = g.polar(o, flat ? -120 : 150, g.rad(deg)); c.save(); c.translate(t.x, t.y); let r = -g.rad(deg); if (Math.cos(r) < 0) r += Math.PI; c.rotate(r);
+    const t = g.polar(o, flat ? -120 : 245, g.rad(deg)); c.save(); c.translate(t.x, t.y); let r = -g.rad(deg); if (Math.cos(r) < 0) r += Math.PI; c.rotate(r);
     c.font = `400 22px ${N.BRUSH}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = N.INK; c.fillText(name, 0, -40); c.restore();
   }
   function checkMap() {
