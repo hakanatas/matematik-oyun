@@ -15,7 +15,7 @@
   const testRozet = Ag.mod === 'yerel' ? '<p class="cok-test">Test modu: sunucu bağlı değil. Aynı bilgisayarda birkaç sekme açıp birlikte dolaşmayı deneyebilirsin.</p>' : '';
   function girisEkrani(hata) {
     kart(`<img src="../img/nokta.png" alt="" class="cok-nokta"><h2>Birlikte gezelim!</h2>
-      <p>Arkadaşlarınla aynı kasabada dolaş, hazır mesajlarla konuş.</p>
+      <p>Arkadaşlarınla aynı kasabada dolaş, hazır mesajlarla konuş.</p><p class="small">Yürümek için <b>← →</b> tuşları, ekrandaki <b>◀ ▶</b> düğmeleri ya da yere dokunmak.</p>
       ${hata ? `<p class="cok-hata">${hata}</p>` : ''}
       ${Ag.mod === 'yerel' ? `<p class="small">Test için bir kişi seç:</p><div class="cok-liste">${Ag.testKisileri.map((a) => `<button class="btn" data-test="${esc(a)}" type="button">${esc(a)}</button>`).join('')}</div>`
         : `<button class="btn primary big cok-google" id="cokGiris" type="button"><span class="g">G</span> Okul hesabınla gir</button>${Ag.alanlar.length ? `<p class="small">Yalnız ${Ag.alanlar.map((x) => `<b>@${esc(x)}</b>`).join(' ve ')} hesapları girebilir.</p>` : ''}`}
@@ -39,7 +39,7 @@
   async function odayaGir(kod) {
     const n = W().nokta;
     try { await Ag.odayaGir(kod, { x: n.x, tx: n.tx, yon: n.dir || 1 }); } catch (e) { return odaEkrani(e.message); }
-    kutu.hidden = true; panel(); Ag.oyuncular((o) => { oyuncular = o; listele(); }); Ag.mesajlar(gelenMesaj);
+    kutu.hidden = true; panel(); const fold = document.querySelector('#fold'); if (fold && fold.getAttribute('aria-expanded') === 'true') fold.click(); // kasabada dolaşmaya yer aç Ag.oyuncular((o) => { oyuncular = o; listele(); }); Ag.mesajlar(gelenMesaj);
     history.replaceState(null, '', `?oda=${Ag.oda.kod}`);
   }
 
@@ -51,7 +51,8 @@
     pn.innerHTML = `<div class="cok-ust"><span>Oda <b>${esc(Ag.oda.kod)}</b>${Ag.oda.ad && Ag.oda.ad !== Ag.oda.kod ? ' · ' + esc(Ag.oda.ad) : ''}</span><button class="chip-btn" id="cokKucult" type="button" aria-expanded="true">–</button></div><ul id="cokOy"></ul><button class="chip-btn" id="cokAyril" type="button">Odadan çık</button>`;
     $('#cokAyril').onclick = async () => { await Ag.ayril(); oyuncular = {}; pn.hidden = true; bar.hidden = true; history.replaceState(null, '', location.pathname); odaEkrani(); };
     $('#cokKucult').onclick = () => pn.classList.toggle('kapali');
-    bar.innerHTML = `<button class="btn primary" id="cokMsjAc" type="button" aria-expanded="false">💬 Mesaj</button><div class="cok-msj" id="cokMsj" hidden>${MSJ.map((m, i) => `<button class="chip-btn" data-m="${i}" type="button">${esc(m)}</button>`).join('')}</div>`;
+    bar.innerHTML = `<div class="cok-yon"><button class="btn" data-yon="-1" type="button" aria-label="Sola yürü">◀</button><button class="btn primary" id="cokMsjAc" type="button" aria-expanded="false">💬 Mesaj</button><button class="btn" data-yon="1" type="button" aria-label="Sağa yürü">▶</button></div><div class="cok-msj" id="cokMsj" hidden>${MSJ.map((m, i) => `<button class="chip-btn" data-m="${i}" type="button">${esc(m)}</button>`).join('')}</div>`;
+    bar.querySelectorAll('[data-yon]').forEach((b) => { const bas = (e) => { e.preventDefault(); W().yuru.d = +b.dataset.yon; }, birak = () => { W().yuru.d = 0; }; b.addEventListener('pointerdown', bas); ['pointerup', 'pointerleave', 'pointercancel'].forEach((ev) => b.addEventListener(ev, birak)); });
     $('#cokMsjAc').onclick = () => { const k = $('#cokMsj'); k.hidden = !k.hidden; $('#cokMsjAc').setAttribute('aria-expanded', String(!k.hidden)); };
     bar.querySelectorAll('[data-m]').forEach((b) => (b.onclick = () => { if (Date.now() - sonMesaj < 1500) return; sonMesaj = Date.now(); Ag.mesaj(+b.dataset.m); $('#cokMsj').hidden = true; $('#cokMsjAc').setAttribute('aria-expanded', 'false'); }));
     listele();

@@ -25,3 +25,5 @@
 .cok-msj[hidden] { display: none; }
 .cok-msj .chip-btn { font-family: var(--serif); font-size: 15px; white-space: normal; }
 @media (max-width: 700px) { .cok-panel { top: auto; bottom: 74px; right: 8px; width: 200px; } .cok-msj { grid-template-columns: repeat(2, auto); } .cok-panel ul { max-height: 22vh; } }
+.cok-yon { display: flex; gap: 8px; align-items: center; }
+.cok-yon [data-yon] { font-size: 20px; padding: 8px 18px; touch-action: none; user-select: none; -webkit-user-select: none; }

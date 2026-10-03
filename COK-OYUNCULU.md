@@ -47,7 +47,7 @@ Bu alan adları `js/cok/ayar.js` ve `firebase/database.rules.json` dosyalarında
 
 1. Öğretmen `kasaba-cok.html` sayfasını açar, okul hesabıyla girer, **Oda aç**’a basar (örneğin “5-A”) ve çıkan **kodu** tahtaya yazar.
 2. Öğrenciler aynı sayfayı açar, okul hesabıyla girer ve kodu yazar. `kasaba-cok.html?oda=KOD` bağlantısı da doğrudan odaya götürür.
-3. Herkes kasabayı kendi hızında gezer.
+3. Herkes kasabayı kendi hızında gezer: **← →** (ya da A / D) tuşları, ekrandaki **◀ ▶** düğmeleri ya da yere dokunarak yürünür; numaralı istasyon düğmeleri doğrudan oraya götürür.
    - Sağdaki listede kimin hangi istasyonda olduğu görünür; **→** ile bir arkadaşın yanına gidilir.
    - **💬 Mesaj** düğmesi hazır mesajları açar.
 
