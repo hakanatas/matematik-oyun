@@ -796,10 +796,58 @@
   }
 
   let last = performance.now();
+  /* ══════════ ortam sesleri: uzaklığa göre kısılır, ses kapalıysa susar ══════════ */
+  const amb = { ac: null, noise: null, rain: null, water: null, nextBird: 3, nextCricket: 1, lastBell: 0, trainP: 0 };
+  const sesKapali = () => { try { return localStorage.getItem('nokta-ses') === 'kapali'; } catch (_) { return false; } };
+  const near = (x, R = 900) => Math.max(0, 1 - Math.abs(cam.x - x) / R);
+  function ambStart() {
+    if (amb.ac) { if (amb.ac.state === 'suspended') amb.ac.resume(); return; }
+    try {
+      const ac = (amb.ac = new (window.AudioContext || window.webkitAudioContext)());
+      const buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), ch = buf.getChannelData(0);
+      for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+      const loop = (type, f, q) => { const s = ac.createBufferSource(); s.buffer = buf; s.loop = true; const fl = ac.createBiquadFilter(); fl.type = type; fl.frequency.value = f; fl.Q.value = q; const gn = ac.createGain(); gn.gain.value = 0; s.connect(fl).connect(gn).connect(ac.destination); s.start(); return gn; };
+      amb.rain = loop('lowpass', 1400, .4); amb.water = loop('bandpass', 900, .8);
+    } catch (_) { amb.ac = null; }
+  }
+  addEventListener('pointerdown', ambStart, { passive: true }); addEventListener('keydown', ambStart);
+  function blip(f0, f1, dur, vol, type = 'sine', delay = 0) {
+    const ac = amb.ac; if (!ac || vol < .002) return;
+    const t = ac.currentTime + delay, o = ac.createOscillator(), gn = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    gn.gain.setValueAtTime(.0001, t); gn.gain.exponentialRampToValueAtTime(vol, t + .012); gn.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(gn).connect(ac.destination); o.start(t); o.stop(t + dur + .05);
+  }
+  function whistle(vol) { // buharlı tren düdüğü: iki ses birlikte
+    const ac = amb.ac; if (!ac || vol < .002) return;
+    const t = ac.currentTime, lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800; lp.connect(ac.destination);
+    [587, 740].forEach((f) => { const o = ac.createOscillator(), gn = ac.createGain(); o.type = 'sawtooth'; o.frequency.setValueAtTime(f * .96, t); o.frequency.linearRampToValueAtTime(f, t + .15);
+      gn.gain.setValueAtTime(.0001, t); gn.gain.exponentialRampToValueAtTime(vol, t + .08); gn.gain.setValueAtTime(vol, t + .9); gn.gain.exponentialRampToValueAtTime(.0001, t + 1.3); o.connect(gn).connect(lp); o.start(t); o.stop(t + 1.4); });
+  }
+  function ambTick(dt) {
+    const ac = amb.ac; if (!ac) return;
+    const off = sesKapali() || document.hidden, now = ac.currentTime;
+    amb.rain.gain.setTargetAtTime(off || st.hava !== 'yagmur' ? 0 : .05, now, .4);
+    amb.water.gain.setTargetAtTime(off ? 0 : .035 * near(FX, 700), now, .2);
+    if (off) return;
+    if (st.hava === 'sabah' && (amb.nextBird -= dt) < 0) { // kuş cıvıltısı
+      amb.nextBird = 3 + Math.random() * 6; const v = .025 + .02 * Math.random(), f = 2400 + Math.random() * 1600, n = 2 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < n; i++) blip(f, f * 1.35, .09, v, 'sine', i * .13);
+    }
+    if (st.hava === 'aksam' && (amb.nextCricket -= dt) < 0) { // cırcır böceği
+      amb.nextCricket = 1.4 + Math.random() * 2; for (let i = 0; i < 3; i++) blip(4300, 4200, .04, .012, 'square', i * .07);
+    }
+    const p = st.t % 26; // tren gelirken ve kalkarken düdük çalar
+    if ((amb.trainP < .2 && p >= .2) || (amb.trainP < 15.1 && p >= 15.1)) whistle(.05 * near(trainFront().x, 1300));
+    amb.trainP = p;
+    const m = Math.floor(st.t / 120); // iki dakikada bir kule çanı (kasabanın "saat başı")
+    if (m > amb.lastBell) { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
+  }
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now; if (!N.reduced) st.t += dt; else st.t += dt * .25;
     const k = N.reduced ? 1 : 1 - Math.pow(.002, dt);
     if (!panning) cam.x += (cam.tx - cam.x) * k;
+    ambTick(dt);
     const sp = (260 + Math.abs(nokta.tx - nokta.x) * 1.4) * dt, wasMoving = Math.abs(nokta.tx - nokta.x) > 2; nokta.x += Math.max(-sp, Math.min(sp, nokta.tx - nokta.x));
     if (wasMoving && Math.abs(nokta.tx - nokta.x) <= 2 && pendingSay) { speak(pendingSay); pendingSay = null; nokta.happyUntil = st.t + 2.2; }
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);

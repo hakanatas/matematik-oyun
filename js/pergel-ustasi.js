@@ -7,12 +7,16 @@
   const S = (N.stage = new N.Stage(N.$('#cv'), W, H));
   const KIND = ['çeşitkenar', 'ikizkenar', 'eşkenar'];
 
+  // her açılışta yeni sayılar: tahmin edilecek üçgen türü, |AB| ve başlangıç açıklıkları değişir
+  const tk = g.pick([2, 2, 1, 0]), tab = g.pick([4, 5, 6]);
+  const tr = tk === 2 ? [tab, tab] : tk === 1 ? (() => { const k = tab + g.pick([-1, 1, 1.5]); return [k, k]; })() : [tab - 1, tab + 1.5];
+  const kurAb = () => g.pick([5, 6, 7]);
+  const kurM = (goal) => { const ab = kurAb(); let r; do { r = [g.pick([3, 3.5, 4, 4.5, 5]), g.pick([4, 4.5, 5, 5.5])]; } while (((s) => { const e = (s[0] === s[1]) + (s[1] === s[2]) + (s[0] === s[2]); return e >= 2 ? 2 : e === 1 ? 1 : 0; })([ab, r[0], r[1]]) === goal || r[0] + r[1] <= ab || Math.abs(r[0] - r[1]) >= ab); return { type: 'kur', ab, r, goal }; };
+  const kab = g.pick([6, 7]), kr0 = g.pick([2, 2.5, 3]);
   const MISSIONS = [
-    { type: 'tahmin', ab: 5, r: [5, 5] },
-    { type: 'kur', ab: 6, r: [3, 4.5], goal: 2 },
-    { type: 'kur', ab: 6, r: [4, 5], goal: 1 },
-    { type: 'kur', ab: 5, r: [5, 5], goal: 0 },
-    { type: 'kesis', ab: 7, r: [2, 3] },
+    { type: 'tahmin', ab: tab, r: tr, kind: tk },
+    ...g.shuffle([kurM(2), kurM(1), kurM(0)]),
+    { type: 'kesis', ab: kab, r: [kr0, Math.max(1.5, kab - kr0 - g.pick([1, 1.5, 2]))] },
     { type: 'onerme' },
   ];
   N.max = 40 + 3 * 80 + 60 + 60;
@@ -104,16 +108,18 @@
 
   function mTahmin(M) {
     setup(M); st.show = [0, 0]; st.lock = [true, true]; S.ask();
-    N.say(`|AB| = ${M.ab} cm. Pergeli <b>${M.r[0]} cm</b> açıp A merkezli, sonra aynı açıklıkla B merkezli çember çizeceğim. Kesişim noktası C ise <em>ABC üçgeni nasıl olur?</em> Önce tahmin et!`);
+    const same = M.r[0] === M.r[1];
+    N.say(`|AB| = ${M.ab} cm. Pergeli <b>${N.fmt(M.r[0])} cm</b> açıp A merkezli, sonra ${same ? 'aynı açıklıkla' : `<b>${N.fmt(M.r[1])} cm</b> açıp`} B merkezli çember çizeceğim. Kesişim noktası C ise <em>ABC üçgeni nasıl olur?</em> Önce tahmin et!`);
     const el = N.panel('<div class="card"><span class="label">Görev 1 · Tahmin</span><div id="cb"></div><div id="cn"></div></div>');
     let guessed = false;
-    N.choices(el.querySelector('#cb'), ['Çeşitkenar', 'İkizkenar', 'Eşkenar'].map((t, i) => ({ t, ok: i === 2, i })), async (o) => {
+    N.choices(el.querySelector('#cb'), ['Çeşitkenar', 'İkizkenar', 'Eşkenar'].map((t, i) => ({ t, ok: i === M.kind, i })), async (o) => {
       if (guessed) return; guessed = true;
-      const right = o.i === 2;
-      el.querySelectorAll('.choice').forEach((b, i) => { b.disabled = true; if (i === 2) b.classList.add('ok'); });
+      const right = o.i === M.kind;
+      el.querySelectorAll('.choice').forEach((b, i) => { b.disabled = true; if (i === M.kind) b.classList.add('ok'); });
       await sweepIn(0); await sweepIn(1); st.active = null; st.showKind = true; S.ask();
       N.addScore(right ? 40 : 10, { x: 500, y: 200 }); right ? N.sfx.good() : N.sfx.bad();
-      N.say(`${right ? 'Tahminin doğru!' : 'Tahminin tutmadı ama bak:'} |AC| A’nın yarıçapı, |BC| B’nin yarıçapı: ikisi de ${M.r[0]} cm. |AB| de ${M.ab} cm. Üç kenar eşit: <b>eşkenar üçgen</b>. Hiç cetvel kullanmadık!`, right ? 'good' : 'bad');
+      const tail = M.kind === 2 ? `ikisi de ${N.fmt(M.r[0])} cm. |AB| de ${M.ab} cm. Üç kenar eşit: <b>eşkenar üçgen</b>.` : M.kind === 1 ? `ikisi de ${N.fmt(M.r[0])} cm ama |AB| = ${M.ab} cm. İki kenar eşit: <b>ikizkenar üçgen</b>.` : `${N.fmt(M.r[0])} cm ve ${N.fmt(M.r[1])} cm, |AB| = ${M.ab} cm. Üç kenar da farklı: <b>çeşitkenar üçgen</b>.`;
+      N.say(`${right ? 'Tahminin doğru!' : 'Tahminin tutmadı ama bak:'} |AC| A’nın yarıçapı, |BC| B’nin yarıçapı: ${tail} Hiç cetvel kullanmadık!`, right ? 'good' : 'bad');
       nextBtn(el.querySelector('#cn'));
     }, 'three');
   }
@@ -144,7 +150,7 @@
 
   function mKesis(M) {
     setup(M); st.lock = [true, false]; S.ask();
-    N.say(`|AB| = ${M.ab} cm, A merkezli çemberin yarıçapı <b>${M.r[0]} cm</b> ve değişmiyor. B’nin yarıçapı ${M.r[1]} cm iken üçgen oluşmuyor! B’nin pergel açıklığını ayarlayıp <em>üçgeni kurtar</em>.`);
+    N.say(`|AB| = ${M.ab} cm, A merkezli çemberin yarıçapı <b>${N.fmt(M.r[0])} cm</b> ve değişmiyor. B’nin yarıçapı ${N.fmt(M.r[1])} cm iken üçgen oluşmuyor! B’nin pergel açıklığını ayarlayıp <em>üçgeni kurtar</em>.`);
     const el = N.panel(`<div class="card"><span class="label">Görev ${st.mi + 1} · Kesiştir</span>${stepper(0, 'A')}${stepper(1, 'B')}
       <button class="btn primary big" id="chk" type="button">Üçgen oldu mu?</button><div id="cn"></div></div>`);
     bindSteppers(el); let tries = 0;

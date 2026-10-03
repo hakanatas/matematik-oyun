@@ -13,7 +13,7 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 | MAT.5.3.4 | [Kesişme Dedektifi](oyunlar/kesisme-dedektifi.html) | Paralel, kesişen, dik ve çakışık doğrular. Açı bulmacalarında ters, komşu bütünler ve tümler açılar. Doğruları çevirerek “6 dar açı” gibi görevleri tamamla. | Doğrular Kesişince |
 | MAT.5.3.5 | [Şekli Kapat](oyunlar/sekli-kapat.html) | Doğruları ardışık kesiştir; son doğru ilkini kesince çokgen kapanır. Üçgenden altıgene kadar çokgen kur, n doğru → n kenar genellemesini yap. | Doğrulardan Çokgene |
 | MAT.5.3.6 | [Üçgenin Sırrı](oyunlar/ucgenin-sirri.html) | Köşeleri yırtıp 180°’yi bul, kayıp açıyı hesapla. 3 × 3 üçgen tablosunu doldur, imkânsız hücreleri yakala, düzgün çokgenleri ayırt et. | Üçgenin Sırrı |
-| MAT.5.3.7 | [Pergel Ustası](oyunlar/pergel-ustasi.html) | İki çember ve bir kesişim noktasıyla hiç ölçmeden eşkenar, ikizkenar ve çeşitkenar üçgen kur. Ödül: yaşam çiçeği. | Çemberlerle Üçgen |
+| MAT.5.3.7 | [Pergel Ustası](oyunlar/pergel-ustasi.html) | İki çember ve bir kesişim noktasıyla hiç ölçmeden eşkenar, ikizkenar ve çeşitkenar üçgen kur. Sayılar her açılışta değişir. Ödül: yaşam çiçeği. | Çemberlerle Üçgen |
 
 ## Nokta'nın Kasabası
 
@@ -26,7 +26,7 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 5. **Köprü** (MAT.5.3.6): üçgen neden sağlam, iç açılar toplamı 180°.
 6. **Çeşme Meydanı** (MAT.5.3.7): iki taşın halkalarından ölçmeden üçgen.
 
-Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba-metinleri.js` içindeki `KASABA_METINLERI` nesnesinde. Telefonda araç düğmeleri “☰ menü”de toplanır; kasabada gezinirken istasyon kartı ince bir şeride iner.
+Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, ortam sesleri (kuşlar, cırcır böceği, yağmur, çeşme, tren düdüğü, iki dakikada bir kule çanı; yaklaştıkça yükselir), öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba-metinleri.js` içindeki `KASABA_METINLERI` nesnesinde. Telefonda araç düğmeleri “☰ menü”de toplanır; kasabada gezinirken istasyon kartı ince bir şeride iner.
 
 ## Benim ilerlemem
 
