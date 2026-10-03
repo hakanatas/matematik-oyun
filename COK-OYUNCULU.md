@@ -50,6 +50,7 @@ Bu alan adları `js/cok/ayar.js` ve `firebase/database.rules.json` dosyalarında
 3. Herkes kasabayı kendi hızında gezer: **← →** (ya da A / D) tuşları, ekrandaki **◀ ▶** düğmeleri ya da yere dokunarak yürünür; numaralı istasyon düğmeleri doğrudan oraya götürür.
    - Sağdaki listede kimin hangi istasyonda olduğu görünür; **→** ile bir arkadaşın yanına gidilir.
    - **💬 Mesaj** düğmesi hazır mesajları açar.
+   - **Boşluk / ↑** (ya da ⤒ Zıpla düğmesi) ile zıplanır. Arkadaşlar da zıplamayı görür. Zıplayınca yakındaki şeyler tepki verir: saat kulesinin çanı çalar, ağaç sallanıp yaprak döker, çeşmeye su sıçrar, güvercinler havalanır, kasabalılar selam verir; çarşıda otobüs korna çalar, teleskop yıldız gösterir. Yakında böyle bir şey varsa karakterin üstünde “⤒ zıpla: …” ipucu çıkar.
 
 ## Test modu
 

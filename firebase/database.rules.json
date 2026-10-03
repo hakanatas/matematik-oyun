@@ -15,7 +15,10 @@
             ".write": "auth.uid === $uid && auth != null && auth.token.email_verified == true && (auth.token.email.toLowerCase().endsWith('@alkev.k12.tr') || auth.token.email.toLowerCase().endsWith('@stu.alkev.k12.tr')) && root.child('odalar').child($oda).child('bilgi/acik').val() === true",
             ".validate": "newData.hasChildren(['ad', 'x', 'tx', 'yon', 't']) && newData.child('ad').val() === auth.token.name && newData.child('x').isNumber() && newData.child('tx').isNumber() && newData.child('yon').isNumber() && newData.child('t').val() === now",
             "$diger": {
-              ".validate": "$diger === 'ad' || $diger === 'x' || $diger === 'tx' || $diger === 'yon' || $diger === 't'"
+              ".validate": "$diger === 'ad' || $diger === 'x' || $diger === 'tx' || $diger === 'yon' || $diger === 'z' || $diger === 't'"
+            },
+            "z": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() < 100000"
             }
           }
         },
