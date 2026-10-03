@@ -140,6 +140,7 @@ const KASABA_METINLERI = {
   const LAMPS = [-300, 470, 1120, 1480, 2240, 3200, 4180, 5030];
   const $ = (s) => document.querySelector(s);
   const KEY = 'nokta-kasaba';
+  { const mb = $('#menuBtn'), tr = $('#toolsR'); if (mb) { mb.onclick = () => { const o = tr.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.textContent = o ? '× kapat' : '☰ menü'; }; tr.addEventListener('click', (e) => { if (e.target !== mb && e.target.closest('button') && innerWidth <= 700) { tr.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); mb.textContent = '☰ menü'; } }); } }
 
   /* ══════════ durum ══════════ */
   const save0 = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) { return {}; } })();

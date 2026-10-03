@@ -93,6 +93,13 @@ body { background: #efe6d2; }
 .toast.on { opacity: 1; transform: translateX(-50%); }
 .toast b { color: var(--amber); }
 
+#menuBtn { display: none; }
+@media (max-width: 700px) {
+  #menuBtn { display: inline-block; }
+  .tools-r:not(.open) > :not(#menuBtn) { display: none; }
+  .tools-r { margin-left: auto !important; }
+  .tools-r.open { background: rgba(255,250,240,.95); padding: 8px; border-radius: 12px; box-shadow: 0 10px 22px -12px rgba(60,40,10,.6); }
+}
 @media (max-width: 1600px) { .st-btn:not([aria-current="true"]) span { display: none; } }
 @media (max-width: 900px) {
   .zbox { grid-template-columns: 1fr; }
