@@ -1,0 +1,27 @@
+/* Çok oyunculu kasaba */
+.cok-perde { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(18,15,12,.5); padding: 16px; }
+.cok-perde[hidden] { display: none; }
+.cok-kart { background: var(--paper); border-radius: 16px; padding: 22px 26px; width: min(440px, 100%); text-align: center; box-shadow: 0 0 0 2px var(--ink), 0 30px 70px rgba(0,0,0,.4); }
+.cok-kart h2 { font-family: var(--brush); font-weight: 400; font-size: 38px; margin: 4px 0 6px; }
+.cok-kart .cok-nokta, .cok-kart .nokta-cv { width: 90px !important; margin: 0 auto; display: block; }
+.cok-kart hr { border: 0; border-top: 1.5px dashed var(--ink-faint); margin: 16px 0; }
+.cok-google { display: inline-flex; align-items: center; gap: 10px; }
+.cok-google .g { width: 26px; height: 26px; border-radius: 50%; background: #fff; color: #4285f4; font: 700 17px/26px Arial, sans-serif; }
+.cok-liste { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.cok-kod { width: 140px; font-family: var(--mono); font-size: 26px; text-align: center; letter-spacing: .15em; text-transform: uppercase; }
+.cok-hata { color: var(--seal); font-weight: 600; }
+.cok-test { font-size: 13px; background: var(--amber-wash); border-radius: 8px; padding: 8px 10px; }
+.cok-panel { right: 14px; top: 110px; width: 240px; background: rgba(255,250,240,.96); border-radius: 12px; padding: 10px 12px; box-shadow: 0 0 0 1.5px var(--ink), 0 14px 30px -18px rgba(40,25,5,.8); font-size: 15px; }
+.cok-panel[hidden], .cok-bar[hidden] { display: none; }
+.cok-panel .cok-ust { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; }
+.cok-panel ul { list-style: none; margin: 8px 0; padding: 0; max-height: 40vh; overflow: auto; }
+.cok-panel li { display: grid; grid-template-columns: 12px 1fr auto; gap: 2px 8px; align-items: center; padding: 4px 0; border-bottom: 1px solid var(--ink-faint); }
+.cok-panel li i { width: 12px; height: 12px; border-radius: 50%; grid-row: span 2; }
+.cok-panel li .small { grid-column: 2; font-size: 12px; color: var(--ink-soft); }
+.cok-panel li button { grid-row: 1 / span 2; grid-column: 3; padding: 4px 8px; }
+.cok-panel.kapali ul, .cok-panel.kapali #cokAyril { display: none; }
+.cok-bar { left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-direction: column-reverse; align-items: center; gap: 8px; }
+.cok-msj { display: grid; grid-template-columns: repeat(4, auto); gap: 6px; background: rgba(255,250,240,.97); border-radius: 12px; padding: 10px; box-shadow: 0 0 0 1.5px var(--ink), 0 14px 30px -18px rgba(40,25,5,.8); max-width: min(640px, calc(100vw - 24px)); }
+.cok-msj[hidden] { display: none; }
+.cok-msj .chip-btn { font-family: var(--serif); font-size: 15px; white-space: normal; }
+@media (max-width: 700px) { .cok-panel { top: auto; bottom: 74px; right: 8px; width: 200px; } .cok-msj { grid-template-columns: repeat(2, auto); } .cok-panel ul { max-height: 22vh; } }

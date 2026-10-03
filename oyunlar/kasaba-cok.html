@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nokta'nın Çarşısı · Sayılar ve Nicelikler gözlem ortamı</title>
-<meta name="description" content="Nokta'nın rehberliğinde bir çarşıda sayı gözlemi: gözlemevinde büyük sayılar, otogarda kalanlı bölme problemi, pastanede ve pazarda kesirler.">
+<title>Birlikte Kasaba · Nokta'nın Oyunları</title>
+<meta name="description" content="Nokta'nın rehberliğinde bir kasabada geometri gözlemi: saat kulesinde açılar, kavşakta kesişen ve paralel sokaklar, çeşmede çemberlerle üçgen.">
 <link rel="icon" href="../img/nokta.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/oyun.css?v=202610031833">
+<link rel="stylesheet" href="../css/cok.css?v=202610031833">
 <link rel="stylesheet" href="../css/kasaba.css?v=202610031833">
 </head>
 <body>
-<canvas id="world" aria-label="Çarşı manzarası: sürükleyerek gez, nesnelere dokun"></canvas>
+<canvas id="world" aria-label="Kasaba manzarası: sürükleyerek gez, nesnelere dokun"></canvas>
 
 <header class="ui top">
-  <div class="brand"><a href="../index.html" aria-label="Ana sayfaya dön">←</a><h1>Nokta'nın Çarşısı</h1></div>
+  <div class="brand"><a href="../index.html" aria-label="Ana sayfaya dön">←</a><h1>Birlikte Kasaba</h1></div>
   <nav class="stations" id="stations" aria-label="Gözlem noktaları"></nav>
   <div class="tools-r" id="toolsR">
     <button class="chip-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="toolsR">☰ menü</button>
-    <button class="chip-btn" id="avBtn" type="button" title="Çarşıda saklı sayılar">sayı avı 0/5</button>
+    <button class="chip-btn" id="avBtn" type="button" title="Kasabada saklı şekiller">şekil avı 0/8</button>
     <span class="seg" id="havaBtns" role="group" aria-label="Hava">
       <button class="chip-btn" data-hava="sabah" type="button">sabah</button><button class="chip-btn" data-hava="aksam" type="button">akşam</button><button class="chip-btn" data-hava="yagmur" type="button">yağmur</button>
     </span>
@@ -46,7 +47,13 @@
 <div class="sheet" id="ogretmen" role="dialog" aria-modal="true"><div class="sbox" id="ogretmenBox"></div></div>
 
 <script src="../js/ortak.js?v=202610031833"></script>
-<script src="../js/carsi-metinleri.js?v=202610031833"></script>
+<script src="../js/kasaba-metinleri.js?v=202610031833"></script>
+<script src="../js/cok/ayar.js?v=202610031833"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="../js/cok/ag.js?v=202610031833"></script>
+<script src="../js/cok/cok.js?v=202610031833"></script>
 <script src="../js/kasaba.js?v=202610031833"></script>
 </body>
 </html>

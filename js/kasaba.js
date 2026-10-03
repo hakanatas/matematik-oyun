@@ -1002,6 +1002,7 @@
     const m = Math.floor(st.t / 120); // iki dakikada bir kule çanı (kasabanın "saat başı")
     if (m > amb.lastBell && DW.id === 'kasaba') { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
   }
+  window.__dunya = { nokta, st, cam, STS, GROUND, dunya: DW, layer: (p) => layer(p), git: (i) => go(i), istasyonAc: () => openZoom() };
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now; if (!N.reduced) st.t += dt; else st.t += dt * .25;
     const k = N.reduced ? 1 : 1 - Math.pow(.002, dt);
@@ -1010,7 +1011,9 @@
     const sp = (260 + Math.abs(nokta.tx - nokta.x) * 1.4) * dt, wasMoving = Math.abs(nokta.tx - nokta.x) > 2; nokta.x += Math.max(-sp, Math.min(sp, nokta.tx - nokta.x));
     if (wasMoving && Math.abs(nokta.tx - nokta.x) <= 2 && pendingSay) { speak(pendingSay); pendingSay = null; nokta.happyUntil = st.t + 2.2; }
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
-    sky(); balloon(); birds(); farLayer(); midLayer(); groundLayer(); noktaDraw(); overlayFx(); markers(); foreground();
+    sky(); balloon(); birds(); farLayer(); midLayer(); groundLayer();
+    if (window.CokOyuncu) { layer(1); window.CokOyuncu.ciz(ctx, st.t); } // çok oyunculu: diğer çocukların Nokta'ları
+    noktaDraw(); overlayFx(); markers(); foreground();
     if (zoomOpen) Z.render();
     requestAnimationFrame(frame);
   }
@@ -2334,5 +2337,5 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
   const q = new URLSearchParams(location.search);
   if (q.get('hava') && PAL[q.get('hava')]) { st.hava = q.get('hava'); renderAll(); }
   if (q.get('nokta')) { go(+q.get('nokta') - 1); nokta.x = nokta.tx; cam.x = cam.tx; }
-  if (!seen && !q.has('tanitimsiz')) setTimeout(() => coach(0), 600);
+  if (!seen && !q.has('tanitimsiz') && !window.CokOyuncu) setTimeout(() => coach(0), 600);
 })();
