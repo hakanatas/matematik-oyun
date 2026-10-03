@@ -1,5 +1,11 @@
 # Dünya motoru: yeni dünya ve istasyon eklemek
 
+Referans uygulama matematik deposudur; `kasaba.js` ve `KASABA_METINLERI` gibi adlar oradan kalmıştır. Yeni bir projede iki yol var:
+- Motoru kopyalayıp kendi dünyanın binalarını ve istasyonlarını yazmak.
+- Aynı iskeleti izleyen daha küçük bir motoru sıfırdan kurmak.
+
+Hangisini seçersen seç, şu dört şey korunmalı: katmanlar, istasyon nesnesi, yakın plan ve rehber sözleşmesi.
+
 ## Dosyalar
 ```
 oyunlar/<dunya>.html         kasaba.html'in kopyası; yalnız metin dosyası ve başlık değişir
@@ -20,7 +26,7 @@ Motor `DW.id`’ye göre zemini çizer: `if (DW.id === 'carsi') carsiGround(); e
 
 ## İstasyon nesnesi
 ```js
-{ id: 'otogar', ad: 'Otogar', kod: 'MAT.5.1.2',
+{ id: 'otogar', ad: 'Otogar', kod: 'çıktı kodu ya da kısa etiket',
   x: 4980, mx: 4980, my: 330, nx: -330,          // kamera merkezi, gökyüzündeki numara işareti, Nokta'nın duracağı yer (x+nx)
   hit: [x0, x1, y0, y1],                          // dünyada dokununca istasyona gidilen dikdörtgen
   varis: 'Nokta varınca söyler',

@@ -12,7 +12,7 @@
 ## Yönerge yazma
 - Fiil + nesne + nasıl: “Rakamların altındaki **yuvarlak düğmeler** ayırma çizgisi koyar. **En sağdan** başla: her **üç rakamda bir** ayırma koy.”
 - Ekrandaki gerçek adları kullan (“aşağıdaki − / +”, “Kontrol’e bas”); “sağdaki” gibi yön sözcüklerini telefon görünümünü düşünerek seç (“aşağıdaki” daha güvenli).
-- 5. sınıf düzeyi, kısa cümleler, kavram adları kalın.
+- hedef yaş düzeyine uygun, kısa cümleler, kavram adları kalın.
 
 ## İpuçları (kademeli)
 1. Düşünme yolu (“Sağdan say: 1, 2, 3…”).
