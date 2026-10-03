@@ -3,8 +3,8 @@
 (() => {
   const { g, d } = N;
   const T = KASABA_METINLERI, STS = T.istasyonlar;
-  const WH = 760, GROUND = 600, WW = 5450, WMIN = -1500, FX = 4800;
-  const LAMPS = [-300, 470, 1120, 1480, 2240, 3200, 4180, 5030];
+  const WH = 760, GROUND = 600, WW = 7800, WMIN = -1500, FX = 4800;
+  const LAMPS = [-300, 470, 1120, 1480, 2240, 3200, 4180, 5030, 5600, 6560, 7330];
   const $ = (s) => document.querySelector(s);
   const KEY = 'nokta-kasaba';
   { const mb = $('#menuBtn'), tr = $('#toolsR'); if (mb) { mb.onclick = () => { const o = tr.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.textContent = o ? '× kapat' : '☰ menü'; }; tr.addEventListener('click', (e) => { if (e.target !== mb && e.target.closest('button') && innerWidth <= 700) { tr.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); mb.textContent = '☰ menü'; } }); } }
@@ -83,14 +83,14 @@
   function farLayer() {
     layer(.3); const P = PAL[st.hava];
     ctx.beginPath(); ctx.moveTo(-1300, WH);
-    for (let x = -1300; x <= 2700; x += 20) ctx.lineTo(x, 420 - wobble(x) * .9 - 30);
-    ctx.lineTo(2700, WH); ctx.closePath(); ctx.fillStyle = P.far; ctx.fill();
+    for (let x = -1300; x <= 3600; x += 20) ctx.lineTo(x, 420 - wobble(x) * .9 - 30);
+    ctx.lineTo(3600, WH); ctx.closePath(); ctx.fillStyle = P.far; ctx.fill();
     const cx = 760, by = 420 - wobble(760) * .9 - 30;
     ctx.fillStyle = P.far;
     ctx.fillRect(cx - 70, by - 50, 140, 50); ctx.beginPath(); ctx.arc(cx, by - 50, 52, Math.PI, 0); ctx.fill();
     [cx - 92, cx + 92].forEach((mx) => { ctx.fillRect(mx - 6, by - 150, 12, 150); ctx.beginPath(); ctx.moveTo(mx - 8, by - 150); ctx.lineTo(mx, by - 182); ctx.lineTo(mx + 8, by - 150); ctx.fill(); });
     // uzak ağaçlar
-    for (let i = 0; i < 38; i++) { const x = -1300 + i * 105 + (i % 4) * 17, y = 420 - wobble(x) * .9 - 26; ctx.beginPath(); ctx.arc(x, y - 14, 13 + (i % 3) * 4, 0, 7); ctx.fill(); }
+    for (let i = 0; i < 47; i++) { const x = -1300 + i * 105 + (i % 4) * 17, y = 420 - wobble(x) * .9 - 26; ctx.beginPath(); ctx.arc(x, y - 14, 13 + (i % 3) * 4, 0, 7); ctx.fill(); }
     // yel değirmeni: kanatlar hep dik açıyla
     const wx = 1460, wy = 420 - wobble(1460) * .9 - 30;
     ctx.fillStyle = P.mid; ctx.beginPath(); ctx.moveTo(wx - 20, wy + 4); ctx.lineTo(wx - 11, wy - 92); ctx.lineTo(wx + 11, wy - 92); ctx.lineTo(wx + 20, wy + 4); ctx.fill();
@@ -119,7 +119,7 @@
   }
   function midLayer() {
     layer(.6); const P = PAL[st.hava];
-    for (let i = 0; i < 42; i++) {
+    for (let i = 0; i < 56; i++) {
       const x = -1700 + i * 145 + (i % 3) * 20, w = 90 + (i % 4) * 18, h = 110 + ((i * 37) % 70), base = 560;
       ctx.fillStyle = P.mid; ctx.fillRect(x, base - h, w, h);
       ctx.beginPath(); ctx.moveTo(x - 8, base - h); ctx.lineTo(x + w / 2, base - h - 46 - (i % 2) * 14); ctx.lineTo(x + w + 8, base - h); ctx.fill();
@@ -515,7 +515,7 @@
   /* kasabalılar */
   const WALKERS = [
     { a: 120, b: 560, sp: 30, col: N.AMBER, ph: .1 }, { a: 940, b: 1520, sp: 26, col: N.SEAL, ph: .5 },
-    { a: 1960, b: 2500, sp: 36, col: '#5b7a8c', ph: .3 }, { a: 5000, b: 5370, sp: 24, col: '#87a074', ph: .7 }, { a: -1400, b: -380, sp: 32, col: N.DEEP, ph: .2 }, { a: 3180, b: 4300, sp: 34, col: N.SEAL, ph: .6 }, { a: 4150, b: 4560, sp: 27, col: '#5b7a8c', ph: .4 },
+    { a: 1960, b: 2500, sp: 36, col: '#5b7a8c', ph: .3 }, { a: 5000, b: 5370, sp: 24, col: '#87a074', ph: .7 }, { a: -1400, b: -380, sp: 32, col: N.DEEP, ph: .2 }, { a: 3180, b: 4300, sp: 34, col: N.SEAL, ph: .6 }, { a: 4150, b: 4560, sp: 27, col: '#5b7a8c', ph: .4 }, { a: 5450, b: 6200, sp: 29, col: N.AMBER, ph: .15 }, { a: 6500, b: 7500, sp: 25, col: '#87a074', ph: .55 }, { a: 6620, b: 7300, sp: 33, col: N.SEAL, ph: .85 },
   ];
   function person(x, y, dir, col, step, umbrella) {
     const lg = Math.sin(step) * 7;
@@ -571,9 +571,81 @@
     tileShop(); house(3240, 140, 180, '#8a6a4a', { box: true, chimney: 100 }); tree(3500, .9);
     river(); bridge(); tree(4170, .95); house(4250, 150, 200, '#c4432b', { shutters: '#87a074' });
     fountain(); tree(5090, 1.05); house(5200, 160, 230, '#b8741a', { chimney: 30, box: true });
+    tree(5470, .9); pastane(); tree(6200, .95); house(6290, 140, 190, '#8a6a4a', { shutters: '#e58b8b', box: true });
+    pazar(); house(7420, 150, 210, '#c4432b', { chimney: 110, shutters: '#87a074' }); tree(7660, 1.05);
     LAMPS.forEach(lamp);
     walkers(); pigeons(); bike();
     SK = false;
+  }
+  /* ── Pastane ve Pazar (kesirler) ── */
+  function pastane() {
+    const x0 = 5760, w = 350, h = 240, top = GROUND - h, lit = st.hava === 'aksam';
+    groundShadow(x0 + w / 2, w * 1.25);
+    inkRect(x0 + 40, top - 70, 22, 56, '#b65a3f'); smoke(x0 + 51, top - 76);
+    inkRect(x0, top, w, h, '#f7e6e0');
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, top, w, h); ctx.clip(); ctx.strokeStyle = 'rgba(196,67,43,.12)'; ctx.lineWidth = 9; for (let x = x0 + 8; x < x0 + w; x += 26) { ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, GROUND); ctx.stroke(); } ctx.restore();
+    hatch(rectPts(x0 + w * .86, top + 2, w * .14 - 1.5, h - 2), { gap: 6, alpha: .16 });
+    // kornişli çatı ve tabela
+    inkPoly([{ x: x0 - 16, y: top }, { x: x0 + w + 16, y: top }, { x: x0 + w + 6, y: top - 22 }, { x: x0 - 6, y: top - 22 }], { fill: '#8a5a44', w: 3 });
+    inkRect(x0 + 70, top - 66, w - 140, 44, '#fffaf0', 3);
+    ctx.font = `400 30px ${N.BRUSH}`; ctx.fillStyle = N.SEAL; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('PASTANE', x0 + w / 2 - 14, top - 43);
+    // tabeladaki pasta: 3/4'ü kalmış
+    const px = x0 + w - 92, py = top - 44; ctx.beginPath(); ctx.moveTo(px, py); ctx.arc(px, py, 15, -Math.PI / 2, Math.PI, false); ctx.closePath(); ctx.fillStyle = '#d9a650'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 15, Math.PI, Math.PI * 1.5); ctx.setLineDash([3, 3]); ctx.stroke(); ctx.setLineDash([]);
+    // tente
+    const ap = [{ x: x0 - 10, y: top + 18 }, { x: x0 + w + 10, y: top + 18 }, { x: x0 + w + 26, y: top + 58 }, { x: x0 - 26, y: top + 58 }];
+    ctx.save(); ctx.beginPath(); ap.forEach((p, i) => (i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.clip(); for (let k = 0; k < 18; k++) { ctx.fillStyle = k % 2 ? '#fffaf0' : '#e58b8b'; ctx.fillRect(x0 - 30 + k * 23, top + 16, 23, 44); } ctx.restore();
+    inkPoly(ap, { w: 2.5 });
+    for (let k = 0; k < 17; k++) { ctx.beginPath(); ctx.arc(x0 - 18 + k * 23.2, top + 58, 11.6, 0, Math.PI); ctx.fillStyle = k % 2 ? '#fffaf0' : '#e58b8b'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 1.6; ctx.stroke(); }
+    ctx.fillStyle = 'rgba(60,40,25,.16)'; ctx.fillRect(x0 + 2, top + 70, w - 4, 10);
+    // vitrin: tepsi baklava (dilimli), pastalar
+    const vx = x0 + 22, vy = top + 98, vw = 210, vh = 112;
+    inkRect(vx - 6, vy + vh, vw + 12, 8, '#9b7653', 2.5);
+    inkRect(vx, vy, vw, vh, lit ? '#f6dcae' : '#eef3f2', 3);
+    // tepsi: 8 dilim, 6'sı dolu
+    const tx = vx + 58, ty = vy + 64; ctx.beginPath(); ctx.ellipse(tx, ty, 44, 16, 0, 0, 7); ctx.fillStyle = '#c9b48d'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke();
+    for (let k = 0; k < 8; k++) { const a0 = k * Math.PI / 4 - Math.PI / 2, a1 = a0 + Math.PI / 4; if (k >= 6) continue; ctx.beginPath(); ctx.moveTo(tx, ty - 2); ctx.ellipse(tx, ty - 2, 38, 13, 0, a0, a1); ctx.closePath(); ctx.fillStyle = k % 2 ? '#d9a650' : '#e2b464'; ctx.fill(); ctx.strokeStyle = 'rgba(23,20,17,.55)'; ctx.lineWidth = 1.2; ctx.stroke(); }
+    // pasta katları
+    const cx = vx + 150, cy = vy + vh - 14; inkRect(cx - 32, cy - 26, 64, 26, '#f3c9c9', 2); inkRect(cx - 22, cy - 46, 44, 20, '#fffaf0', 2); ctx.beginPath(); ctx.arc(cx, cy - 52, 5, 0, 7); ctx.fillStyle = N.SEAL; ctx.fill();
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(vx + vw / 2 + 6, vy); ctx.lineTo(vx + vw / 2 + 6, vy + vh); ctx.stroke();
+    if (!lit) { ctx.strokeStyle = 'rgba(255,255,255,.8)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(vx + 10, vy + 30); ctx.lineTo(vx + 26, vy + 10); ctx.moveTo(vx + vw - 30, vy + vh - 12); ctx.lineTo(vx + vw - 12, vy + vh - 34); ctx.stroke(); }
+    // kapı
+    const dx = x0 + w - 92, dw = 56; ctx.beginPath(); ctx.moveTo(dx, GROUND); ctx.lineTo(dx, GROUND - 100); ctx.arc(dx + dw / 2, GROUND - 100, dw / 2, Math.PI, 0); ctx.lineTo(dx + dw, GROUND); ctx.closePath(); ctx.fillStyle = '#7b5a3c'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke();
+    inkRect(dx + 10, GROUND - 110, dw - 20, 40, lit ? '#f5c06a' : '#d7e1e4', 2); ctx.beginPath(); ctx.arc(dx + dw - 12, GROUND - 46, 3, 0, 7); ctx.fillStyle = N.AMBER; ctx.fill();
+    // dışarıda masa
+    const mx = x0 - 70; groundShadow(mx, 70); inkLine({ x: mx, y: GROUND - 44 }, { x: mx, y: GROUND }, 3); inkLine({ x: mx - 14, y: GROUND }, { x: mx + 14, y: GROUND }, 3); inkPoly([{ x: mx - 30, y: GROUND - 48 }, { x: mx + 30, y: GROUND - 48 }, { x: mx + 30, y: GROUND - 42 }, { x: mx - 30, y: GROUND - 42 }], { fill: '#fffaf0', w: 2.5 });
+    ctx.beginPath(); ctx.moveTo(mx - 8, GROUND - 48); ctx.arc(mx - 8, GROUND - 48, 9, Math.PI, Math.PI * 1.5); ctx.closePath(); ctx.fillStyle = '#d9a650'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(mx + 12, GROUND - 52, 7, 4, 0, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); ctx.stroke(); if (!N.reduced) { ctx.strokeStyle = 'rgba(120,110,100,.4)'; ctx.beginPath(); for (let k = 0; k < 2; k++) { const sx = mx + 9 + k * 6; ctx.moveTo(sx, GROUND - 58); ctx.quadraticCurveTo(sx + Math.sin(st.t * 2 + k) * 4, GROUND - 66, sx, GROUND - 74); } ctx.stroke(); }
+  }
+  const STALLS = [{ x: 6690, col: '#87a074', fruit: '#c4432b', ad: 'ÇİLEK', tag: '1/2 kg' }, { x: 6890, col: N.SEAL, fruit: N.AMBER, ad: 'PORTAKAL', tag: '0,5 kg' }, { x: 7090, col: '#5b7a8c', fruit: '#9bb383', ad: 'ARMUT', tag: '%50' }]; // üçü de aynı: yarım
+  function pazar() {
+    ctx.strokeStyle = N.INK; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(6670, 420); ctx.quadraticCurveTo(6975, 460, 7280, 420); ctx.stroke();
+    for (let i = 0; i < 14; i++) { const t = (i + .5) / 14, x = 6670 + 610 * t, y = 420 + Math.sin(Math.PI * t) * 40 * .5 * 2 * (1 - Math.abs(t - .5)) ; ctx.beginPath(); ctx.moveTo(x - 9, y); ctx.lineTo(x + 9, y); ctx.lineTo(x + Math.sin(st.t * 3 + i) * 3, y + 20); ctx.closePath(); ctx.fillStyle = [N.AMBER, N.SEAL, '#fffaf0', '#87a074'][i % 4]; ctx.fill(); ctx.lineWidth = 1.4; ctx.stroke(); }
+    STALLS.forEach((S, i) => {
+      const x = S.x, w = 170, tY = GROUND - 150;
+      groundShadow(x + w / 2, w * 1.1);
+      [x + 8, x + w - 8].forEach((px) => inkLine({ x: px, y: GROUND }, { x: px, y: tY }, 4, '#6b4f35'));
+      const ap = [{ x: x - 12, y: tY }, { x: x + w + 12, y: tY }, { x: x + w + 22, y: tY + 34 }, { x: x - 22, y: tY + 34 }];
+      ctx.save(); ctx.beginPath(); ap.forEach((p, k) => (k ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y))); ctx.closePath(); ctx.clip(); for (let k = 0; k < 10; k++) { ctx.fillStyle = k % 2 ? '#fffaf0' : S.col; ctx.fillRect(x - 24 + k * 22, tY - 2, 22, 40); } ctx.restore();
+      inkPoly(ap, { w: 2.5 }); ctx.fillStyle = 'rgba(60,40,25,.18)'; ctx.fillRect(x + 4, tY + 34, w - 8, 8);
+      // tezgâh ve kasalar
+      inkRect(x - 4, GROUND - 58, w + 8, 58, '#c9a27a', 2.5); hatch(rectPts(x + w * .8, GROUND - 58, w * .2 + 3, 58), { gap: 6, alpha: .2 });
+      ctx.strokeStyle = 'rgba(23,20,17,.35)'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x - 4, GROUND - 30); ctx.lineTo(x + w + 4, GROUND - 30); ctx.stroke();
+      for (let k = 0; k < 2; k++) {
+        const bx = x + 12 + k * 78, by = GROUND - 82; inkRect(bx, by, 66, 26, '#b08a63', 2);
+        for (let f = 0; f < 9; f++) { const fx = bx + 9 + (f % 5) * 12 + (f > 4 ? 6 : 0), fy = by + 2 - (f > 4 ? 9 : 0); ctx.beginPath(); ctx.arc(fx, fy, 6.5, 0, 7); ctx.fillStyle = S.fruit; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 1.3; ctx.stroke(); ctx.beginPath(); ctx.arc(fx - 2, fy - 2, 1.6, 0, 7); ctx.fillStyle = 'rgba(255,255,255,.6)'; ctx.fill(); }
+      }
+      // fiyat etiketi (kesir!)
+      const sx = x + w / 2, sy = tY + 52, sw = Math.sin(st.t * 1.6 + i) * .05;
+      ctx.save(); ctx.translate(sx, tY + 34); ctx.rotate(sw); ctx.strokeStyle = N.INK; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(0, 12); ctx.lineTo(10, 0); ctx.stroke();
+      inkRect(-38, 12, 76, 30, '#fffaf0', 2); ctx.font = `600 15px ${N.MONO}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(S.tag, 0, 28); ctx.restore(); void sy;
+      ctx.font = `400 20px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.fillText(S.ad, sx, GROUND - 14);
+    });
+    // asma terazi
+    const tx = 6975, ty = GROUND - 210; inkLine({ x: tx, y: GROUND - 150 }, { x: tx, y: ty }, 3, '#6b4f35');
+    const tilt = Math.sin(st.t * 1.2) * .12; ctx.save(); ctx.translate(tx, ty + 12); ctx.rotate(tilt);
+    inkLine({ x: -46, y: 0 }, { x: 46, y: 0 }, 3); [-46, 46].forEach((ex) => { ctx.strokeStyle = N.INK; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(ex, 0); ctx.lineTo(ex - 12, 30); ctx.moveTo(ex, 0); ctx.lineTo(ex + 12, 30); ctx.stroke(); ctx.beginPath(); ctx.ellipse(ex, 31, 15, 4, 0, 0, 7); ctx.fillStyle = '#c9973f'; ctx.fill(); ctx.stroke(); });
+    ctx.restore(); ctx.beginPath(); ctx.arc(tx, ty + 12, 4, 0, 7); ctx.fillStyle = N.AMBER; ctx.fill();
   }
   /* ── Tren istasyonu ── */
   const TRACK = GROUND - 24, STOP = -260;
@@ -722,7 +794,7 @@
 
   function foreground() {
     layer(1.15);
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 135; i++) {
       const x = i * 90 + (i % 3) * 23 - 2200, y = WH - 8, h = 22 + (i % 4) * 10, sw = Math.sin(st.t * 1.4 + i) * 3;
       ctx.strokeStyle = st.hava === 'aksam' ? '#3d4a3d' : '#5d7a4e'; ctx.lineWidth = 3;
       ctx.beginPath(); for (let k = -2; k <= 2; k++) { ctx.moveTo(x + k * 6, y); ctx.quadraticCurveTo(x + k * 8 + sw, y - h * .6, x + k * 11 + sw * 1.5, y - h + Math.abs(k) * 4); } ctx.stroke();
@@ -782,7 +854,7 @@
     if (st.hava === 'aksam') {
       layer(1); ctx.globalCompositeOperation = 'lighter'; LAMPS.forEach(lampGlow);
       for (let i = 0; i < 34; i++) { // ateş böcekleri
-        const bx = [370, 1220, 2530, 5090, 4800, 3850, -600, 3500][i % 8] + Math.sin(st.t * .5 + i * 1.7) * 90, by = GROUND - 70 + Math.cos(st.t * .7 + i * 1.3) * 60, a = .5 + .5 * Math.sin(st.t * 3 + i);
+        const bx = [370, 1220, 2530, 5090, 4800, 3850, -600, 3500, 5470, 6200, 7660][i % 11] + Math.sin(st.t * .5 + i * 1.7) * 90, by = GROUND - 70 + Math.cos(st.t * .7 + i * 1.3) * 60, a = .5 + .5 * Math.sin(st.t * 3 + i);
         const gl = ctx.createRadialGradient(bx, by, 0, bx, by, 9); gl.addColorStop(0, `rgba(255,230,120,${a})`); gl.addColorStop(1, 'rgba(255,230,120,0)'); ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(bx, by, 9, 0, 7); ctx.fill();
       }
       ctx.globalCompositeOperation = 'source-over';
@@ -948,7 +1020,7 @@
   function openZoom() {
     zoomOpen = true; $('#zoom').classList.add('open'); const S = STS[st.cur];
     Z.onDown = Z.onMove = Z.onUp = null;
-    ({ tren: setupTren, saat: setupClock, kavsak: setupMap, cini: setupCini, kopru: setupKopru, cesme: setupPool })[S.id]();
+    ({ tren: setupTren, saat: setupClock, kavsak: setupMap, cini: setupCini, kopru: setupKopru, cesme: setupPool, pastane: setupPastane, pazar: setupPazar })[S.id]();
     renderZSide(); setTimeout(() => { Z.resize(); }, 30);
     addEventListener('keydown', zoomEsc);
   }
@@ -964,7 +1036,7 @@
       <span class="label" style="margin-top:4px">Görevler</span>
       <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>`;
     $('#zClose').onclick = closeZoom;
-    ({ tren: ctlTren, saat: ctlClock, kavsak: ctlMap, cini: ctlCini, kopru: ctlKopru, cesme: ctlPool })[S.id]($('#zctl'));
+    ({ tren: ctlTren, saat: ctlClock, kavsak: ctlMap, cini: ctlCini, kopru: ctlKopru, cesme: ctlPool, pastane: ctlPastane, pazar: ctlPazar })[S.id]($('#zctl'));
   }
   let zhint = '';
   const say = (html) => { zhint = html; hint(html); };
@@ -985,6 +1057,206 @@
   const knob = (c, p, hot) => { c.beginPath(); c.arc(p.x, p.y, hot ? 15 : 12, 0, 7); c.fillStyle = hot ? N.AMBER : N.SHEET; c.fill(); c.lineWidth = 3; c.strokeStyle = N.DEEP; c.stroke(); };
   const turnDelta = (a, b) => { let dl = a - b; while (dl > Math.PI) dl -= 2 * Math.PI; while (dl < -Math.PI) dl += 2 * Math.PI; return dl; };
 
+  /* ── kesir yardımcıları ── */
+  const gcd = (a, b) => (b ? gcd(b, a % b) : a);
+  function frac(c, a, b, x, y, size = 40, color = N.INK) { // üst üste yazılmış kesir
+    d.text(c, String(a), x, y - size * .52, { size, color, halo: false }); d.text(c, String(b), x, y + size * .58, { size, color, halo: false });
+    const w = Math.max(String(a).length, String(b).length) * size * .42 + 10; c.strokeStyle = color; c.lineWidth = Math.max(2, size / 14); c.beginPath(); c.moveTo(x - w / 2, y + 2); c.lineTo(x + w / 2, y + 2); c.stroke();
+  }
+  const dec = (v) => N.fmt(v, 2);
+
+  /* ── Pastane: tepsi (daire modeli), ölçü kabı (tam sayılı kesir + sayı doğrusu), yüzlük kart ── */
+  const PAS_ORD = g.pick([[3, 4], [2, 3], [3, 5], [5, 6], [1, 2], [2, 5]]);
+  const PAS_CUP = g.pick([[9, '2 1/4'], [7, '1 3/4'], [11, '2 3/4'], [5, '1 1/4']]); // çeyrek bardak cinsinden
+  const PAS_YUZ = g.pick([{ t: '%25 indirim', v: 25 }, { t: '0,75 kg peynir', v: 75 }, { t: '3/5 kg kakao', v: 60 }, { t: '%40 şeker', v: 40 }]);
+  const pas = { part: null, n: 4, sel: new Set(), firstN: 0, q: 0, grid: new Set(), paint: null };
+  const PAS_LIST = [['tepsi', 'Tepsi', 'denk'], ['kap', 'Ölçü kabı', 'kap'], ['yuzluk', 'Yüzlük kart', 'yuzluk']];
+  const PAS_HINT = {
+    tepsi: `Sipariş: <b>${PAS_ORD[0]}/${PAS_ORD[1]} tepsi baklava</b>. Önce dilim sayısını seç, sonra dilimlere dokunarak siparişi göster.`,
+    kap: `Tarif: <b>${PAS_CUP[1]} bardak un</b>. Bardaklara dokunarak doldur. Her bardak 4 eş parçaya bölünmüş.`,
+    yuzluk: `Sipariş: <b>${PAS_YUZ.t}</b>. 100 kareden o kadarını boya (sürükleyerek de boyayabilirsin).`,
+  };
+  const TC = { x: 300, y: 320 }, TRAD = 200, CUPS = [{ x: 120 }, { x: 290 }, { x: 460 }], CUP_W = 120, CUP_TOP = 120, CUP_BOT = 400;
+  const GX = 80, GY = 60, GC = 46;
+  function sliceAt(p) { if (g.dist(p, TC) > TRAD + 10) return -1; const a = (Math.atan2(p.y - TC.y, p.x - TC.x) + Math.PI / 2 + 2 * Math.PI) % (2 * Math.PI); return Math.floor(a / (2 * Math.PI / pas.n)); }
+  function checkTepsi() {
+    const k = pas.sel.size, [a, b] = PAS_ORD;
+    if (k * b !== a * pas.n || !k) return;
+    if (!isDone('pastane', 'model')) { pas.firstN = pas.n; N.sfx.good(); say(`Tam sipariş: <b>${k}/${pas.n}</b> tepsi. Şimdi dilim sayısını değiştir ve <b>aynı miktarı</b> başka sayıda dilimle göster.`); addLog('pastane', `Tepside ${k}/${pas.n} = ${a}/${b} gösterildi.`); markDone('pastane', 'model'); }
+    else if (pas.n !== pas.firstN && !isDone('pastane', 'denk')) { N.sfx.good(); say(`<b>${k}/${pas.n}</b> ile <b>${a}/${b}</b> aynı miktar: bunlar <b>denk kesirler</b>. Dilimler ${pas.n > b ? 'küçüldü ama sayısı arttı' : 'büyüdü ama sayısı azaldı'}.`); addLog('pastane', `Denk kesir: ${k}/${pas.n} = ${a}/${b}`); markDone('pastane', 'denk'); }
+  }
+  function setupPastane() {
+    const open = PAS_LIST.find(([, , tid]) => !isDone('pastane', tid)); pas.part = pas.part || (open ? open[0] : 'tepsi');
+    zhint = PAS_HINT[pas.part];
+    Z.draw = (c) => {
+      c.fillStyle = '#f3e9d8'; c.fillRect(0, 0, ZW, ZH);
+      const P = pas.part;
+      if (P === 'tepsi') {
+        c.beginPath(); c.ellipse(TC.x + 10, TC.y + 16, TRAD + 18, TRAD + 12, 0, 0, 7); c.fillStyle = 'rgba(60,40,25,.15)'; c.fill();
+        d.circle(c, TC, TRAD + 14, { fill: '#c9973f', w: 3.5 });
+        for (let i = 0; i < pas.n; i++) {
+          const a0 = -Math.PI / 2 + i * 2 * Math.PI / pas.n, a1 = a0 + 2 * Math.PI / pas.n, on = pas.sel.has(i);
+          c.beginPath(); c.moveTo(TC.x, TC.y); c.arc(TC.x, TC.y, TRAD, a0, a1); c.closePath(); c.fillStyle = on ? '#d9a650' : '#f6ecd6'; c.fill();
+          if (on) { c.save(); c.clip(); c.strokeStyle = 'rgba(120,70,20,.35)'; c.lineWidth = 2; c.beginPath(); for (let k = -TRAD; k < TRAD; k += 22) { c.moveTo(TC.x + k, TC.y - TRAD); c.lineTo(TC.x + k + TRAD, TC.y); c.moveTo(TC.x + k + TRAD, TC.y - TRAD); c.lineTo(TC.x + k, TC.y); c.moveTo(TC.x + k, TC.y); c.lineTo(TC.x + k + TRAD, TC.y + TRAD); c.moveTo(TC.x + k + TRAD, TC.y); c.lineTo(TC.x + k, TC.y + TRAD); } c.stroke(); c.restore(); }
+          d.seg(c, TC, g.polar(TC, TRAD, -a0), { w: 2.5 });
+        }
+        d.circle(c, TC, TRAD, { w: 3 });
+        d.text(c, 'Sipariş', 700, 70, { size: 26, color: N.SOFT }); frac(c, PAS_ORD[0], PAS_ORD[1], 700, 140, 44, N.DEEP); d.text(c, 'tepsi', 700, 210, { size: 26, color: N.SOFT });
+        d.seg(c, { x: 600, y: 255 }, { x: 800, y: 255 }, { w: 1.5, color: N.SOFT, dash: [5, 6] });
+        d.text(c, 'Senin tepsin', 700, 300, { size: 26, color: N.SOFT }); frac(c, pas.sel.size, pas.n, 700, 375, 56);
+        const eq = pas.sel.size * PAS_ORD[1] === PAS_ORD[0] * pas.n && pas.sel.size;
+        d.text(c, eq ? '= sipariş ✓' : `${pas.n} eş dilim, ${pas.sel.size} tanesi seçili`, 700, 470, { size: 24, color: eq ? N.DEEP : N.SOFT });
+      }
+      if (P === 'kap') {
+        const q = pas.q;
+        CUPS.forEach((C, i) => {
+          const f = Math.max(0, Math.min(4, q - i * 4)), x = C.x, w = CUP_W, hh = CUP_BOT - CUP_TOP;
+          const cup = [{ x, y: CUP_TOP }, { x: x + w, y: CUP_TOP }, { x: x + w - 12, y: CUP_BOT }, { x: x + 12, y: CUP_BOT }];
+          if (f) { c.save(); d.poly(c, cup, { noStroke: true, fill: 'transparent' }); c.clip(); c.fillStyle = '#f8f1e2'; c.fillRect(x, CUP_BOT - hh * f / 4, w, hh * f / 4); for (let k = 0; k < 40; k++) { c.fillStyle = 'rgba(184,116,26,.25)'; c.beginPath(); c.arc(x + 10 + (k * 37) % (w - 20), CUP_BOT - 6 - (k * 53) % Math.max(8, hh * f / 4 - 8), 1.6, 0, 7); c.fill(); } c.restore(); }
+          d.poly(c, cup, { w: 3.5, fill: f ? null : 'rgba(255,255,255,.35)' });
+          for (let k = 1; k < 4; k++) { const y = CUP_BOT - hh * k / 4; d.seg(c, { x: x + w - 12 - 2, y }, { x: x + w - 40, y }, { w: 2.5, color: N.DEEP }); d.text(c, `${k}/4`, x + w - 58, y, { size: 16, font: N.MONO, color: N.DEEP }); }
+          c.strokeStyle = N.INK; c.lineWidth = 3; c.beginPath(); c.moveTo(x + w, CUP_TOP + 30); c.quadraticCurveTo(x + w + 34, CUP_TOP + 60, x + w - 6, CUP_TOP + 120); c.stroke();
+          d.text(c, `${i + 1}. bardak`, x + w / 2, CUP_BOT + 26, { size: 22, color: N.SOFT });
+        });
+        const whole = Math.floor(q / 4), r = q % 4;
+        d.text(c, 'Tarif', 760, 70, { size: 26, color: N.SOFT }); d.text(c, `${PAS_CUP[1]} bardak`, 760, 112, { size: 36, color: N.DEEP });
+        d.text(c, 'Doldurduğun', 760, 175, { size: 24, color: N.SOFT });
+        d.text(c, q ? (whole ? `${whole}${r ? ` ${r}/4` : ''}` : `${r}/4`) : '0', 760, 220, { size: 40 });
+        d.text(c, `= ${q}/4 = ${dec(q / 4)}`, 760, 275, { size: 30, color: N.DEEP });
+        // sayı doğrusu 0–3
+        const L0 = 120, L1 = 700, LY = 520, X = (v) => L0 + (L1 - L0) * v / 3;
+        d.seg(c, { x: L0 - 20, y: LY }, { x: L1 + 30, y: LY }, { w: 3 });
+        for (let k = 0; k <= 12; k++) { const big = k % 4 === 0; d.seg(c, { x: X(k / 4), y: LY - (big ? 14 : 8) }, { x: X(k / 4), y: LY + (big ? 14 : 8) }, { w: big ? 3 : 2 }); if (big) d.text(c, String(k / 4), X(k / 4), LY + 34, { size: 24 }); }
+        if (q) { const mx = X(q / 4); c.beginPath(); c.moveTo(mx, LY - 6); c.lineTo(mx - 10, LY - 26); c.lineTo(mx + 10, LY - 26); c.closePath(); c.fillStyle = N.AMBER; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 2; c.stroke(); }
+        d.text(c, 'sayı doğrusu', L1 + 70, LY, { size: 20, color: N.SOFT });
+      }
+      if (P === 'yuzluk') {
+        for (let r = 0; r < 10; r++) for (let k = 0; k < 10; k++) { const on = pas.grid.has(r * 10 + k); c.fillStyle = on ? N.AMBER : '#fffaf0'; c.fillRect(GX + k * GC, GY + r * GC, GC, GC); }
+        c.strokeStyle = 'rgba(23,20,17,.35)'; c.lineWidth = 1.2; c.beginPath(); for (let k = 0; k <= 10; k++) { c.moveTo(GX + k * GC, GY); c.lineTo(GX + k * GC, GY + 10 * GC); c.moveTo(GX, GY + k * GC); c.lineTo(GX + 10 * GC, GY + k * GC); } c.stroke();
+        d.poly(c, [{ x: GX, y: GY }, { x: GX + 10 * GC, y: GY }, { x: GX + 10 * GC, y: GY + 10 * GC }, { x: GX, y: GY + 10 * GC }], { w: 3.5 });
+        const n = pas.grid.size, gg = gcd(n, 100) || 1;
+        d.text(c, 'Sipariş', 745, 70, { size: 26, color: N.SOFT }); d.text(c, PAS_YUZ.t, 745, 112, { size: 30, color: N.DEEP });
+        d.text(c, 'Boyadığın', 745, 180, { size: 24, color: N.SOFT });
+        frac(c, n, 100, 680, 260, 34); d.text(c, '=', 735, 262, { size: 34 }); d.text(c, dec(n / 100), 800, 262, { size: 34 });
+        d.text(c, `%${n}`, 745, 345, { size: 44, color: N.DEEP });
+        if (n && gg > 1) { d.text(c, 'sadeleşince', 745, 410, { size: 20, color: N.SOFT }); frac(c, n / gg, 100 / gg, 745, 470, 34, N.DEEP); }
+      }
+    };
+    Z.onDown = (p) => {
+      const P = pas.part;
+      if (P === 'tepsi') { const i = sliceAt(p); if (i < 0) return; pas.sel.has(i) ? pas.sel.delete(i) : pas.sel.add(i); N.sfx.tick(); checkTepsi(); renderZSide(); Z.ask(); }
+      if (P === 'kap') { Z.dragK = 'kap'; Z.onMove(p); }
+      if (P === 'yuzluk') { const k = Math.floor((p.x - GX) / GC), r = Math.floor((p.y - GY) / GC); if (k < 0 || k > 9 || r < 0 || r > 9) return; const id = r * 10 + k; pas.paint = !pas.grid.has(id); Z.dragK = 'paint'; Z.onMove(p); }
+    };
+    Z.onMove = (p) => {
+      if (!p || !Z.dragK || !Z.down) return;
+      if (Z.dragK === 'kap') {
+        const i = CUPS.findIndex((C) => p.x > C.x - 10 && p.x < C.x + CUP_W + 10); if (i < 0) return;
+        const f = Math.max(0, Math.min(4, Math.ceil((CUP_BOT - p.y) / ((CUP_BOT - CUP_TOP) / 4) - .15))), q = i * 4 + f;
+        if (q !== pas.q) { pas.q = q; N.sfx.tick(); Z.ask(); }
+      }
+      if (Z.dragK === 'paint') { const k = Math.floor((p.x - GX) / GC), r = Math.floor((p.y - GY) / GC); if (k < 0 || k > 9 || r < 0 || r > 9) return; const id = r * 10 + k; if (pas.grid.has(id) !== pas.paint) { pas.paint ? pas.grid.add(id) : pas.grid.delete(id); Z.ask(); } }
+    };
+    Z.onUp = () => {
+      const k = Z.dragK; Z.dragK = null;
+      if (k === 'kap' && pas.q === PAS_CUP[0] && !isDone('pastane', 'kap')) { N.sfx.good(); say(`<b>${PAS_CUP[1]}</b> bardak = <b>${pas.q}/4</b> bardak = <b>${dec(pas.q / 4)}</b> bardak. Tam sayılı kesir, bileşik kesir ve ondalık gösterim: hepsi aynı miktar. Sayı doğrusunda da işaretlendi.`); addLog('pastane', `${PAS_CUP[1]} = ${pas.q}/4 = ${dec(pas.q / 4)} bardak`); markDone('pastane', 'kap'); }
+      else if (k === 'kap' && pas.q > PAS_CUP[0]) say(`Fazla doldu: ${pas.q}/4 bardak. Tarif <b>${PAS_CUP[1]}</b> bardak istiyor.`);
+      if (k === 'paint') { const n = pas.grid.size; if (n === PAS_YUZ.v && !isDone('pastane', 'yuzluk')) { N.sfx.good(); const gg = gcd(n, 100); say(`Tam <b>${n}</b> kare: <b>${n}/100 = ${dec(n / 100)} = %${n}</b>${gg > 1 ? ` = <b>${n / gg}/${100 / gg}</b>` : ''}. Aynı miktarın dört kılığı!`); addLog('pastane', `Yüzlük kart: ${n}/100 = ${dec(n / 100)} = %${n}`); markDone('pastane', 'yuzluk'); } }
+      Z.ask();
+    };
+    Z.ask();
+  }
+  function ctlPastane(host) {
+    if (pas.part === 'tepsi') host.innerHTML = `<div class="row"><span>Dilim sayısı</span><button class="btn" id="pN-" type="button" aria-label="Dilim sayısını azalt">−</button><b style="font-family:var(--brush);font-size:28px;min-width:34px;text-align:center">${pas.n}</b><button class="btn" id="pN+" type="button" aria-label="Dilim sayısını artır">+</button><button class="btn" id="pClr" type="button">Seçimi sil</button></div>`;
+    else if (pas.part === 'kap') host.innerHTML = '<div class="row"><button class="btn" id="pClr" type="button">Bardakları boşalt</button></div>';
+    else host.innerHTML = '<div class="row"><button class="btn" id="pClr" type="button">Kartı temizle</button></div>';
+    const setN = (n) => { n = Math.max(2, Math.min(12, n)); if (n === pas.n) return; pas.n = n; pas.sel.clear(); N.sfx.tick(); renderZSide(); Z.ask(); };
+    const a = $('#pN-'), b = $('#pN\\+'); if (a) a.onclick = () => setN(pas.n - 1); if (b) b.onclick = () => setN(pas.n + 1);
+    $('#pClr').onclick = () => { if (pas.part === 'tepsi') pas.sel.clear(); else if (pas.part === 'kap') pas.q = 0; else pas.grid.clear(); renderZSide(); Z.ask(); };
+    partTabs(host, pas, PAS_LIST, 'pastane', () => say(PAS_HINT[pas.part]));
+  }
+
+  /* ── Pazar: şerit modeli ve sayı doğrusunda karşılaştırma ── */
+  const paz = { part: null, s: [[2, 4], [2, 4]], touched: false, tags: [{ ad: 'Ali', t: '3/4 kg', v: .75, p: '%75' }, { ad: 'Ece', t: '0,7 kg', v: .7, p: '%70' }, { ad: 'Can', t: '%72', v: .72, p: '%72' }, { ad: 'Su', t: '2/3 kg', v: 2 / 3, p: '≈ %66,7' }].map((T, i) => ({ ...T, x: null, home: { x: 120 + i * 190, y: 110 } })), drag: -1, off: null, pct: false };
+  const PAZ_LIST = [['serit', 'Şeritler', 'denk'], ['dogru', 'Sayı doğrusu', 'encok']];
+  const PAZ_HINT = { serit: 'Manav: “Paydası büyük olan kesir büyüktür.” Şeritlerin paylarını ve paydalarını değiştir: iddiayı çürüten bir örnek bul. Şeride dokunarak da pay seçebilirsin.', dogru: 'Etiketleri sürükleyip sayı doğrusunda doğru yere bırak. Zorlanırsan “Yüzdeye çevir” düğmesi yardım eder.' };
+  const SX0 = 120, SX1 = 780, SY = [190, 330], SH = 70, NL0 = 100, NL1 = 800, NLY = 430;
+  const nlx = (v) => NL0 + (NL1 - NL0) * v;
+  function checkSerit() {
+    const [[a, b], [c2, d2]] = paz.s, v1 = a / b, v2 = c2 / d2;
+    if (paz.touched && b !== d2 && !isDone('pazar', 'varsayim')) {
+      const big = b > d2 ? 0 : 1, vb = big ? v2 : v1, vs = big ? v1 : v2;
+      if (vb < vs - 1e-9) { N.sfx.good(); const [A, B] = paz.s[big], [C, D] = paz.s[1 - big]; say(`İşte karşı örnek! <b>${A}/${B}</b>’nin paydası daha büyük ama <b>${A}/${B} < ${C}/${D}</b>. Payda büyüyünce parçalar küçülür. Tek bir karşı örnek, iddianın her zaman doğru olmadığını gösterir.`); addLog('pazar', `Karşı örnek: ${A}/${B} < ${C}/${D} (paydası büyük olan daha küçük)`); markDone('pazar', 'varsayim'); return; }
+    }
+    if (b !== d2 && Math.abs(v1 - v2) < 1e-9 && a && !isDone('pazar', 'denk')) { N.sfx.good(); say(`<b>${a}/${b} = ${c2}/${d2}</b>: şeritler aynı yerde bitiyor. Paydaları farklı ama miktarları eşit: <b>denk kesirler</b>.`); addLog('pazar', `Denk kesirler: ${a}/${b} = ${c2}/${d2}`); markDone('pazar', 'denk'); }
+  }
+  function setupPazar() {
+    const open = PAZ_LIST.find(([, , tid]) => !isDone('pazar', tid)); paz.part = paz.part || (open ? open[0] : 'serit');
+    zhint = PAZ_HINT[paz.part];
+    Z.draw = (c) => {
+      c.fillStyle = '#eef0e6'; c.fillRect(0, 0, ZW, ZH);
+      if (paz.part === 'serit') {
+        d.text(c, 'Manav: “Paydası büyük olan kesir büyüktür.”', 450, 60, { size: 28, color: N.SEAL });
+        paz.s.forEach(([a, b], i) => {
+          const y = SY[i], w = (SX1 - SX0) / b;
+          for (let k = 0; k < b; k++) { c.fillStyle = k < a ? (i ? '#9bb383' : N.AMBER) : '#fffaf0'; c.fillRect(SX0 + k * w, y, w, SH); }
+          for (let k = 1; k < b; k++) d.seg(c, { x: SX0 + k * w, y }, { x: SX0 + k * w, y: y + SH }, { w: 2, sketch: false });
+          d.poly(c, rectPts(SX0, y, SX1 - SX0, SH), { w: 3 });
+          frac(c, a, b, 60, y + SH / 2, 30, i ? '#4d6b3d' : N.DEEP);
+          d.seg(c, { x: SX0 + (SX1 - SX0) * a / b, y: y - 14 }, { x: SX0 + (SX1 - SX0) * a / b, y: y + SH + 14 }, { w: 3, color: N.SEAL });
+        });
+        const [[a, b], [c2, d2]] = paz.s, v1 = a / b, v2 = c2 / d2, sign = Math.abs(v1 - v2) < 1e-9 ? '=' : v1 > v2 ? '>' : '<';
+        d.text(c, `${a}/${b}  ${sign}  ${c2}/${d2}`, 450, 490, { size: 48, color: N.INK });
+        d.text(c, 'kırmızı çizgi: şeridin nerede bittiği', 450, 545, { size: 20, color: N.SOFT });
+      } else {
+        d.seg(c, { x: NL0 - 30, y: NLY }, { x: NL1 + 30, y: NLY }, { w: 3 });
+        for (let k = 0; k <= 20; k++) { const big = k % 10 === 0, mid = k === 10; d.seg(c, { x: nlx(k / 20), y: NLY - (big || mid ? 16 : 8) }, { x: nlx(k / 20), y: NLY + (big || mid ? 16 : 8) }, { w: big ? 3 : 2 }); }
+        d.text(c, '0', nlx(0), NLY + 38, { size: 28 }); d.text(c, '1', nlx(1), NLY + 38, { size: 28 }); frac(c, 1, 2, nlx(.5), NLY + 52, 22, N.SOFT);
+        const placed = paz.tags.filter((T) => T.x != null).sort((p, q) => p.v - q.v);
+        paz.tags.forEach((T, i) => {
+          let pos;
+          if (paz.drag === i) pos = T.cur; else if (T.x != null) { const lv = placed.indexOf(T); pos = { x: nlx(T.v), y: NLY - 70 - lv * 62 }; } else pos = T.home;
+          if (T.x != null && paz.drag !== i) d.seg(c, { x: nlx(T.v), y: NLY }, { x: pos.x, y: pos.y + 24 }, { w: 1.6, color: N.DEEP, dash: [4, 4] });
+          const w = 150, h = 50;
+          c.fillStyle = 'rgba(60,40,25,.15)'; c.fillRect(pos.x - w / 2 + 4, pos.y - h / 2 + 5, w, h);
+          d.poly(c, rectPts(pos.x - w / 2, pos.y - h / 2, w, h), { fill: T.x != null ? '#fff3dc' : '#fffaf0', w: 2.5 });
+          c.beginPath(); c.arc(pos.x - w / 2 + 20, pos.y, 9, 0, 7); c.fillStyle = '#c4432b'; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 1.5; c.stroke();
+          d.text(c, T.ad, pos.x - 22, pos.y, { size: 24, halo: false }); d.text(c, paz.pct ? T.p : T.t, pos.x + 36, pos.y, { size: 17, font: N.MONO, halo: false, color: N.DEEP });
+          if (T.x != null) { c.beginPath(); c.arc(nlx(T.v), NLY, 6, 0, 7); c.fillStyle = N.SEAL; c.fill(); }
+        });
+        if (isDone('pazar', 'sirala')) d.text(c, 'küçükten büyüğe: ' + paz.tags.slice().sort((p, q) => p.v - q.v).map((T) => T.ad).join(' < '), 450, 555, { size: 24, color: N.DEEP });
+      }
+    };
+    const tagPos = (T, i) => { if (T.x == null) return T.home; const placed = paz.tags.filter((q) => q.x != null).sort((p, q) => p.v - q.v); return { x: nlx(T.v), y: NLY - 70 - placed.indexOf(T) * 62 }; };
+    Z.onDown = (p) => {
+      if (paz.part === 'serit') { const i = SY.findIndex((y) => p.y > y - 6 && p.y < y + SH + 6); if (i < 0 || p.x < SX0 || p.x > SX1) return; const b = paz.s[i][1], k = Math.min(b, Math.floor((p.x - SX0) / ((SX1 - SX0) / b)) + 1); paz.s[i][0] = paz.s[i][0] === k ? k - 1 : k; paz.touched = true; N.sfx.tick(); checkSerit(); renderZSide(); Z.ask(); return; }
+      const i = paz.tags.findIndex((T, k) => { const q = tagPos(T, k); return Math.abs(p.x - q.x) < 80 && Math.abs(p.y - q.y) < 30; });
+      if (i < 0 || paz.tags[i].x != null) return;
+      paz.drag = i; Z.dragK = 'tag'; paz.tags[i].cur = { x: p.x, y: p.y };
+    };
+    Z.onMove = (p) => { if (!p || Z.dragK !== 'tag' || !Z.down) return; paz.tags[paz.drag].cur = { x: p.x, y: p.y }; Z.ask(); };
+    Z.onUp = (p) => {
+      if (Z.dragK !== 'tag') return; Z.dragK = null; const T = paz.tags[paz.drag]; paz.drag = -1; const q = p || T.cur;
+      if (q && Math.abs(q.y - NLY) < 160 && Math.abs(q.x - nlx(T.v)) < (NL1 - NL0) * .035) { T.x = nlx(T.v); N.sfx.snap(); say(`${T.ad}: <b>${T.t}</b> = ${T.p}. ${T.v > .5 ? 'Yarımdan büyük.' : 'Yarımdan küçük.'}`); addLog('pazar', `${T.ad} ${T.t} sayı doğrusunda ${T.p} yerine kondu.`); }
+      else if (q && Math.abs(q.y - NLY) < 160) { N.sfx.bad(); const v = (q.x - NL0) / (NL1 - NL0); say(`${T.ad}’nin etiketi <b>${T.t}</b>. Bıraktığın yer yaklaşık ${N.fmt(Math.max(0, Math.min(1, v)), 2)}. ${T.v > v ? 'Biraz daha sağa' : 'Biraz daha sola'}. İpucu: ${T.t} = <b>${T.p}</b>.`); }
+      if (paz.tags.every((t) => t.x != null) && !isDone('pazar', 'sirala')) { N.sfx.good(); say('Dördü de yerinde! Sayı doğrusunda <b>sağdaki daha büyük</b>. Şimdi söyle: en çok çileği kim aldı?'); addLog('pazar', 'Sıralama: ' + paz.tags.slice().sort((a, b) => a.v - b.v).map((t) => `${t.ad} ${t.t}`).join(' < ')); markDone('pazar', 'sirala'); }
+      renderZSide(); Z.ask();
+    };
+    Z.ask();
+  }
+  function ctlPazar(host) {
+    if (paz.part === 'serit') {
+      const bs = 'padding:5px 11px;min-width:0', sp = (i, k, v, ad) => `<span class="small" style="width:42px">${ad}</span><button class="btn" style="${bs}" data-z="${i},${k},-1" type="button" aria-label="${ad} azalt">−</button><b style="min-width:22px;text-align:center">${v}</b><button class="btn" style="${bs}" data-z="${i},${k},1" type="button" aria-label="${ad} artır">+</button>`;
+      host.innerHTML = paz.s.map(([a, b], i) => `<div style="margin:0 0 8px"><b style="color:${i ? '#4d6b3d' : 'var(--amber-deep)'}">${i ? 'Yeşil' : 'Turuncu'} şerit</b><div class="row" style="gap:6px;flex-wrap:nowrap;margin-top:4px">${sp(i, 0, a, 'pay')}<span style="width:8px"></span>${sp(i, 1, b, 'payda')}</div></div>`).join('');
+      host.querySelectorAll('[data-z]').forEach((bt) => (bt.onclick = () => { const [i, k, s2] = bt.dataset.z.split(',').map(Number), f = paz.s[i]; if (k === 0) f[0] = Math.max(0, Math.min(f[1], f[0] + s2)); else { f[1] = Math.max(2, Math.min(12, f[1] + s2)); f[0] = Math.min(f[0], f[1]); } paz.touched = true; N.sfx.tick(); checkSerit(); renderZSide(); Z.ask(); }));
+    } else {
+      host.innerHTML = `<div class="row"><button class="btn ${paz.pct ? 'primary' : ''}" id="zPct" type="button">${paz.pct ? 'Asıl etiketleri göster' : 'Yüzdeye çevir'}</button><button class="btn" id="zRst" type="button">Etiketleri geri al</button></div>${isDone('pazar', 'sirala') && !isDone('pazar', 'encok') ? '<p class="small" style="margin:8px 0 4px">En çok çileği kim aldı?</p><div class="row" id="zWho"></div>' : ''}`;
+      $('#zPct').onclick = () => { paz.pct = !paz.pct; if (paz.pct) addLog('pazar', 'Hepsi yüzdeye çevrildi: %75, %70, %72, %66,7'); renderZSide(); Z.ask(); };
+      $('#zRst').onclick = () => { paz.tags.forEach((T) => (T.x = null)); renderZSide(); Z.ask(); };
+      const wh = $('#zWho'); if (wh) paz.tags.forEach((T) => { const bt = document.createElement('button'); bt.className = 'btn'; bt.type = 'button'; bt.textContent = T.ad; bt.onclick = () => { if (T.ad === 'Ali') { N.sfx.good(); say('Evet, <b>Ali</b>: 3/4 kg = %75, en sağdaki etiket. Sonra Can (%72), Ece (%70) ve Su (≈ %66,7) geliyor.'); addLog('pazar', 'En çok: Ali (3/4 kg)'); markDone('pazar', 'encok'); } else { N.sfx.bad(); bt.disabled = true; say(`${T.ad}: ${T.t} = ${T.p}. Sayı doğrusunda daha sağda bir etiket var.`); } }; wh.appendChild(bt); });
+    }
+    partTabs(host, paz, PAZ_LIST, 'pazar', () => say(PAZ_HINT[paz.part]));
+  }
   /* ── Tren istasyonu: paralel raylar, dik travers, iki noktadan bir doğru, döner platform ── */
   const R1Y = 110, R2Y = 200, GAUGE_M = 1.43, PX_M = (R2Y - R1Y) / GAUGE_M;
   const TA = { x: 120, y: 380 }, TB = { x: 390, y: 320 }, TT = { x: 690, y: 440 }, TR = 120, T1 = { x: 300, y: R1Y };
@@ -1686,7 +1958,7 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
     if (e.target.matches('input, textarea')) return;
     if (zoomOpen && e.key !== 'Escape') return;
     const k = e.key.toLowerCase();
-    if (['1', '2', '3', '4', '5', '6'].includes(k)) go(+k - 1);
+    if (/^[1-9]$/.test(k) && +k <= STS.length) go(+k - 1);
     else if (k === 'pagedown') go(Math.min(STS.length - 1, st.cur + 1)); else if (k === 'pageup') go(Math.max(0, st.cur - 1));
     else if (k === 'arrowleft') cam.tx = clampCam(cam.tx - 300); else if (k === 'arrowright') cam.tx = clampCam(cam.tx + 300);
     else if (k === 'z') openZoom(); else if (k === 'd') $('#defterBtn').click(); else if (k === 'o') $('#ogretmenBtn').click();

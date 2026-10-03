@@ -25,6 +25,8 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 4. **Çini Atölyesi** (MAT.5.3.5–5.3.6): doğrulardan çokgen çini, düzgün çokgen, köşegen, boşluksuz döşeme.
 5. **Köprü** (MAT.5.3.6): üçgen neden sağlam, iç açılar toplamı 180°.
 6. **Çeşme Meydanı** (MAT.5.3.7): iki taşın halkalarından ölçmeden üçgen.
+7. **Pastane** (MAT.5.1.3): siparişi tepside dilimle göster, denk kesir; ölçü kaplarında tam sayılı kesir ve sayı doğrusu; yüzlük kartta kesir, ondalık ve yüzde.
+8. **Pazar** (MAT.5.1.4): “paydası büyük olan büyüktür” iddiasını şeritlerle çürüt, denk kesir; dört farklı gösterimi sayı doğrusunda sırala.
 
 Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, ortam sesleri (kuşlar, cırcır böceği, yağmur, çeşme, tren düdüğü, iki dakikada bir kule çanı; yaklaştıkça yükselir), öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba-metinleri.js` içindeki `KASABA_METINLERI` nesnesinde. Telefonda araç düğmeleri “☰ menü”de toplanır; kasabada gezinirken istasyon kartı ince bir şeride iner.
 
