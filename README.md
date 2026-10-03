@@ -29,7 +29,7 @@ Her temanın sonunda Polen'in Vadisi tarzında bir gözlem ortamı var. Hepsi ay
 2. **Otogar** (MAT.5.1.2): gezi için toplam kişi, bölme (bölüm ve kalan), kalanı yorumlama (bir otobüs daha), otobüsleri doldurarak kontrol.
 3. **Pastane** (MAT.5.1.3) ve 4. **Pazar** (MAT.5.1.4): aşağıdaki kesir istasyonları.
 
-Çarşıda 5 sayı saklı (sayı avı). Metinler `js/carsi-metinleri.js` içinde.
+Her istasyonda öğrenciyi adım adım yönlendiren bir rehber var: yakın planda her an tek görev (“Görev 2/4”) ve açık bir yönerge, istenince ipuçları, tahtada nereye dokunulacağını gösteren yanıp sönen işaret, parlayan düğme ve görev bitince “Sıradaki görev →”. Yönergeler ve ipuçları metin dosyasındaki her görevin `yonerge` ve `ipucu` alanlarında. Çarşıda 5 sayı saklı (sayı avı). Metinler `js/carsi-metinleri.js` içinde.
 
 ### Nokta'nın Kasabası · MAT.5.3 Geometrik Şekiller
 

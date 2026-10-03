@@ -37,6 +37,7 @@
     st.done[sid + '.' + tid] = true; persist(); N.sfx.good(); nokta.happyUntil = st.t + 2.5;
     const S = STS.find((x) => x.id === sid), task = S.gorevler.find((x) => x.id === tid);
     toast(`Görev tamam: <b>${task.metin}</b>`);
+    if (zoomOpen && STS[st.cur].id === sid) zDone = tid;
     renderCard(); renderStations(); if (zoomOpen) renderZSide();
     if (stationDone(S)) setTimeout(() => { toast(`<b>${S.ad}</b> tamamlandı! Açıklamayı oku ya da sonraki noktaya geç.`); N.sfx.win(); }, 900);
   }
@@ -1068,11 +1069,12 @@
     el.className = 'ui scard' + (st.cardMin ? ' min' : '');
     el.innerHTML = `<div class="head"><img src="../img/nokta.png" alt="" id="cardImg"><div><span class="code">${st.cur + 1} · ${S.kod}</span><h2>${S.ad}</h2></div>
       <button class="chip-btn fold" id="fold" type="button" aria-expanded="${!st.cardMin}">${st.cardMin ? 'aç' : 'küçült'}</button></div>
-      ${st.cardMin ? `<div class="minrow"><button class="btn primary" id="zoomBtn" type="button">🔍 Yakından incele</button><span class="small">${S.gorevler.filter((t) => isDone(S.id, t.id)).length}/${S.gorevler.length} görev</span></div>` : `<div class="body">
+      ${st.cardMin ? `<div class="minrow"><button class="btn primary ${picked != null && !allDone ? 'nudge' : ''}" id="zoomBtn" type="button">🔍 Yakından incele</button><span class="small">${S.gorevler.filter((t) => isDone(S.id, t.id)).length}/${S.gorevler.length} görev</span></div>` : `<div class="body">
         <p>${S.gozlem}</p>
         <span class="lbl">Sence?</span><div class="q">${S.soru}</div>
         ${picked == null ? '<div id="senceBox"></div>' : `<p class="picked">Tahminin: <b>${S.secenekler[picked]}</b>. ${allDone ? (picked === S.dogru ? 'Gözlemin tahminini doğruladı!' : 'Gözlemin farklı bir şey gösterdi; açıklamaya bak.') : 'Şimdi yakından inceleyip dene.'}</p>`}
-        <div class="row2"><button class="btn primary big" id="zoomBtn" type="button">🔍 Yakından incele</button></div>
+        <p class="next">${picked == null ? '<b>1. adım:</b> Soruyu oku ve tahminini seç.' : !allDone ? `<b>2. adım:</b> <b>Yakından incele</b>’ye dokun. ${S.gorevler.filter((t) => !isDone(S.id, t.id)).length} görev seni bekliyor.` : '<b>Son adım:</b> Açıklamayı oku, sonra sonraki noktaya geç.'}</p>
+        <div class="row2"><button class="btn primary big ${picked != null && !allDone ? 'nudge' : ''}" id="zoomBtn" type="button">🔍 Yakından incele</button></div>
         <span class="lbl">Görevler</span>
         <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>
         <span class="lbl">Açıklama</span>
@@ -1106,27 +1108,99 @@
   function openZoom() {
     zoomOpen = true; $('#zoom').classList.add('open'); const S = STS[st.cur];
     Z.onDown = Z.onMove = Z.onUp = null;
+    zDone = null; toTaskPart(S, curTask(S));
     ({ tren: setupTren, saat: setupClock, kavsak: setupMap, cini: setupCini, kopru: setupKopru, cesme: setupPool, pastane: setupPastane, pazar: setupPazar, gozlemevi: setupGozlemevi, otogar: setupOtogar })[S.id]();
+    if (S.gorevler.some((t) => t.yonerge)) zhint = ''; // yönerge kutusu var: Nokta yalnız geri bildirim verir
+    const baseDraw = Z.draw; Z.draw = (c) => { baseDraw(c); drawGuide(c); };
+    const baseUp = Z.onUp; Z.onUp = (p) => { if (baseUp) baseUp(p); nudgeSide(); };
+    const baseDown = Z.onDown; Z.onDown = (p) => { if (baseDown) baseDown(p); nudgeSide(); };
     renderZSide(); setTimeout(() => { Z.resize(); }, 30);
     addEventListener('keydown', zoomEsc);
   }
   function closeZoom() { stopClock(); zoomOpen = false; $('#zoom').classList.remove('open'); if (pool.play) { clearInterval(pool.play); pool.play = null; } removeEventListener('keydown', zoomEsc); renderCard(); }
   const zoomEsc = (e) => { if (e.key === 'Escape') closeZoom(); };
   $('#zoom').addEventListener('click', (e) => { if (e.target.id === 'zoom') closeZoom(); });
-  function hint(html) { const h = $('#zhint'); if (!h) return; h.innerHTML = html; h.classList.remove('pop'); void h.offsetWidth; h.classList.add('pop'); }
+  function hint(html) { const h = $('#zhint'); if (!h) return; h.hidden = !html; const tx = $('#zhintT'); if (tx) tx.innerHTML = html; h.classList.remove('pop'); void h.offsetWidth; h.classList.add('pop'); }
   function renderZSide() {
     if (!zoomOpen) return;
     const S = STS[st.cur], el = $('#zside');
+    const cur = curTask(S);
     el.innerHTML = `<div class="row" style="justify-content:space-between"><h3 id="zTitle">${S.ad}</h3><button class="chip-btn" id="zClose" type="button">kapat ✕</button></div>
-      <div class="hint" id="zhint">${zhint || S.gozlem}</div><div id="zctl"></div>
+      ${guideBox(S)}
+      <div class="hint" id="zhint"${zhint ? '' : ' hidden'}><b class="who">Nokta:</b> <span id="zhintT">${zhint}</span></div><div id="zctl"${zDone ? ' class="dim"' : ''}></div>
       <span class="label" style="margin-top:4px">Görevler</span>
-      <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>`;
+      <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : t === cur ? 'now' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>`;
     $('#zClose').onclick = closeZoom;
     ({ tren: ctlTren, saat: ctlClock, kavsak: ctlMap, cini: ctlCini, kopru: ctlKopru, cesme: ctlPool, pastane: ctlPastane, pazar: ctlPazar, gozlemevi: ctlGozlemevi, otogar: ctlOtogar })[S.id]($('#zctl'));
+    bindGuide(S); nudgeSide();
   }
   let zhint = '';
   const say = (html) => { zhint = html; hint(html); };
 
+  /* ══════════ rehber: her an tek görev, açık yönerge, ipucu, tahtada işaret ══════════ */
+  let zDone = null; // az önce biten görev (başarı kutusu için)
+  const ipc = {}; // açılan ipucu sayısı
+  const curTask = (S) => S.gorevler.find((t) => !isDone(S.id, t.id));
+  const partState = () => ({ tren, pastane: pas, pazar: paz, gozlemevi: gz })[STS[st.cur].id];
+  function toTaskPart(S, t) { const ps = partState(); if (t && t.part && ps && ps.part !== t.part) { ps.part = t.part; Z.dragK = null; } }
+  // görev için tahtadaki hedef (pt) ve parlayacak yan panel öğesi (sel)
+  function guideFor(S, t) {
+    if (!t) return {};
+    const k = S.id + '.' + t.id;
+    if (k === 'gozlemevi.bolukle') { const n = String(GZ_DEV.n).length, x0 = 450 - (n * 72) / 2; for (let i = n - 3; i > 0; i -= 3) if (!gz.gaps.has(i)) { let sh = 0; for (let j = 1; j < i; j++) if (gz.gaps.has(j)) sh += 18; return { pt: { x: x0 + i * 72 + sh, y: 282, t: 'bu aralığa dokun', below: true } }; } return {}; }
+    if (k === 'gozlemevi.oku') return { sel: '#gzRead' };
+    if (k === 'gozlemevi.yaz' || k === 'gozlemevi.sifir') { const tg = String(gz.target).padStart(10, '0').split('').map(Number), x0 = 450 - 360 - 27; for (let i = 0; i < 10; i++) if (tg[i] !== gz.wheel[i]) { const gi = Math.floor((9 - i) / 3), up = (tg[i] - gz.wheel[i] + 10) % 10 <= 5; return { pt: { x: x0 + i * 72 + (3 - gi) * 18 + 36, y: up ? 190 : 282, t: up ? 'üst yarıya dokun' : 'alt yarıya dokun', below: !up } }; } return {}; }
+    if (S.id === 'otogar') return { sel: { topla: '#otTop', bol: '#otQ', yorum: '#otYor', kontrol: '#otFill' }[t.id] };
+    if (k === 'pastane.model' || k === 'pastane.denk') {
+      const [a, b] = PAS_ORD, want = k === 'pastane.model' ? b : (pas.n === pas.firstN || (a * pas.n) % b ? null : pas.n);
+      if (k === 'pastane.model' && pas.n !== b) return { sel: pas.n < b ? '#pN\\+' : '#pN-' };
+      if (k === 'pastane.denk' && want == null) return { sel: '#pN\\+' };
+      const need = (a * pas.n) / b; if (pas.sel.size > need) return { sel: '#pClr' };
+      for (let i = 0; i < pas.n; i++) if (!pas.sel.has(i)) { const ang = -Math.PI / 2 + (i + .5) * 2 * Math.PI / pas.n; return { pt: { x: TC.x + Math.cos(ang) * TRAD * .62, y: TC.y + Math.sin(ang) * TRAD * .62, t: 'dokun' } }; }
+      return {};
+    }
+    if (k === 'pastane.kap') { const q = PAS_CUP[0], ci = Math.floor((q - 1) / 4), f = q - ci * 4; if (pas.q === q) return {}; return { pt: { x: CUPS[ci].x + CUP_W / 2, y: CUP_BOT - ((CUP_BOT - CUP_TOP) / 4) * f + 14, t: 'dokun' } }; }
+    if (k === 'pastane.yuzluk') { const v = PAS_YUZ.v; if (pas.grid.size > v) return { sel: '#pClr' }; for (let i = 0; i < 100; i++) if (!pas.grid.has(i)) return { pt: { x: GX + (i % 10) * GC + GC / 2, y: GY + Math.floor(i / 10) * GC + GC / 2, t: 'sürükle' } }; return {}; }
+    if (k === 'pazar.varsayim') { const tg = [[1, 3], [1, 5]]; for (let i = 0; i < 2; i++) { const [a, b] = paz.s[i]; if (b !== tg[i][1]) return { sel: `[data-z="${i},1,${b < tg[i][1] ? 1 : -1}"]` }; if (a !== tg[i][0]) return { sel: `[data-z="${i},0,${a < tg[i][0] ? 1 : -1}"]` }; } return {}; }
+    if (k === 'pazar.denk') return { sel: '[data-z]' };
+    if (k === 'pazar.sirala') { const i = paz.tags.findIndex((T2) => T2.x == null); return i < 0 || paz.drag >= 0 ? {} : { pt: { x: paz.tags[i].home.x, y: paz.tags[i].home.y + 32, t: 'sürükle' } }; }
+    if (k === 'pazar.encok') return { sel: '#zWho' };
+    return {};
+  }
+  if (/[?&]test/.test(location.search)) window.__rehber = () => { const S = STS[st.cur], t = curTask(S); return { sid: S.id, tid: t && t.id, done: zDone, ot: OT, part: (partState() || {}).part, dragK: Z.dragK, down: Z.down, grid: pas.grid.size, q: pas.q, ...guideFor(S, t) }; };
+  function drawGuide(c) {
+    const S = STS[st.cur]; if (zDone || Z.dragK) return; const p = guideFor(S, curTask(S)).pt; if (!p) return;
+    const ph = (st.t * 1.6) % 1, bob = Math.sin(st.t * 5) * 5;
+    c.save(); c.setLineDash([]);
+    c.beginPath(); c.arc(p.x, p.y, 14 + ph * 26, 0, 7); c.strokeStyle = `rgba(232,163,61,${1 - ph})`; c.lineWidth = 4; c.stroke();
+    c.beginPath(); c.arc(p.x, p.y, 9, 0, 7); c.fillStyle = 'rgba(232,163,61,.9)'; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 2; c.stroke();
+    const sg = p.below ? -1 : 1, ay = p.y - sg * 30 + bob; c.beginPath(); c.moveTo(p.x, ay); c.lineTo(p.x - 12, ay - sg * 18); c.lineTo(p.x - 5, ay - sg * 18); c.lineTo(p.x - 5, ay - sg * 40); c.lineTo(p.x + 5, ay - sg * 40); c.lineTo(p.x + 5, ay - sg * 18); c.lineTo(p.x + 12, ay - sg * 18); c.closePath(); c.fillStyle = N.SEAL; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 2; c.stroke();
+    if (p.t) d.text(c, p.t, p.x, ay - sg * 56, { size: 22, color: N.SEAL, haloColor: 'rgba(255,250,240,.95)' });
+    c.restore();
+  }
+  function nudgeSide() {
+    document.querySelectorAll('#zside .nudge').forEach((e) => e.classList.remove('nudge'));
+    const S = STS[st.cur]; if (zDone) return; const sel = guideFor(S, curTask(S)).sel; if (!sel) return;
+    const el = document.querySelector('#zside ' + sel); if (el) el.classList.add('nudge');
+  }
+  function guideBox(S) {
+    const n = S.gorevler.length, t = curTask(S), i = t ? S.gorevler.indexOf(t) : n;
+    if (zDone) {
+      const dt = S.gorevler.find((x) => x.id === zDone);
+      return `<div class="gbox ok"><span class="gstep">✓ Görev ${S.gorevler.indexOf(dt) + 1} / ${n} tamam</span><div class="gtext">Aferin! ${dt.metin}</div>
+        <button class="btn primary big" id="gNext" type="button">${t ? `Sıradaki görev (${i + 1}/${n}) →` : 'İstasyonu bitir →'}</button></div>`;
+    }
+    if (!t) return `<div class="gbox ok"><span class="gstep">✓ Bütün görevler tamam</span><div class="gtext">Bu istasyonu bitirdin! Kapatıp <b>açıklamayı</b> oku.</div><button class="btn primary big" id="gEnd" type="button">Açıklamayı oku →</button></div>`;
+    const k = S.id + '.' + t.id, ip = t.ipucu || [], shown = ipc[k] || 0;
+    return `<div class="gbox"><span class="gstep">Görev ${i + 1} / ${n}</span><div class="gtext">${t.yonerge || t.metin}</div>
+      ${shown ? `<ul class="gip">${ip.slice(0, shown).map((h) => `<li>${h}</li>`).join('')}</ul>` : ''}
+      ${shown < ip.length ? `<button class="chip-btn" id="gIp" type="button">💡 ${shown ? 'Bir ipucu daha' : 'İpucu'}</button>` : ''}</div>`;
+  }
+  function bindGuide(S) {
+    const nb = $('#gNext'); if (nb) nb.onclick = () => { zDone = null; zhint = ''; const t = curTask(S); if (!t) { st.showExp = S.id; closeZoom(); return; } toTaskPart(S, t); renderZSide(); Z.ask(); };
+    const eb = $('#gEnd'); if (eb) eb.onclick = () => { st.showExp = S.id; closeZoom(); };
+    const ib = $('#gIp'); if (ib) ib.onclick = () => { const t = curTask(S), k = S.id + '.' + t.id; ipc[k] = (ipc[k] || 0) + 1; renderZSide(); };
+  }
   /* yakın planda tek etkinlik: parçaya göre kaydır, büyüt; dokunuşu geri çevir */
   function partWrap(state, parts, bg) {
     const draw = Z.draw, down = Z.onDown, move = Z.onMove, up = Z.onUp, T = () => parts[state.part];
