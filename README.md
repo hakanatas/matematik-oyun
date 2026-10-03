@@ -32,6 +32,10 @@ Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, o
 
 [ilerleme.html](ilerleme.html): oyun yıldızları ve kasaba gözlemleri (tahminler, görevler, notlar, şekil avı) tek sayfada. Öğrenci adını yazıp yazdırabilir; paylaşılan bilgisayarda kayıtlar buradan silinir. Kayıtlar yalnızca o tarayıcıda saklanır.
 
+## Klavye ve sunum kumandası
+
+Bütün oyun tahtaları klavyeyle oynanır: tahtaya odaklanıp ok tuşlarına basınca sanal imleç çıkar; boşluk/Enter tutar ve bırakır, Shift hızlı, Alt ince adım, Esc bırakır. Kasabada 1–6 istasyon, ←/→ gezinme, PageUp/PageDown (sunum kumandası) önceki/sonraki istasyon, Z yakından incele, P sunum modu.
+
 ## Çalıştırma
 
 Kurulum gerekmez. `index.html` dosyasını tarayıcıda açmanız yeterli; internet olmadan da çalışır (yazı tipleri internet yoksa yedek yazı tipine düşer). GitHub Pages için depo kökünden yayımlayabilirsiniz.

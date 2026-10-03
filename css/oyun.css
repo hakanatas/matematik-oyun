@@ -54,6 +54,8 @@ b { font-weight: 600; }
 .board { position: relative; background: rgba(255, 252, 244, .66); border-radius: 12px; overflow: hidden;
   box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 0 0 1px rgba(23,20,17,.1), 0 18px 34px -24px rgba(60, 40, 10, .55); }
 .board canvas { display: block; width: 100%; height: auto; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; }
+.board canvas:focus { outline: none; }
+.board canvas:focus-visible { outline: 3px solid var(--amber); outline-offset: -3px; }
 .board .fx { position: absolute; inset: 0; pointer-events: none; }
 .float { position: absolute; transform: translate(-50%, -50%); font-family: var(--brush); font-size: 32px; color: var(--amber-deep); text-shadow: 0 2px 0 var(--sheet); animation: floatUp 1.2s cubic-bezier(.2,.8,.2,1) forwards; white-space: nowrap; }
 .float.bad { color: var(--seal); }

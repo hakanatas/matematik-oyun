@@ -84,7 +84,43 @@
       canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
       canvas.addEventListener('pointerleave', () => { if (!this.down) { this.hover = null; this.onMove && this.onMove(null); } });
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.render());
+      this.keyboard();
       this.resize();
+    }
+    /** klavye: ok tuşları sanal imleci gezdirir, boşluk/Enter tutar-bırakır (tahta kumandası için de) */
+    keyboard() {
+      const cv = this.cv; cv.tabIndex = 0;
+      if (!cv.getAttribute('aria-label')) cv.setAttribute('aria-label', 'Çizim tahtası. Ok tuşlarıyla imleci gezdir, boşlukla tut ve bırak.');
+      const send = () => { this.hover = { ...this.kb }; this.onMove && this.onMove(this.hover, { kb: true }); this.ask(); };
+      cv.addEventListener('keydown', (e) => {
+        const k = e.key, step = e.shiftKey ? 32 : e.altKey ? 2 : 8;
+        const dir = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[k];
+        if (dir) {
+          e.preventDefault(); if (!this.kb) this.kb = { x: this.W / 2, y: this.H / 2 };
+          else { this.kb.x = Math.max(0, Math.min(this.W, this.kb.x + dir[0] * step)); this.kb.y = Math.max(0, Math.min(this.H, this.kb.y + dir[1] * step)); }
+          send(); return;
+        }
+        if (k === ' ' || k === 'Enter') {
+          e.preventDefault(); if (!this.kb) { this.kb = { x: this.W / 2, y: this.H / 2 }; send(); return; }
+          if (!this.down) { this.down = true; this.onDown && this.onDown({ ...this.kb }, { kb: true }); }
+          else { this.down = false; this.onUp && this.onUp({ ...this.kb }, { kb: true }); }
+          this.ask(); return;
+        }
+        if (k === 'Escape' && this.down) { this.down = false; this.onUp && this.onUp({ ...this.kb }, { kb: true }); this.ask(); }
+      });
+      cv.addEventListener('blur', () => { if (this.kb && this.down) { this.down = false; this.onUp && this.onUp({ ...this.kb }, { kb: true }); } this.kb = null; this.ask(); });
+      cv.addEventListener('pointerdown', () => { if (this.kb) { this.kb = null; this.ask(); } });
+    }
+    drawKb(c) {
+      const p = this.kb; if (!p) return;
+      c.save(); c.setLineDash([]); c.globalAlpha = 1;
+      c.beginPath(); c.arc(p.x, p.y, 16, 0, Math.PI * 2); c.fillStyle = this.down ? 'rgba(232,163,61,.45)' : 'rgba(232,163,61,.15)'; c.fill();
+      c.strokeStyle = N.DEEP; c.lineWidth = 3; c.stroke();
+      c.beginPath(); c.moveTo(p.x - 26, p.y); c.lineTo(p.x - 8, p.y); c.moveTo(p.x + 8, p.y); c.lineTo(p.x + 26, p.y); c.moveTo(p.x, p.y - 26); c.lineTo(p.x, p.y - 8); c.moveTo(p.x, p.y + 8); c.lineTo(p.x, p.y + 26); c.lineWidth = 2.5; c.stroke();
+      c.font = `500 13px ${N.MONO}`; c.textAlign = 'center'; c.textBaseline = 'bottom'; const tx = this.down ? 'tutuyorsun · boşluk: bırak' : 'oklar: gez · boşluk: tut · shift: hızlı';
+      const w = c.measureText(tx).width + 16, x = Math.max(w / 2 + 6, Math.min(this.W - w / 2 - 6, this.W / 2));
+      c.fillStyle = 'rgba(23,20,17,.78)'; c.beginPath(); c.roundRect ? c.roundRect(x - w / 2, this.H - 30, w, 24, 6) : c.rect(x - w / 2, this.H - 30, w, 24); c.fill();
+      c.fillStyle = '#fffaf0'; c.fillText(tx, x, this.H - 11); c.restore();
     }
     resize() {
       const r = this.cv.getBoundingClientRect(); if (!r.width) return;
@@ -100,7 +136,7 @@
     render() {
       const c = this.ctx; c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, this.cv.width, this.cv.height);
       c.setTransform(this.k, 0, 0, this.k, 0, 0); c.lineCap = 'round'; c.lineJoin = 'round';
-      this.draw(c);
+      this.draw(c); this.drawKb(c);
     }
     /** bir sonraki karede yeniden çiz */
     ask() { if (this._q) return; this._q = true; requestAnimationFrame(() => { this._q = false; this.render(); }); }

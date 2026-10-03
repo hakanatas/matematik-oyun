@@ -1687,6 +1687,7 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
     if (zoomOpen && e.key !== 'Escape') return;
     const k = e.key.toLowerCase();
     if (['1', '2', '3', '4', '5', '6'].includes(k)) go(+k - 1);
+    else if (k === 'pagedown') go(Math.min(STS.length - 1, st.cur + 1)); else if (k === 'pageup') go(Math.max(0, st.cur - 1));
     else if (k === 'arrowleft') cam.tx = clampCam(cam.tx - 300); else if (k === 'arrowright') cam.tx = clampCam(cam.tx + 300);
     else if (k === 'z') openZoom(); else if (k === 'd') $('#defterBtn').click(); else if (k === 'o') $('#ogretmenBtn').click();
     else if (k === 'p') togglePresent(); else if (k === 'h') document.body.classList.toggle('hide-ui'); else if (k === 'escape') closeSheets();
