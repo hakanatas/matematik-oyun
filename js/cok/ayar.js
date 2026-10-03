@@ -8,11 +8,11 @@ window.COK_AYAR = {
   okulAlanAdlari: ['alkev.k12.tr', 'stu.alkev.k12.tr'],
   ogretmenAlanAdi: 'alkev.k12.tr',
   firebase: {
-    apiKey: '',
+    apiKey: 'AIzaSyDIKOkrnhdFJya3b359qwZVdIsbKMt2GR8',
     authDomain: 'matematik-oyun.firebaseapp.com',
     databaseURL: 'https://matematik-oyun-default-rtdb.europe-west1.firebasedatabase.app',
     projectId: 'matematik-oyun',
-    appId: '',
+    appId: '1:752138991627:web:a7ff70962bfdc5c20a6f0e',
   },
   // Hazır mesajlar: öğrenciler yalnız bunları gönderebilir (veritabanına yalnız sıra numarası yazılır).
   // En çok 24 mesaj; sırayı değiştirmek eski mesajların anlamını değiştirir, sona ekleyin.
