@@ -849,6 +849,19 @@ const KASABA_METINLERI = {
   let zhint = '';
   const say = (html) => { zhint = html; hint(html); };
 
+  /* yakın planda tek etkinlik: parçaya göre kaydır, büyüt; dokunuşu geri çevir */
+  function partWrap(state, parts, bg) {
+    const draw = Z.draw, down = Z.onDown, move = Z.onMove, up = Z.onUp, T = () => parts[state.part];
+    const inv = (p) => { if (!p) return p; const t = T(); return { x: (p.x - t.dx) / t.k, y: (p.y - t.dy) / t.k }; };
+    Z.draw = (c) => { c.fillStyle = bg; c.fillRect(0, 0, ZW, ZH); const t = T(); c.save(); c.translate(t.dx, t.dy); c.scale(t.k, t.k); draw(c); c.restore(); };
+    Z.onDown = (p) => down && down(inv(p)); Z.onMove = (p) => move && move(inv(p)); Z.onUp = (p) => up && up(inv(p));
+  }
+  function partTabs(host, state, list, sid, onSwitch) {
+    const firstOpen = list.findIndex(([, , tid]) => !isDone(sid, tid));
+    const html = `<div class="row" style="gap:6px">${list.map(([k, ad, tid], i) => `<button class="btn ${state.part === k ? 'primary' : ''}" data-part="${k}" type="button" style="padding:8px 10px">${isDone(sid, tid) ? '✓ ' : i === firstOpen && state.part !== k ? '→ ' : ''}${i + 1}. ${ad}</button>`).join('')}</div>`;
+    host.insertAdjacentHTML('afterbegin', html);
+    host.querySelectorAll('[data-part]').forEach((b) => (b.onclick = () => { state.part = b.dataset.part; Z.dragK = null; onSwitch(); renderZSide(); Z.ask(); }));
+  }
   const knob = (c, p, hot) => { c.beginPath(); c.arc(p.x, p.y, hot ? 15 : 12, 0, 7); c.fillStyle = hot ? N.AMBER : N.SHEET; c.fill(); c.lineWidth = 3; c.strokeStyle = N.DEEP; c.stroke(); };
   const turnDelta = (a, b) => { let dl = a - b; while (dl > Math.PI) dl -= 2 * Math.PI; while (dl < -Math.PI) dl += 2 * Math.PI; return dl; };
 
@@ -858,52 +871,60 @@ const KASABA_METINLERI = {
   const tren = { tx: 470, gauge: 150, seen: new Set(), lineA: 62, hitB: false, leftB: false, rot: .4, acc: 0, trail: [], moved: false, last: 0 };
   const angAB = () => g.deg(g.ang(TA, TB));
   const fmtM = (px) => N.fmt(px / PX_M, 2);
+  const TREN_PARTS = { ray: { dx: 0, dy: 145, k: 1 }, travers: { dx: 0, dy: 145, k: 1 }, tel: { dx: 151, dy: -259, k: 1.3 }, cember: { dx: -412, dy: -250, k: 1.25 } };
+  const TREN_LIST = [['ray', 'Raylar', 'paralel'], ['travers', 'Travers', 'travers'], ['tel', 'Telgraf', 'tel'], ['cember', 'Platform', 'cember']];
+  const TREN_HINT = { ray: 'Ölçü gönyesini ray boyunca sürükle: iki ray arasındaki uzaklık değişiyor mu?', travers: 'Traversin alt ucundaki halkayı sürükle: travers ne zaman <b>en kısa</b> olur?', tel: 'Cetvelin halkasını A direği etrafında çevir: B’den de geçen kaç doğru bulabilirsin?', cember: 'Platformun ucundaki halkayı tutup <b>tam bir tur</b> çevir: uç nasıl bir iz bırakıyor?' };
   function setupTren() {
-    zhint = 'Dört şey var: üst raydaki <b>ölçü gönyesi</b>, alt raydaki <b>travers</b> halkası, A direğindeki <b>cetvel</b> ve <b>döner platform</b>. Halkaları sürükle.';
+    const open = TREN_LIST.find(([, , tid]) => !isDone('tren', tid)); tren.part = tren.part || (open ? open[0] : 'ray');
+    zhint = TREN_HINT[tren.part];
     Z.draw = (c) => {
-      c.fillStyle = '#ece3cf'; c.fillRect(0, 0, ZW, ZH);
-      c.fillStyle = '#d3c8b1'; c.fillRect(0, R1Y - 36, ZW, R2Y - R1Y + 72);
-      for (let i = 0; i < 140; i++) { c.fillStyle = 'rgba(23,20,17,.13)'; c.beginPath(); c.arc((i * 53) % ZW, R1Y - 32 + (i * 29) % (R2Y - R1Y + 64), 2, 0, 7); c.fill(); }
-      for (let x = 22; x < ZW; x += 52) { if (Math.abs(x + 9 - T1.x) < 34) continue; c.fillStyle = '#9b7653'; c.fillRect(x, R1Y - 22, 18, R2Y - R1Y + 44); c.strokeStyle = 'rgba(23,20,17,.5)'; c.lineWidth = 1.5; c.strokeRect(x, R1Y - 22, 18, R2Y - R1Y + 44); }
-      // oynayan travers
-      const T2 = { x: tren.tx, y: R2Y }, L = g.dist(T1, T2), perp = Math.abs(tren.tx - T1.x) < .5, ang = Math.atan2(T2.y - T1.y, T2.x - T1.x);
-      c.save(); c.translate(T1.x, T1.y); c.rotate(ang); c.fillStyle = perp ? '#e8b25c' : '#b08a63'; c.fillRect(-22, -10, L + 44, 20); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(-22, -10, L + 44, 20); c.restore();
-      [R1Y, R2Y].forEach((y, i) => { c.fillStyle = '#8d8f97'; c.fillRect(0, y - 5, ZW, 10); c.strokeStyle = N.INK; c.lineWidth = 2; c.strokeRect(-2, y - 5, ZW + 4, 10); d.text(c, i ? 'd₂' : 'd₁', 26, y - 20, { size: 26 }); });
-      d.seg(c, T1, T2, { w: 3 }); d.dot(c, T1, { r: 6 });
-      if (perp) d.right(c, T2, { x: 0, y: -1 }, { x: 1, y: 0 }, 14, { w: 2.5 });
-      d.text(c, `${fmtM(L)} m`, (T1.x + T2.x) / 2 + (perp ? -54 : 0), (T1.y + T2.y) / 2 + (perp ? 0 : -26), { size: 26, color: perp ? N.DEEP : N.INK });
-      // ölçü gönyesi
-      const gx = tren.gauge;
-      c.save(); c.translate(gx, R1Y); c.beginPath(); c.moveTo(0, -7); c.lineTo(0, -64); c.lineTo(46, -7); c.closePath(); c.fillStyle = 'rgba(232,163,61,.4)'; c.fill(); c.strokeStyle = N.DEEP; c.lineWidth = 2; c.stroke(); c.restore();
-      d.seg(c, { x: gx, y: R1Y }, { x: gx, y: R2Y }, { color: N.DEEP, w: 3, dash: [6, 5] }); d.right(c, { x: gx, y: R2Y }, { x: 0, y: -1 }, { x: 1, y: 0 }, 12, { w: 2.5 });
-      d.text(c, `${N.fmt(GAUGE_M, 2)} m`, gx + 50, (R1Y + R2Y) / 2, { size: 24, color: N.DEEP });
-      knob(c, { x: gx, y: R1Y }, Z.dragK === 'gauge'); knob(c, T2, Z.dragK === 'trav');
-      c.strokeStyle = 'rgba(23,20,17,.18)'; c.lineWidth = 2; c.setLineDash([6, 8]); c.beginPath(); c.moveTo(0, 264); c.lineTo(ZW, 264); c.moveTo(462, 264); c.lineTo(462, ZH); c.stroke(); c.setLineDash([]);
-      d.text(c, 'Telgraf direkleri', 230, 290, { size: 22, color: N.SOFT }); d.text(c, 'Döner platform', 690, 290, { size: 22, color: N.SOFT });
-      // telgraf
-      c.save(); c.beginPath(); c.rect(0, 266, 460, ZH - 266); c.clip();
-      [TA, TB].forEach((p) => { c.strokeStyle = '#6b4f35'; c.lineWidth = 8; c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x, ZH); c.stroke(); c.lineWidth = 5; c.beginPath(); c.moveTo(p.x - 22, p.y + 10); c.lineTo(p.x + 22, p.y + 10); c.stroke(); });
-      const onB = Math.abs(tren.lineA - angAB()) < .01, u = g.dir(g.rad(tren.lineA));
-      if (tren.hitB) d.seg(c, TA, TB, { w: 3.5 });
-      d.seg(c, g.sub(TA, g.mul(u, 700)), g.add(TA, g.mul(u, 700)), { w: 2.5, color: onB ? N.DEEP : N.SOFT, dash: [10, 8] });
-      c.restore();
-      d.dot(c, TA, { r: 7, label: 'A', lx: -20, ly: -16 }); d.dot(c, TB, { r: 7, label: 'B', lx: 18, ly: -16 });
-      knob(c, g.polar(TA, 170, g.rad(tren.lineA)), Z.dragK === 'line');
-      // döner platform
-      c.save(); c.beginPath(); c.rect(464, 266, ZW - 464, ZH - 266); c.clip();
-      c.beginPath(); c.arc(TT.x, TT.y, 26, 0, 7); c.fillStyle = '#cfc4ad'; c.fill();
-      if (tren.trail.length > 1) { c.beginPath(); tren.trail.forEach((a, i) => { const p = g.polar(TT, TR, a); i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y); }); c.strokeStyle = N.DEEP; c.lineWidth = 4; c.stroke(); }
-      c.save(); c.translate(TT.x, TT.y); c.rotate(-tren.rot); c.fillStyle = '#9b8f80'; c.fillRect(-TR, -16, 2 * TR, 32); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(-TR, -16, 2 * TR, 32);
-      c.strokeStyle = '#6f7078'; c.lineWidth = 4; c.beginPath(); c.moveTo(-TR, -7); c.lineTo(TR, -7); c.moveTo(-TR, 7); c.lineTo(TR, 7); c.stroke(); c.restore();
-      const e = g.polar(TT, TR, tren.rot); d.seg(c, TT, e, { color: N.DEEP, w: 2.5, dash: [5, 5] });
-      d.dot(c, TT, { r: 7, label: 'M', lx: -20, ly: 22 }); c.restore();
-      knob(c, e, Z.dragK === 'turn');
-      if (isDone('tren', 'cember')) d.text(c, 'her yerde aynı uzaklık: r', 690, 585, { size: 22, color: N.DEEP });
+      const P = tren.part;
+      if (P === 'ray' || P === 'travers') {
+        c.fillStyle = '#d3c8b1'; c.fillRect(-50, R1Y - 36, ZW + 100, R2Y - R1Y + 72);
+        for (let i = 0; i < 140; i++) { c.fillStyle = 'rgba(23,20,17,.13)'; c.beginPath(); c.arc((i * 53) % ZW, R1Y - 32 + (i * 29) % (R2Y - R1Y + 64), 2, 0, 7); c.fill(); }
+        for (let x = 22; x < ZW; x += 52) { if (P === 'travers' && Math.abs(x + 9 - T1.x) < 34) continue; c.fillStyle = '#9b7653'; c.fillRect(x, R1Y - 22, 18, R2Y - R1Y + 44); c.strokeStyle = 'rgba(23,20,17,.5)'; c.lineWidth = 1.5; c.strokeRect(x, R1Y - 22, 18, R2Y - R1Y + 44); }
+        const T2 = { x: tren.tx, y: R2Y }, L = g.dist(T1, T2), perp = Math.abs(tren.tx - T1.x) < .5, ang = Math.atan2(T2.y - T1.y, T2.x - T1.x);
+        if (P === 'travers') { c.save(); c.translate(T1.x, T1.y); c.rotate(ang); c.fillStyle = perp ? '#e8b25c' : '#b08a63'; c.fillRect(-22, -10, L + 44, 20); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(-22, -10, L + 44, 20); c.restore(); }
+        [R1Y, R2Y].forEach((y, i) => { c.fillStyle = '#8d8f97'; c.fillRect(-50, y - 5, ZW + 100, 10); c.strokeStyle = N.INK; c.lineWidth = 2; c.strokeRect(-52, y - 5, ZW + 104, 10); d.text(c, i ? 'd₂' : 'd₁', 26, y - 20, { size: 26 }); });
+        if (P === 'travers') {
+          d.seg(c, T1, T2, { w: 3 }); d.dot(c, T1, { r: 6 });
+          if (perp) d.right(c, T2, { x: 0, y: -1 }, { x: 1, y: 0 }, 14, { w: 2.5 });
+          d.text(c, `${fmtM(L)} m`, (T1.x + T2.x) / 2 + (perp ? -54 : 0), (T1.y + T2.y) / 2 + (perp ? 0 : -26), { size: 28, color: perp ? N.DEEP : N.INK });
+          knob(c, T2, Z.dragK === 'trav');
+          d.text(c, 'travers: rayların altındaki kalas', 450, R2Y + 80, { size: 22, color: N.SOFT });
+        } else {
+          const gx = tren.gauge;
+          c.save(); c.translate(gx, R1Y); c.beginPath(); c.moveTo(0, -7); c.lineTo(0, -64); c.lineTo(46, -7); c.closePath(); c.fillStyle = 'rgba(232,163,61,.4)'; c.fill(); c.strokeStyle = N.DEEP; c.lineWidth = 2; c.stroke(); c.restore();
+          d.seg(c, { x: gx, y: R1Y }, { x: gx, y: R2Y }, { color: N.DEEP, w: 3, dash: [6, 5] }); d.right(c, { x: gx, y: R2Y }, { x: 0, y: -1 }, { x: 1, y: 0 }, 12, { w: 2.5 });
+          d.text(c, `${N.fmt(GAUGE_M, 2)} m`, gx + 50, (R1Y + R2Y) / 2, { size: 26, color: N.DEEP });
+          knob(c, { x: gx, y: R1Y }, Z.dragK === 'gauge');
+          d.text(c, `ölçülen yer: ${tren.seen.size} / 3`, 450, R2Y + 80, { size: 22, color: N.SOFT });
+        }
+      }
+      if (P === 'tel') {
+        [TA, TB].forEach((p) => { c.strokeStyle = '#6b4f35'; c.lineWidth = 8; c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x, 800); c.stroke(); c.lineWidth = 5; c.beginPath(); c.moveTo(p.x - 22, p.y + 10); c.lineTo(p.x + 22, p.y + 10); c.stroke(); });
+        const onB = Math.abs(tren.lineA - angAB()) < .01, u = g.dir(g.rad(tren.lineA));
+        if (tren.hitB) d.seg(c, TA, TB, { w: 3.5 });
+        d.seg(c, g.sub(TA, g.mul(u, 700)), g.add(TA, g.mul(u, 700)), { w: 2.5, color: onB ? N.DEEP : N.SOFT, dash: [10, 8] });
+        d.dot(c, TA, { r: 7, label: 'A', lx: -20, ly: -16 }); d.dot(c, TB, { r: 7, label: 'B', lx: 18, ly: -16 });
+        knob(c, g.polar(TA, 170, g.rad(tren.lineA)), Z.dragK === 'line');
+      }
+      if (P === 'cember') {
+        c.beginPath(); c.arc(TT.x, TT.y, 26, 0, 7); c.fillStyle = '#cfc4ad'; c.fill();
+        if (tren.trail.length > 1) { c.beginPath(); tren.trail.forEach((a, i) => { const p = g.polar(TT, TR, a); i ? c.lineTo(p.x, p.y) : c.moveTo(p.x, p.y); }); c.strokeStyle = N.DEEP; c.lineWidth = 4; c.stroke(); }
+        c.save(); c.translate(TT.x, TT.y); c.rotate(-tren.rot); c.fillStyle = '#9b8f80'; c.fillRect(-TR, -16, 2 * TR, 32); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(-TR, -16, 2 * TR, 32);
+        c.strokeStyle = '#6f7078'; c.lineWidth = 4; c.beginPath(); c.moveTo(-TR, -7); c.lineTo(TR, -7); c.moveTo(-TR, 7); c.lineTo(TR, 7); c.stroke(); c.restore();
+        const e = g.polar(TT, TR, tren.rot); d.seg(c, TT, e, { color: N.DEEP, w: 2.5, dash: [5, 5] });
+        d.dot(c, TT, { r: 7, label: 'M', lx: -20, ly: 22 });
+        knob(c, e, Z.dragK === 'turn');
+        if (isDone('tren', 'cember')) d.text(c, 'her yerde aynı uzaklık: r', 690, 600, { size: 22, color: N.DEEP });
+      }
     };
     Z.onDown = (p) => {
-      const cand = [['gauge', { x: tren.gauge, y: R1Y }], ['trav', { x: tren.tx, y: R2Y }], ['line', g.polar(TA, 170, g.rad(tren.lineA))], ['turn', g.polar(TT, TR, tren.rot)]];
+      const own = { ray: 'gauge', travers: 'trav', tel: 'line', cember: 'turn' }[tren.part];
+      const cand = [['gauge', { x: tren.gauge, y: R1Y }], ['trav', { x: tren.tx, y: R2Y }], ['line', g.polar(TA, 170, g.rad(tren.lineA))], ['turn', g.polar(TT, TR, tren.rot)]].filter(([k]) => k === own);
       const h = cand.find(([, q]) => g.dist(p, q) < Z.hit(28));
-      if (h) Z.dragK = h[0]; else if (p.x > 464 && p.y > 266 && g.dist(p, TT) < TR + 24) Z.dragK = 'turn';
+      if (h) Z.dragK = h[0]; else if (own === 'turn' && g.dist(p, TT) < TR + 30) Z.dragK = 'turn';
       if (Z.dragK === 'turn') tren.last = g.ang(TT, p);
     };
     Z.onMove = (p) => {
@@ -934,12 +955,13 @@ const KASABA_METINLERI = {
         else if (tren.tx !== T1.x) say(`Eğik travers <b>${fmtM(L)} m</b>. Daha kısa olabilir mi? Ucunu kaydırmaya devam et.`);
       }
     };
+    partWrap(tren, TREN_PARTS, '#ece3cf');
     Z.ask();
   }
   function ctlTren(host) {
-    host.innerHTML = `<p class="small" style="margin:0">Sürüklenebilen dört halka: <b>gönye</b> (üst ray), <b>travers</b> (alt ray), <b>cetvel</b> (A direği), <b>platform</b> (sağ alt).</p>
-      <div class="row"><button class="btn" id="trReset" type="button">Platform izini sil</button></div>`;
-    $('#trReset').onclick = () => { tren.trail = []; tren.acc = 0; Z.ask(); };
+    host.innerHTML = tren.part === 'cember' ? '<div class="row"><button class="btn" id="trReset" type="button">Platform izini sil</button></div>' : '';
+    const rb = $('#trReset'); if (rb) rb.onclick = () => { tren.trail = []; tren.acc = 0; Z.ask(); };
+    partTabs(host, tren, TREN_LIST, 'tren', () => say(TREN_HINT[tren.part]));
   }
 
   /* ── Çini atölyesi: ardışık kesişen doğrular, düzgün çokgen, köşegen, döşeme ── */
@@ -1100,11 +1122,16 @@ const KASABA_METINLERI = {
     raw.map((x, i) => [x - fl[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (rest > 0) { fl[i]++; rest--; } });
     return fl;
   }
+  const KOPRU_PARTS = { yuk: { dx: 153, dy: -267, k: 1.35 }, aci: { dx: -298, dy: -63, k: 1.1 } };
+  const KOPRU_LIST = [['yuk', 'Yük testi', 'yuk'], ['aci', 'Açılar', 'toplam']];
+  const KOPRU_HINT = { yuk: 'İki çerçeve var: biri kare, biri üçgen. <b>Yük koy</b>’a bas ve izle.', aci: 'Üçgenin tepesini (C) sürükle: açılar değişiyor, peki toplamları?' };
   function setupKopru() {
-    zhint = 'Solda iki çerçeve var: biri kare, biri üçgen. <b>Yük koy</b> ve izle. Sağdaki üçgenin tepesini sürükleyip açılarına bak.';
+    kopru.part = kopru.part || (isDone('kopru', 'yuk') ? 'aci' : 'yuk');
+    zhint = KOPRU_HINT[kopru.part];
     Z.draw = (c) => {
-      c.fillStyle = '#e9e4d6'; c.fillRect(0, 0, ZW, ZH);
-      c.fillStyle = '#d7cdb6'; c.fillRect(0, 470, 440, 130); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.beginPath(); c.moveTo(0, 470); c.lineTo(440, 470); c.stroke();
+      const YUK = kopru.part === 'yuk';
+      if (YUK) {
+      c.fillStyle = '#d7cdb6'; c.fillRect(-200, 470, 900, 300); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.beginPath(); c.moveTo(0, 470); c.lineTo(440, 470); c.stroke();
       const L = kopru.load, sh = 58 * L;
       // kare çerçeve
       const sq = [{ x: 60, y: 470 }, { x: 190, y: 470 }, { x: 190 + sh, y: 340 + 8 * L }, { x: 60 + sh, y: 340 + 8 * L }];
@@ -1113,7 +1140,7 @@ const KASABA_METINLERI = {
       const wy = 340 - 46 - (1 - Math.min(1, L * 2)) * 140;
       [[(sq[2].x + sq[3].x) / 2, sq[2].y], [325, 340]].forEach(([x, y0]) => { const y = Math.min(wy, y0 - 46); c.fillStyle = '#3b3530'; c.fillRect(x - 28, y, 56, 44); c.strokeStyle = N.INK; c.lineWidth = 2; c.strokeRect(x - 28, y, 56, 44); d.text(c, '100 kg', x, y + 22, { size: 16, color: '#fffaf0', halo: false, font: N.MONO }); });
       if (L > .99) { d.text(c, 'kare yamuldu', 125, 520, { size: 24, color: N.SEAL }); d.text(c, 'üçgen dimdik', 325, 520, { size: 24, color: N.DEEP }); }
-      c.strokeStyle = 'rgba(23,20,17,.18)'; c.lineWidth = 2; c.setLineDash([6, 8]); c.beginPath(); c.moveTo(450, 20); c.lineTo(450, ZH - 20); c.stroke(); c.setLineDash([]);
+      return; }
       // açılar üçgeni
       const P = kopru.P, ang = triAngles(P), V = [KA, KB, P];
       c.beginPath(); c.moveTo(KA.x, KA.y); c.lineTo(KB.x, KB.y); c.lineTo(P.x, P.y); c.closePath(); c.fillStyle = 'rgba(232,163,61,.22)'; c.fill();
@@ -1128,7 +1155,7 @@ const KASABA_METINLERI = {
       ['A', 'B', 'C'].forEach((n, i) => { const v = V[i]; d.dot(c, v, { r: 6, label: n, lx: i === 0 ? -20 : i === 1 ? 20 : 0, ly: i === 2 ? -24 : 22 }); });
       knob(c, P, Z.dragK === 'P');
       const kind = ang.some((a) => a > 90) ? 'geniş açılı' : ang.includes(90) ? 'dik açılı' : 'dar açılı';
-      d.text(c, `${ang[0]}° + ${ang[1]}° + ${ang[2]}° = 180°`, 680, 500, { size: 28 }); d.text(c, `${kind} üçgen`, 680, 40, { size: 30, color: N.DEEP });
+      d.text(c, `${ang[0]}° + ${ang[1]}° + ${ang[2]}° = 180°`, 680, 500, { size: 28 }); d.text(c, `${kind} üçgen`, 680, 92, { size: 30, color: N.DEEP });
       if (kopru.tear) { // köşeleri yırt
         const Q = { x: 680, y: 575 }, R = 44; let acc = 0;
         V.forEach((v, i) => {
@@ -1146,7 +1173,7 @@ const KASABA_METINLERI = {
       for (const c of cands) if (g.dist(c, q) < 9) { if (g.dist(c, kopru.P) > 1) N.sfx.snap(); return c; }
       return q;
     };
-    Z.onDown = (p) => { if (g.dist(p, kopru.P) < Z.hit(30)) { Z.dragK = 'P'; kopru.tear = 0; } };
+    Z.onDown = (p) => { if (kopru.part === 'aci' && g.dist(p, kopru.P) < Z.hit(30)) { Z.dragK = 'P'; kopru.tear = 0; } };
     Z.onMove = (p) => { if (!p || Z.dragK !== 'P' || !Z.down) return; kopru.P = snapP(p); };
     Z.onUp = () => {
       if (Z.dragK !== 'P') return; Z.dragK = null;
@@ -1157,17 +1184,19 @@ const KASABA_METINLERI = {
       if (a.includes(90) && !isDone('kopru', 'dik')) { say('Bir açısı tam <b>90°</b>: <b>dik açılı üçgen</b>. Öbür iki açı birlikte 90° ediyor.'); addLog('kopru', `Dik açılı üçgen: ${a.join('°, ')}°`); markDone('kopru', 'dik'); }
       if (a.some((x) => x > 90) && !isDone('kopru', 'genis')) { say('Bir açısı 90°’den büyük: <b>geniş açılı üçgen</b>. İkinci bir geniş açı olamaz; iki geniş açı tek başına 180°’yi aşar.'); addLog('kopru', `Geniş açılı üçgen: ${a.join('°, ')}°`); markDone('kopru', 'genis'); }
     };
+    partWrap(kopru, KOPRU_PARTS, '#e9e4d6');
     Z.ask();
   }
   function ctlKopru(host) {
-    host.innerHTML = `<div class="row"><button class="btn primary" id="yukBtn" type="button">${kopru.loaded ? 'Yükü kaldır' : 'Yük koy'}</button><button class="btn" id="yirtBtn" type="button">✂ Köşeleri yırt</button></div>`;
-    $('#yukBtn').onclick = () => {
+    host.innerHTML = kopru.part === 'yuk' ? `<div class="row"><button class="btn primary" id="yukBtn" type="button">${kopru.loaded ? 'Yükü kaldır' : 'Yük koy'}</button></div>` : '<div class="row"><button class="btn" id="yirtBtn" type="button">✂ Köşeleri yırt</button></div>';
+    partTabs(host, kopru, KOPRU_LIST, 'kopru', () => say(KOPRU_HINT[kopru.part]));
+    const yb = $('#yukBtn'); if (yb) yb.onclick = () => {
       kopru.loaded = !kopru.loaded; const from = kopru.load, to = kopru.loaded ? 1 : 0; renderZSide();
       N.tween(1200, (t) => { kopru.load = from + (to - from) * t; }).then(() => {
         if (kopru.loaded && !isDone('kopru', 'yuk')) { N.sfx.bad(); say('Kare çerçeve yamuldu ama üçgen <b>biçimini korudu</b>! Üç kenarı belli olan üçgen değişemez. Köprüler bu yüzden üçgenlerle kurulur.'); addLog('kopru', 'Yükte kare yamuldu, üçgen biçimini korudu.'); markDone('kopru', 'yuk'); }
       });
     };
-    $('#yirtBtn').onclick = () => { kopru.tear = 0; N.sfx.draw(); N.tween(1500, (t) => { kopru.tear = t; }).then(() => say('Üç köşe yan yana bir <b>doğru açı</b> oluşturdu: <b>180°</b>.')); };
+    const tb = $('#yirtBtn'); if (tb) tb.onclick = () => { kopru.tear = 0; N.sfx.draw(); N.tween(1500, (t) => { kopru.tear = t; }).then(() => say('Üç köşe yan yana bir <b>doğru açı</b> oluşturdu: <b>180°</b>.')); };
   }
 
   /* ── 1. Saat ── */
