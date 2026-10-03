@@ -543,7 +543,8 @@
   function walkers() {
     WALKERS.forEach((W) => {
       const L = W.b - W.a, dd = (st.t * W.sp + W.ph * 2 * L) % (2 * L), fwd = dd < L, x = fwd ? W.a + dd : W.b - (dd - L);
-      person(x, GROUND + 26, fwd ? 1 : -1, W.col, st.t * W.sp * .25, st.hava === 'yagmur');
+      const si = WALKERS.indexOf(W), sa = window.CokOyuncu && selam[si] != null ? st.t - selam[si] : 9, hop = sa < .5 ? Math.sin(sa / .5 * Math.PI) * 14 : 0;
+      person(x, GROUND + 26 - hop, fwd ? 1 : -1, W.col, st.t * W.sp * .25, st.hava === 'yagmur');
     });
   }
   const bikeAt = () => { const x = ((st.t * 95) % (WW - WMIN + 800)) + WMIN - 400; return { x, y: GROUND + 44 }; };
@@ -1005,7 +1006,8 @@
     if (m > amb.lastBell && DW.id === 'kasaba') { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
   }
   /* ══════════ zıplama ve kasabayla etkileşim (çok oyunculu sayfa) ══════════ */
-  const ZIP_SURE = .62, AGACLAR = [], fxp = [], selam = {};
+  const ZIP_SURE = .62, AGACLAR = [], fxp = [], selam = {}, SELAMLAR = ['Merhaba!', 'Selam!', 'Günaydın!', 'Nasılsın?', 'Hoş geldin!', 'İyi gezmeler!'];
+  const walkerX = (W, t) => { const L = W.b - W.a, dd = (t * W.sp + W.ph * 2 * L) % (2 * L); return dd < L ? W.a + dd : W.b - (dd - L); };
   const zipY = (t0) => { const u = (st.t - (t0 == null ? -9 : t0)) / ZIP_SURE; return u < 0 || u > 1 ? 0 : Math.sin(u * Math.PI) * 115; };
   const ETKI = () => [ // yakınında zıplanınca bir şey olan yerler (ipucu tabelası da bunlardan)
     ...(DW.id === 'kasaba' ? [{ x: 650, r: 95, ad: 'çanı çal', f: () => ring() }, { x: FX, r: 200, ad: 'suya sıçra', f: (x) => sicra(x, GROUND - 6, '#8fb0bd', 22) }] : []),
@@ -1018,7 +1020,7 @@
   function zipEtki(x) { // x'te biri zıpladı: yakındaki her şey tepki verir
     ETKI().forEach((E) => { if (Math.abs(x - E.x) < E.r) E.f(x); });
     PIGEONS.forEach((pg) => { if (Math.abs(x - pg.x) < 260 && st.t - pg.fly > 3) pg.fly = st.t; });
-    WALKERS.forEach((W, i) => { const L = W.b - W.a, dd = (st.t * W.sp + W.ph * 2 * L) % (2 * L), wx = dd < L ? W.a + dd : W.b - (dd - L); if (Math.abs(wx - x) < 70) selam[i] = st.t; });
+    WALKERS.forEach((W, i) => { if (Math.abs(walkerX(W, st.t) - x) < 160) selam[i] = st.t; });
     fxp.push({ tur: 'toz', x, y: GROUND, t0: st.t + ZIP_SURE, omur: .5 });
   }
   function zipla() { if (zipY(nokta.jT) > 0) return; nokta.jT = st.t; N.sfx.tick(); zipEtki(nokta.x); if (window.CokOyuncu && window.CokOyuncu.zipladi) window.CokOyuncu.zipladi(); }
@@ -1036,8 +1038,19 @@
     // yakında bir şey varsa küçük ipucu tabelası
     if (window.CokOyuncu && !zipY(nokta.jT)) { const E = ETKI().filter((e) => Math.abs(nokta.x - e.x) < e.r).sort((p, q) => Math.abs(nokta.x - p.x) - Math.abs(nokta.x - q.x))[0];
       if (E) { const y = GROUND - 190 + Math.sin(st.t * 4) * 4; ctx.font = `600 15px ${N.MONO}`; const tx = `⤒ zıpla: ${E.ad}`, w = ctx.measureText(tx).width + 20; ctx.fillStyle = 'rgba(232,163,61,.95)'; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(nokta.x - w / 2, y - 14, w, 28, 14) : ctx.rect(nokta.x - w / 2, y - 14, w, 28); ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tx, nokta.x, y + 1); } }
-    // selam veren kasabalılar
-    WALKERS.forEach((W, i) => { if (!selam[i] || now - selam[i] > 2) return; const L = W.b - W.a, dd = (now * W.sp + W.ph * 2 * L) % (2 * L), wx = dd < L ? W.a + dd : W.b - (dd - L); ctx.font = `400 20px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.fillText(['Merhaba!', 'Selam!', 'Hop!', 'Günaydın!'][i % 4], wx, GROUND - 40 - (now - selam[i]) * 12); });
+    // selam veren kasabalılar: yanlarından geçen (sen ya da arkadaşların) olunca kendiliğinden
+    const yakin = [nokta.x, ...(window.CokOyuncu ? window.CokOyuncu.xler() : [])];
+    WALKERS.forEach((W, i) => {
+      let wx = walkerX(W, now);
+      if (yakin.some((x) => Math.abs(x - wx) < 60) && (!selam[i] || now - selam[i] > 8)) selam[i] = now;
+      if (!selam[i] || now - selam[i] > 2.2) return;
+      const a = now - selam[i], tx = SELAMLAR[i % SELAMLAR.length], y = GROUND - 30 - Math.min(1, a * 6) * 8, kx = wx;
+      if (Math.abs(nokta.x - kx) < 70) wx += (nokta.x > kx ? -1 : 1) * 62; // balonu Nokta'nın üstüne bindirme
+      ctx.globalAlpha = Math.min(1, (2.2 - a) * 3, a * 8); ctx.font = `400 22px ${N.BRUSH}`; const w = ctx.measureText(tx).width + 22;
+      ctx.fillStyle = N.SHEET; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(wx - w / 2, y - 34, w, 32, 11) : ctx.rect(wx - w / 2, y - 34, w, 32); ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.2; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(wx - 6, y - 2.5); ctx.lineTo(wx, y + 9); ctx.lineTo(wx + 6, y - 2.5); ctx.fillStyle = N.SHEET; ctx.fill(); ctx.beginPath(); ctx.moveTo(wx - 6, y - 2); ctx.lineTo(wx, y + 9); ctx.lineTo(wx + 6, y - 2); ctx.stroke();
+      ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(tx, wx, y - 17); ctx.globalAlpha = 1;
+    });
   }
   const yuru = { d: 0 };
   window.__dunya = { yuru, zipla, zipY, zipEtki, nokta, st, cam, STS, GROUND, dunya: DW, layer: (p) => layer(p), git: (i) => go(i), istasyonAc: () => openZoom() };
