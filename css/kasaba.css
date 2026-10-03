@@ -93,6 +93,7 @@ body { background: #efe6d2; }
 .toast.on { opacity: 1; transform: translateX(-50%); }
 .toast b { color: var(--amber); }
 
+@media (max-width: 1600px) { .st-btn:not([aria-current="true"]) span { display: none; } }
 @media (max-width: 900px) {
   .zbox { grid-template-columns: 1fr; }
   .brand h1 { font-size: 22px; }
