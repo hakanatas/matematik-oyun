@@ -26,7 +26,11 @@ Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 5. **Köprü** (MAT.5.3.6): üçgen neden sağlam, iç açılar toplamı 180°.
 6. **Çeşme Meydanı** (MAT.5.3.7): iki taşın halkalarından ölçmeden üçgen.
 
-Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba.js` başındaki `KASABA_METINLERI` nesnesinde.
+Ayrıca: şekil avı (8 saklı şekil, ikisi hareketli), sabah/akşam/yağmur, öğretmen notları, sunum modu (P), tanıtım. Bütün metinler `js/kasaba-metinleri.js` içindeki `KASABA_METINLERI` nesnesinde. Telefonda araç düğmeleri “☰ menü”de toplanır; kasabada gezinirken istasyon kartı ince bir şeride iner.
+
+## Benim ilerlemem
+
+[ilerleme.html](ilerleme.html): oyun yıldızları ve kasaba gözlemleri (tahminler, görevler, notlar, şekil avı) tek sayfada. Öğrenci adını yazıp yazdırabilir; paylaşılan bilgisayarda kayıtlar buradan silinir. Kayıtlar yalnızca o tarayıcıda saklanır.
 
 ## Çalıştırma
 

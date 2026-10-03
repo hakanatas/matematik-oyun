@@ -1,138 +1,5 @@
-/* Nokta'nın Kasabası · geometri gözlem ortamı (deneme: 3 istasyon)
-   Polen'in Vadisi'nden esinlenildi: puan yok; gözlem, "Sence?", yakından inceleme, defter.
-
-   ÖĞRETMENLER İÇİN: Nokta'nın bütün metinleri, görevler ve öğretmen notları
-   aşağıdaki KASABA_METINLERI nesnesindedir. Metinleri burada değiştirmeniz yeterli. */
-const KASABA_METINLERI = {
-  tanitim: [
-    { hedef: null, metin: 'Merhaba, ben <b>Nokta</b>! Bu kasabanın her köşesinde geometri saklı. Birlikte gözlem yapalım mı?' },
-    { hedef: '#world', metin: 'Tahtayı <b>sürükleyerek</b> kasabada gezebilirsin. Fare tekerleği de sağa sola kaydırır.' },
-    { hedef: '#stations', metin: 'Altı gözlem noktası var. Numaraya dokununca oraya giderim.' },
-    { hedef: '#scard', metin: 'Her noktada önce bir gözlem, sonra bir <b>“Sence?”</b> sorusu ve görevler var. Tahminini seç, sonra dene.' },
-    { hedef: '#zoomBtn', metin: '<b>Yakından incele</b> ile saatin kollarını, sokakları ya da havuzdaki taşları kendin değiştirirsin.' },
-    { hedef: '#avBtn', metin: 'Kasabada <b>8 şekil</b> saklı: üçgen çatı, paralel çit… İkisi hareket ediyor! Gördüğünde üstüne dokun.' },
-    { hedef: '#defterBtn', metin: 'Tahminlerin ve gözlemlerin <b>deftere</b> yazılır. Sonunda raporunu indirebilirsin.' },
-    { hedef: '#havaBtns', metin: 'Havayı değiştir: akşam pencereler yanar, yağmurda havuzda çemberler oluşur. Hadi başlayalım!' },
-  ],
-  istasyonlar: [
-    {
-      id: 'tren', ad: 'Tren İstasyonu', kod: 'MAT.5.3.1 – 5.3.2', x: -800, mx: -900, my: 250, nx: 250, hit: [-1100, -180, 300, 640],
-      varis: 'Çuf çuf! Raylara bak: hiç birleşiyorlar mı?',
-      gozlem: 'İstasyonda geometri her yerde: iki ray, raylara çakılı traversler, direkler arasındaki telgraf teli ve lokomotifleri çeviren döner platform.',
-      soru: 'Tren rayları uzakta birleşiyormuş gibi görünür. Gerçekte birleşirler mi?',
-      secenekler: ['Evet, uzakta birleşirler', 'Hayır, aralarındaki uzaklık hep aynı', 'Bazen birleşirler'], dogru: 1,
-      gorevler: [
-        { id: 'paralel', metin: 'Ölçü gönyesini ray boyunca üç farklı yere kaydır.' },
-        { id: 'travers', metin: 'Traversin ucunu kaydır: en kısa ne zaman olur?' },
-        { id: 'tel', metin: 'Cetveli A direği etrafında çevir: B’den de geçen kaç doğru var?' },
-        { id: 'cember', metin: 'Döner platformu tam bir tur çevir: ucu nasıl bir iz bırakıyor?' },
-      ],
-      aciklama: 'Raylar <b>paraleldir</b>: aralarındaki uzaklık her yerde aynı (1,43 m), hiç kesişmezler; uzakta birleşiyor gibi görünmeleri bir göz yanılmasıdır. Travers raylara <b>dik</b> konur: bir noktadan bir doğruya en kısa yol <b>dikmedir</b>. Telgraf teli A ve B’den geçer: <b>iki noktadan yalnız bir doğru geçer</b>. Döner platformun ucu merkeze hep aynı uzaklıktadır; tam turda bir <b>çember</b> çizer, tıpkı pergel gibi.',
-      sunum: 'Tren rayları hiç birleşir mi?',
-      oyun: { ad: 'Araç Ustası', url: 'arac-ustasi.html' },
-      ogretmen: 'MAT.5.3.1 Temel geometrik çizimler için araç ve teknolojiden yararlanabilme · MAT.5.3.2 Temel geometrik çizimlere dayalı deneyimlerini yansıtabilme. Çıkarımlar: paralel doğrular arasındaki uzaklık sabittir (gönye), dikme en kısa yoldur, iki noktadan yalnız bir doğru geçer, çember bir noktaya eşit uzaklıktaki noktalardır (döner platform = pergel).',
-    },
-    {
-      id: 'saat', ad: 'Saat Kulesi', kod: 'MAT.5.3.3', x: 650, mx: 770, my: 150, nx: -150, hit: [580, 720, 60, 600], varis: 'Tik tak! Kolların arasında hangi açı saklı?',
-      gozlem: 'Kule saatinin iki kolu var: kısa olan akrep, uzun olan yelkovan. Kollar döndükçe aralarında bir açı oluşuyor ve bu açı sürekli değişiyor.',
-      soru: 'Saat tam 3:00 iken kollar arasındaki açı nasıl bir açıdır?',
-      secenekler: ['Dar açı', 'Dik açı', 'Geniş açı'], dogru: 1,
-      gorevler: [
-        { id: 'uc', metin: 'Saati 3:00’e ayarla: akrep 3’te, yelkovan 12’de.' },
-        { id: 'olc', metin: 'Açıölçeri koy, bir kolu sıfıra hizala, açıyı ölç ve deftere yaz.' },
-        { id: 'genis', metin: 'Kolları geniş açı yapacak biçimde çevir, ölç ve yaz.' },
-        { id: 'dogru', metin: 'Kolları bir doğru açı oluşturacak biçimde ayarla.' },
-      ],
-      aciklama: 'Saatin kadranı tam açıdır: <b>360°</b>. 12 eş parçaya bölündüğü için iki rakam arası <b>360 ÷ 12 = 30°</b>. Saat 3:00’te kollar arasında 3 parça var: <b>90°, dik açı</b>. Saat 6:00’da 180°: <b>doğru açı</b>. Açıölçerin merkezi köşeye, sıfır çizgisi bir kola konur; sıfırdan başlayan ölçek okunur.',
-      sunum: 'Saat 3:00 iken kollar arasında kaç derece var?',
-      oyun: { ad: 'Açı Avcısı', url: 'aci-avcisi.html' },
-      ogretmen: 'MAT.5.3.3 Açıları ölçmek için matematiksel araç ve teknolojiden yararlanabilme. Süreç: açıölçeri tanır, uygun aracı belirler ve kullanır; dik açı 90°, doğru açı 180°, tam açı 360°. Saatin 12 eş parçası derece birimine köprü kurar.',
-    },
-    {
-      id: 'kavsak', ad: 'Kavşak', kod: 'MAT.5.3.4', x: 1700, mx: 1840, my: 300, nx: 195, hit: [1540, 1930, 360, 630], varis: 'İki sokak kesişince dört köşe olur. Say bakalım!',
-      gozlem: 'Kasabanın ortasında Çınar Sokağı ile Gül Sokağı kesişiyor. Kesiştikleri yerde dört köşe, yani dört açı oluşuyor. Panodaki haritaya bakalım.',
-      soru: 'Gül Sokağı’nı döndürürsek karşılıklı köşelerdeki a ve c açıları ne olur?',
-      secenekler: ['Her zaman eşit kalır', 'Biri büyür, öbürü küçülür', 'Hiçbir kural yok'], dogru: 0,
-      gorevler: [
-        { id: 'dondur', metin: 'Ölçümleri göster ve Gül Sokağı’nı döndür.' },
-        { id: 'tablo', metin: 'Gül Sokağı’nı üç farklı yöne çevir. Açılar tabloya kendiliğinden yazılır.' },
-        { id: 'dik', metin: 'Sokakları dört dik açı oluşacak biçimde kesiştir.' },
-        { id: 'paralel', metin: 'Lale Sokağı’nı Çınar Sokağı’na paralel yap: hiç kesişmesinler.' },
-      ],
-      aciklama: 'Karşılıklı köşeler <b>ters açılardır</b>; sokak nasıl dönerse dönsün <b>a = c</b> ve <b>b = d</b>. Yan yana iki köşe bir doğru üstünde durur: <b>a + b = 180°</b> (komşu bütünler). Dört açı da 90° ise sokaklar <b>diktir</b>. Hiç kesişmeyen, açı oluşturmayan sokaklar <b>paraleldir</b>.',
-      sunum: 'Karşılıklı köşelerdeki açılar arasında nasıl bir ilişki var?',
-      oyun: { ad: 'Kesişme Dedektifi', url: 'kesisme-dedektifi.html' },
-      ogretmen: 'MAT.5.3.4 Düzlemde iki veya üç doğrunun birbirine göre durumuna bağlı olarak oluşabilecek açılara dair çıkarım yapabilme. Süreç: varsayım (Sence?), açıları belirleyip tablo temsilinde listeleme (sokak her bırakıldığında tablo kendiliğinden dolar), varsayımla karşılaştırma, önerme sunma (açıklama). Paralel, kesişen ve dik doğrular.',
-    },
-    {
-      id: 'cini', ad: 'Çini Atölyesi', kod: 'MAT.5.3.5 – 5.3.6', x: 2950, mx: 2950, my: 300, nx: -235, hit: [2770, 3130, 300, 640],
-      varis: 'Bu duvardaki çinilerin hepsi birer çokgen!',
-      gozlem: 'Çini ustası düz çizgileri kesiştirerek çokgen biçimli çiniler yapıyor. Duvarda kareler, altıgenler, yıldızlar var.',
-      soru: 'Ustalar duvarları neden çoğu zaman kare, üçgen ya da altıgen çinilerle kaplar?',
-      secenekler: ['Bu şekiller boşluk bırakmadan birleşir', 'Yalnızca daha güzel oldukları için', 'Başka şekilde çini yapılamadığı için'], dogru: 0,
-      gorevler: [
-        { id: 'kapat', metin: 'Doğruları sırayla çizerek iki farklı çini (çokgen) oluştur.' },
-        { id: 'duzgun', metin: 'Bir köşeyi sürükle: çini hâlâ düzgün mü?' },
-        { id: 'kosegen', metin: 'Yan yana olmayan iki köşeye dokunarak iki köşegen çiz.' },
-        { id: 'dose', metin: 'Döşeme: üç farklı çiniyi dene; hangisi boşluk bırakıyor?' },
-      ],
-      aciklama: 'Çokgen, ardışık kesişen ve son doğrusu ilkini kesen doğruların oluşturduğu kapalı şekildir: <b>n doğru → n kenar, n köşe, n iç açı</b>. Bütün kenarları <b>ve</b> bütün açıları eş olan çokgen <b>düzgün çokgendir</b>; bir köşe oynayınca düzgünlük bozulur. Yan yana olmayan köşeleri birleştiren doğru parçası <b>köşegendir</b>. Düzgün üçgen, kare ve altıgen çiniler bir köşede tam <b>360°</b> oluşturacak biçimde birleşir; düzgün beşgenler arasında boşluk kalır.',
-      sunum: 'Hangi çiniler duvarı boşluk bırakmadan kaplar?',
-      oyun: { ad: 'Şekli Kapat', url: 'sekli-kapat.html' },
-      ogretmen: 'MAT.5.3.5 Çokgenleri ardışık kesişen doğruların oluşturduğu kapalı şekiller olarak yorumlayabilme · MAT.5.3.6 Çokgenlerin özellikleri ile ilgili deneyimlerini yansıtabilme (düzgün çokgen, köşegen; köşegen sayısına değinilmez). Döşeme etkinliği bir köşede tam açı (360°) fikrine dayanır; çokgenlerin iç açıları toplamına girilmez. Programdaki çini, kilim ve süsleme bağlamıyla ilişkilidir.',
-    },
-    {
-      id: 'kopru', ad: 'Köprü', kod: 'MAT.5.3.6', x: 3850, mx: 3850, my: 410, nx: -270, hit: [3610, 4090, 440, 660],
-      varis: 'Bu köprü baştan sona üçgenlerden yapılmış. Neden acaba?',
-      gozlem: 'Dere üstündeki çelik köprü baştan sona üçgenlerden yapılmış. Mühendisler neden kare değil de üçgen kullanmış? Üçgenlerin açılarında da bir sır var.',
-      soru: 'Köprüdeki küçük ve büyük üçgenlerin iç açılarını toplarsak ne buluruz?',
-      secenekler: ['Büyük üçgende toplam daha büyük', 'Hepsinde 180°', 'Hepsinde 360°'], dogru: 1,
-      gorevler: [
-        { id: 'yuk', metin: 'İki çerçeveye yük koy: hangisi biçimini korudu?' },
-        { id: 'toplam', metin: 'Tepeyi sürükleyerek üç farklı üçgende açıları topla.' },
-        { id: 'dik', metin: 'Dik açılı bir üçgen kur.' },
-        { id: 'genis', metin: 'Geniş açılı bir üçgen kur.' },
-      ],
-      aciklama: 'Üçgen <b>sağlamdır</b>: üç kenarı belli olunca biçimi değişmez; kare ise itilince yamulur. Üçgen hangi büyüklükte olursa olsun iç açılarının ölçüleri toplamı <b>180°</b>dir: köşeleri yan yana koyunca bir doğru açı oluşur. Bu yüzden bir üçgenin <b>en fazla bir</b> dik ya da geniş açısı olabilir.',
-      sunum: 'Köprüde neden hep üçgen var? Üçgenin açılarını toplayınca ne buluruz?',
-      oyun: { ad: 'Üçgenin Sırrı', url: 'ucgenin-sirri.html' },
-      ogretmen: 'MAT.5.3.6 Çokgenlerin özellikleri ile ilgili edindiği deneyimleri yansıtabilme: üçgenin iç açıları toplamı 180° (ölçerek ve köşeleri yan yana koyarak), açılarına göre üçgenler, iki dik ya da iki geniş açılı üçgen olamayacağı. Yük deneyi (üçgenin sağlamlığı) merak uyandırmak içindir.',
-    },
-    {
-      id: 'cesme', ad: 'Çeşme Meydanı', kod: 'MAT.5.3.7', x: 4800, mx: 4800, my: 400, nx: -265, hit: [4600, 5000, 440, 650], varis: 'Taş atınca su halka halka açılır. Çember!',
-      gozlem: 'Havuza bir taş atınca su yüzeyinde halkalar yayılıyor. Her halka, taşın düştüğü noktadan eşit uzaklıktaki noktalardan oluşuyor: bir çember!',
-      soru: 'İki taşı aynı anda atarsak, halkaların buluştuğu C noktası nerede olur?',
-      secenekler: ['A’ya daha yakın', 'B’ye daha yakın', 'İkisine eşit uzaklıkta'], dogru: 2,
-      gorevler: [
-        { id: 'ikitas', metin: 'Havuza iki taş at: A ve B.' },
-        { id: 'bulus', metin: 'Zamanı ilerlet: halkalar buluşunca ABC üçgeni oluşsun.' },
-        { id: 'eskenar', metin: 'Halkaları tam |AB| kadar büyüt: eşkenar üçgen.' },
-        { id: 'gecikme', metin: 'B taşını geç at ve çeşitkenar bir üçgen bul.' },
-      ],
-      aciklama: 'Halkalar birer <b>çember</b>; |AC| A halkasının, |BC| B halkasının <b>yarıçapıdır</b>. Taşlar aynı anda atılınca halkalar aynı büyür: |AC| = |BC|, üçgen <b>ikizkenar</b>. Halkalar |AB| kadar büyüyünce üç kenar eşit: <b>eşkenar</b>. Biri geç atılınca üç uzunluk farklı olabilir: <b>çeşitkenar</b>. Hiç cetvel kullanmadık!',
-      sunum: 'İki halka nerede buluşur? Oluşan üçgenin kenarları neden eşit?',
-      oyun: { ad: 'Pergel Ustası', url: 'pergel-ustasi.html' },
-      ogretmen: 'MAT.5.3.7 İki noktada kesişen çember çiftinin merkezleri ve kesişim noktalarından biri ile inşa edilen üçgenlerin kenar özelliklerine yönelik çıkarım yapabilme. Su halkaları dinamik bir çember modelidir; zaman kaydırıcısı yarıçapı değiştirir. Yağmurlu havada damlaların halkaları da çember gözlemine bağlanabilir.',
-    },
-  ],
-  avlar: [
-    { id: 'cati', ad: 'Üçgen', metin: 'Çatı bir <b>üçgen</b>: 3 kenar, 3 köşe, 3 iç açı.', x: 905, y: 392, r: 46 },
-    { id: 'pencere', ad: 'Çember', metin: 'Yuvarlak pencere bir <b>çember</b>: her noktası merkeze eşit uzaklıkta.', x: 650, y: 415, r: 30 },
-    { id: 'cit', ad: 'Paralel doğrular', metin: 'Çitin çubukları <b>paralel</b>: hiç kesişmez, aralarındaki uzaklık hep aynı.', x: 1360, y: 562, r: 60 },
-    { id: 'tabela', ad: 'Işın', metin: 'Yön tabelasındaki ok bir <b>ışın</b> gibi: bir noktadan başlar, bir yöne doğru gider.', x: 1560, y: 452, r: 40 },
-    { id: 'petek', ad: 'Düzgün altıgen', metin: 'Bal dükkânının tabelası <b>düzgün altıgen</b>: 6 eş kenar, 6 eş açı. Arı peteği gibi!', x: 2160, y: 448, r: 36 },
-    { id: 'kuslar', ad: 'Açı', metin: 'Kuş sürüsü <b>V</b> biçiminde uçuyor: iki kol öndeki kuşta birleşiyor. Bu bir <b>açı</b>, köşesi öndeki kuş!', dyn: true },
-    { id: 'tekerlek', ad: 'Çember', metin: 'Bisiklet tekerleği bir <b>çember</b>. Teller merkezden çembere gidiyor: hepsi eşit uzunlukta <b>yarıçaplar</b>!', dyn: true },
-    { id: 'kapi', ad: 'Dik açı', metin: 'Kapının köşesi <b>dik açı</b>: 90°. Gönyeyle kontrol edebilirsin.', x: 2392, y: 598, r: 30 },
-  ],
-  ogretmenGenel: [
-    'Bu bir oyun değil, <b>gözlem ortamı</b>: puan yok. Öğrenci tahmin eder, dener, gözlemini deftere yazar.',
-    'Sınıfta: akıllı tahtada <b>sunum modu</b> (P) ile istasyonun sorusunu büyük gösterin; öğrencilere tahmin ettirin; sonra “Yakından incele”de birlikte deneyin.',
-    'Her istasyonun sonunda ilgili <b>oyuna</b> bağlantı var; pekiştirme ödevi olarak verilebilir.',
-    'Defter ve şekil avı yalnızca o tarayıcıda saklanır. Rapor HTML dosyası olarak iner; yazdırılabilir.',
-  ],
-};
-
+/* Nokta'nın Kasabası · geometri gözlem ortamı.
+   Metinler js/kasaba-metinleri.js içindeki KASABA_METINLERI nesnesindedir. */
 (() => {
   const { g, d } = N;
   const T = KASABA_METINLERI, STS = T.istasyonlar;
@@ -948,6 +815,7 @@ const KASABA_METINLERI = {
   cv.addEventListener('pointermove', (e) => {
     if (!pdown) { cv.style.cursor = hitWorld(e.clientX, e.clientY) ? 'pointer' : 'grab'; return; }
     const dx = e.clientX - pdown.x; if (Math.abs(dx) > 6) pdown.moved = true;
+    if (pdown.moved && !panning && innerWidth <= 700 && !st.cardMin) { st.cardMin = true; renderCard(); } // telefonda gezerken kart şeride iner
     if (pdown.moved) { panning = true; cv.classList.add('grabbing'); cam.x = cam.tx = clampCam(pdown.cam - dx / s); }
   });
   const pup = (e) => {
@@ -994,7 +862,7 @@ const KASABA_METINLERI = {
     el.className = 'ui scard' + (st.cardMin ? ' min' : '');
     el.innerHTML = `<div class="head"><img src="../img/nokta.png" alt="" id="cardImg"><div><span class="code">${st.cur + 1} · ${S.kod}</span><h2>${S.ad}</h2></div>
       <button class="chip-btn fold" id="fold" type="button" aria-expanded="${!st.cardMin}">${st.cardMin ? 'aç' : 'küçült'}</button></div>
-      <div class="body">
+      ${st.cardMin ? `<div class="minrow"><button class="btn primary" id="zoomBtn" type="button">🔍 Yakından incele</button><span class="small">${S.gorevler.filter((t) => isDone(S.id, t.id)).length}/${S.gorevler.length} görev</span></div>` : `<div class="body">
         <p>${S.gozlem}</p>
         <span class="lbl">Sence?</span><div class="q">${S.soru}</div>
         ${picked == null ? '<div id="senceBox"></div>' : `<p class="picked">Tahminin: <b>${S.secenekler[picked]}</b>. ${allDone ? (picked === S.dogru ? 'Gözlemin tahminini doğruladı!' : 'Gözlemin farklı bir şey gösterdi; açıklamaya bak.') : 'Şimdi yakından inceleyip dene.'}</p>`}
@@ -1004,8 +872,8 @@ const KASABA_METINLERI = {
         <span class="lbl">Açıklama</span>
         ${allDone || st.showExp === S.id ? `<div class="explain">${S.aciklama}</div>` : '<button class="btn" id="expBtn" type="button">Açıklamayı göster</button> <span class="small">Önce görevleri denemeni öneririm.</span>'}
         <div class="row2"><a class="btn" href="${S.oyun.url}">Pekiştir: ${S.oyun.ad} ↗</a>${st.cur < STS.length - 1 ? `<button class="btn" id="nextSt" type="button">Sonraki nokta →</button>` : ''}</div>
-      </div>`;
-    if (picked == null) N.choices(el.querySelector('#senceBox'), S.secenekler.map((t, i) => ({ t, i, ok: true })), (o) => { st.sence[S.id] = o.i; persist(); addLog(S.id, `Tahminim: ${o.t}`); N.sfx.tick(); setTimeout(renderCard, 350); }, 'one');
+      </div>`}`;
+    if (picked == null && !st.cardMin) N.choices(el.querySelector('#senceBox'), S.secenekler.map((t, i) => ({ t, i, ok: true })), (o) => { st.sence[S.id] = o.i; persist(); addLog(S.id, `Tahminim: ${o.t}`); N.sfx.tick(); setTimeout(renderCard, 350); }, 'one');
     $('#fold').onclick = () => { st.cardMin = !st.cardMin; renderCard(); };
     $('#zoomBtn').onclick = openZoom;
     const eb = $('#expBtn'); if (eb) eb.onclick = () => { st.showExp = S.id; renderCard(); };
@@ -1709,7 +1577,7 @@ const KASABA_METINLERI = {
         <label class="small">Son düşüncem</label><textarea data-son="${S.id}" placeholder="Ne fark ettin? Tahminin doğru çıktı mı?">${st.son[S.id] || ''}</textarea>`).join('')}
       <h3>Kasabada bulduğum şekiller (${T.avlar.filter((A) => st.av[A.id]).length}/${T.avlar.length})</h3>
       <ul>${T.avlar.filter((A) => st.av[A.id]).map((A) => `<li>${A.metin}</li>`).join('') || '<li class="small">Henüz yok. Kasabada dolaşıp şekillere dokun.</li>'}</ul>
-      <div class="row2"><button class="btn primary" id="rapor" type="button">Raporu indir</button><button class="btn" id="sifirla" type="button">Defteri temizle</button></div>`;
+      <div class="row2"><button class="btn primary" id="rapor" type="button">Raporu indir</button><a class="btn" href="../ilerleme.html">Benim ilerlemem ↗</a><button class="btn" id="sifirla" type="button">Defteri temizle</button></div>`;
     box.querySelector('[data-close]').onclick = closeSheets;
     $('#adIn').oninput = (e) => { st.ad = e.target.value; persist(); };
     box.querySelectorAll('[data-son]').forEach((t) => (t.oninput = () => { st.son[t.dataset.son] = t.value; persist(); }));
@@ -1735,7 +1603,7 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
       <ul>${T.ogretmenGenel.map((x) => `<li>${x}</li>`).join('')}</ul>
       ${STS.map((S) => `<h3>${S.ad} · ${S.kod}</h3><p>${S.ogretmen}</p>`).join('')}
       <h3>Kısayollar</h3><p class="small">1–6 gözlem noktaları · ← → kaydır · Z yakından incele · D defter · O öğretmen · P sunum modu · H arayüzü gizle · Esc kapat</p>
-      <h3>Metinleri düzenlemek</h3><p class="small">Nokta’nın bütün metinleri, görevler ve bu notlar <code>js/kasaba.js</code> dosyasının başındaki <code>KASABA_METINLERI</code> nesnesindedir.</p>`;
+      <h3>Metinleri düzenlemek</h3><p class="small">Nokta’nın bütün metinleri, görevler ve bu notlar <code>js/kasaba-metinleri.js</code> dosyasındaki <code>KASABA_METINLERI</code> nesnesindedir.</p>`;
     $('#ogretmenBox').querySelector('[data-close]').onclick = closeSheets;
   }
   function togglePresent() { st.present = !st.present; $('#present').classList.toggle('on', st.present); $('#sunumBtn').setAttribute('aria-pressed', String(st.present)); }
