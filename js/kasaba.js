@@ -1002,10 +1002,12 @@
     const m = Math.floor(st.t / 120); // iki dakikada bir kule çanı (kasabanın "saat başı")
     if (m > amb.lastBell && DW.id === 'kasaba') { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
   }
-  window.__dunya = { nokta, st, cam, STS, GROUND, dunya: DW, layer: (p) => layer(p), git: (i) => go(i), istasyonAc: () => openZoom() };
+  const yuru = { d: 0 };
+  window.__dunya = { yuru, nokta, st, cam, STS, GROUND, dunya: DW, layer: (p) => layer(p), git: (i) => go(i), istasyonAc: () => openZoom() };
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now; if (!N.reduced) st.t += dt; else st.t += dt * .25;
     const k = N.reduced ? 1 : 1 - Math.pow(.002, dt);
+    if (window.CokOyuncu && yuru.d) { nokta.tx = Math.max(WMIN + 60, Math.min(WW - 60, nokta.x + yuru.d * 140)); cam.tx = clampCam(nokta.tx); } // çok oyunculu: elle yürüme
     if (!panning) cam.x += (cam.tx - cam.x) * k;
     ambTick(dt);
     const sp = (260 + Math.abs(nokta.tx - nokta.x) * 1.4) * dt, wasMoving = Math.abs(nokta.tx - nokta.x) > 2; nokta.x += Math.max(-sp, Math.min(sp, nokta.tx - nokta.x));
@@ -1030,7 +1032,7 @@
   });
   const pup = (e) => {
     if (!pdown) return; const p = pdown; pdown = null; panning = false; cv.classList.remove('grabbing');
-    if (!p.moved) { const h = hitWorld(e.clientX, e.clientY); if (h) onHit(h); }
+    if (!p.moved) { const h = hitWorld(e.clientX, e.clientY); if (h) onHit(h); else if (window.CokOyuncu) { const w = toWorld(e.clientX, e.clientY); if (w.y > GROUND - 260) { nokta.tx = Math.max(WMIN + 60, Math.min(WW - 60, w.x)); pendingSay = null; } } }
   };
   cv.addEventListener('pointerup', pup); cv.addEventListener('pointercancel', () => { pdown = null; panning = false; });
   cv.addEventListener('wheel', (e) => { e.preventDefault(); cam.tx = clampCam(cam.tx + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) / s); }, { passive: false });
@@ -2320,10 +2322,13 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
   $('#ogretmenBtn').onclick = () => { renderOgretmen(); openSheet('ogretmen'); };
   $('#sunumBtn').onclick = togglePresent;
   $('#yardimBtn').onclick = () => coach(0);
+  addEventListener('keyup', (e) => { const k = e.key.toLowerCase(); if ((k === 'arrowleft' || k === 'a') && yuru.d < 0) yuru.d = 0; if ((k === 'arrowright' || k === 'd') && yuru.d > 0) yuru.d = 0; });
+  addEventListener('blur', () => { yuru.d = 0; });
   addEventListener('keydown', (e) => {
     if (e.target.matches('input, textarea')) return;
     if (zoomOpen && e.key !== 'Escape') return;
     const k = e.key.toLowerCase();
+    if (window.CokOyuncu && ['arrowleft', 'arrowright', 'a', 'd'].includes(k)) { e.preventDefault(); yuru.d = k === 'arrowleft' || k === 'a' ? -1 : 1; pendingSay = null; return; }
     if (/^[1-9]$/.test(k) && +k <= STS.length) go(+k - 1);
     else if (k === 'pagedown') go(Math.min(STS.length - 1, st.cur + 1)); else if (k === 'pageup') go(Math.max(0, st.cur - 1));
     else if (k === 'arrowleft') cam.tx = clampCam(cam.tx - 300); else if (k === 'arrowright') cam.tx = clampCam(cam.tx + 300);
