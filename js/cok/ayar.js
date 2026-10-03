@@ -9,9 +9,9 @@ window.COK_AYAR = {
   ogretmenAlanAdi: 'alkev.k12.tr',
   firebase: {
     apiKey: '',
-    authDomain: '',
-    databaseURL: '',
-    projectId: '',
+    authDomain: 'matematik-oyun.firebaseapp.com',
+    databaseURL: 'https://matematik-oyun-default-rtdb.europe-west1.firebasedatabase.app',
+    projectId: 'matematik-oyun',
     appId: '',
   },
   // Hazır mesajlar: öğrenciler yalnız bunları gönderebilir (veritabanına yalnız sıra numarası yazılır).
