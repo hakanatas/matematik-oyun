@@ -2,15 +2,15 @@
    ÖĞRETMENLER İÇİN: Nokta'nın bütün metinleri, görevler ve öğretmen notları aşağıdadır.
    Metinleri burada değiştirmeniz yeterli. Kasaba ile aynı altyapıyı (js/kasaba.js) kullanır. */
 (window.DUNYALAR = window.DUNYALAR || {}).carsi = {
-  dunya: { id: 'carsi', ad: 'Nokta’nın Çarşısı', yer: 'Çarşı', key: 'nokta-carsi', tema: '5. sınıf · Sayılar ve Nicelikler (MAT.5.1)', WMIN: 3250, WW: 7800, LAMPS: [3600, 4330, 5560, 6560, 7330], avAd: 'sayı avı', avYer: 'Çarşıda', avIpucu: 'Tabelalara, vitrinlere, otobüslere ve etiketlere dokun!',
-    soz: ['Çarşıda 5 sayı sakladım. Tabelalara bak!', 'Ay’a 384 400 km var. Sağdan üçer üçer oku!', 'Kalanlı bölmede kalanı unutma: bir otobüs daha!', 'Paydası büyük olan kesir büyük müdür? Pazarda sorarız.', '3/4 = 0,75 = %75. Aynı miktar, üç kılık!'] },
+  dunya: { id: 'carsi', ad: 'Nokta’nın Çarşısı', yer: 'Çarşı', key: 'nokta-carsi', tema: '5. sınıf · Sayılar ve Nicelikler (MAT.5.1)', WMIN: 3250, WW: 7800, LAMPS: [3600, 4330, 5560, 6560, 7330], avAd: 'sayı avı', avYer: 'Çarşıda', avIpucu: 'Tabelalara, vitrinlere, etiketlere ve geçen dolmuşa dokun!',
+    soz: ['Çarşıda 6 sayı sakladım. Biri dolmuşla geziyor!', 'Teraziye dokun: 1/2 kg mı ağır, 0,5 kg mı?', 'Ay’a 384 400 km var. Sağdan üçer üçer oku!', 'Kalanlı bölmede kalanı unutma: bir otobüs daha!', 'Paydası büyük olan kesir büyük müdür? Pazarda sorarız.', '3/4 = 0,75 = %75. Aynı miktar, üç kılık!'] },
   tanitim: [
     { hedef: null, metin: 'Merhaba, ben <b>Nokta</b>! Burası çarşı: gözlemevinde dev sayılar, otogarda otobüsler, pastanede ve pazarda kesirler var.' },
     { hedef: '#world', metin: 'Tahtayı <b>sürükleyerek</b> çarşıda gezebilirsin. Fare tekerleği de sağa sola kaydırır.' },
     { hedef: '#stations', metin: 'Dört gözlem noktası var. Numaraya dokununca oraya giderim.' },
     { hedef: '#scard', metin: 'Her noktada önce bir gözlem, sonra bir <b>“Sence?”</b> sorusu ve görevler var. Tahminini seç, sonra dene.' },
     { hedef: '#zoomBtn', metin: '<b>Yakından incele</b> ile sayıları bölüklere ayırır, otobüsleri doldurur, tepsiyi dilimlersin.' },
-    { hedef: '#avBtn', metin: 'Çarşıda <b>sayılar</b> saklı! Tabelalara, vitrinlere ve etiketlere dokun.' },
+    { hedef: '#avBtn', metin: 'Çarşıda <b>sayılar</b> saklı! Tabelalara, vitrinlere, etiketlere ve geçen dolmuşa dokun. <b>Teraziye</b>, <b>teleskopa</b> ve <b>simitçiye</b> dokunursan bir şey olur!' },
     { hedef: '#defterBtn', metin: 'Gözlemlerin <b>deftere</b> yazılır. Sonunda raporunu indirebilirsin.' },
     { hedef: null, metin: 'Önce gözlemevine gidelim. Hazır mısın?' },
   ],
@@ -82,7 +82,8 @@
   ],
   avlar: [
     { id: 'ay', ad: '384 400', metin: 'Gözlemevi tabelası: <b>384 400 km</b>. Sağdan üçer üçer ayırınca <b>384</b> binler, <b>400</b> birler bölüğü: üç yüz seksen dört bin dört yüz.', x: 3880, y: 484, r: 46 },
-    { id: 'nufus', ad: '8 milyar', metin: 'Pankartta <b>8 000 000 000</b>: sekiz milyar. Bütün rakamları 0 olan bölüklerin adı okunmaz.', x: 3470, y: 452, r: 46 },
+    { id: 'nufus', ad: '8 milyar', metin: 'Pankarttaki dünya nüfusu <b>her saniye artıyor</b>! Rakamlar sağdan üçer üçer, iki renkle bölüklere ayrılmış: <b>milyarlar</b> bölüğünde 8 var, yani dünyada <b>sekiz milyardan</b> fazla insan yaşıyor.', x: 3485, y: 450, r: 50 },
+    { id: 'milyon', ad: 'Milyon', metin: 'Dolmuşun çatısındaki sayaç her yolcuda bir artıyor. <b>999 999</b>’dan sonra bir yolcu daha binince <b>1 000 000</b> olur: <b>bir milyon</b>! Binler bölüğü 999’u aşınca milyonlar bölüğüne 1 geçer; binler ve birler bölüğü 000 olur ve okunmaz.', dyn: true },
     { id: 'plaka', ad: '45 kişilik', metin: 'Otobüsün yanında <b>45 kişilik</b> yazıyor. 370 kişi için 8 otobüs yetmez: 8 × 45 = 360, 10 kişi açıkta kalır. <b>9</b> otobüs gerekir.', x: 5140, y: 488, r: 44 },
     { id: 'baklava', ad: '6/8', metin: 'Vitrindeki tepsi 8 eş dilime bölünmüş, 6’sı kalmış: <b>6/8 = 3/4</b> tepsi.', x: 5840, y: 520, r: 44 },
     { id: 'yarim', ad: 'Yarım', metin: 'Üç tezgâhta <b>1/2 kg</b>, <b>0,5 kg</b> ve <b>%50</b> yazıyor: üçü de aynı miktar, <b>yarım</b>!', x: 6975, y: 505, r: 70 },
@@ -91,6 +92,7 @@
     'Bu bir oyun değil, <b>gözlem ortamı</b>: puan yok. Öğrenci tahmin eder, dener, gözlemini deftere yazar. <b>5. sınıf Sayılar ve Nicelikler</b> temasının sonunda kullanılmak üzere hazırlandı.',
     'Sınıfta: akıllı tahtada <b>sunum modu</b> (P) ile istasyonun sorusunu büyük gösterin; öğrencilere tahmin ettirin; sonra “Yakından incele”de birlikte deneyin.',
     'Kesir istasyonlarının sonunda ilgili <b>oyuna</b>, diğerlerinde ilgili <b>filme</b> bağlantı var.',
+    'Çarşı yaşıyor: dolmuş her yarım dakikada yolcu alır ve çatısındaki sayaç bir milyonu geçer; asma <b>terazi</b>ye dokununca iki miktarı (1/2 kg ile 0,5 kg gibi) tartar: önce “Hangisi ağır?” diye sorar, sonra sonucu gösterir. Öğrencilerden tartmadan önce tahmin etmelerini isteyin.',
     'Defter ve sayı avı yalnızca o tarayıcıda saklanır. Rapor HTML dosyası olarak iner; yazdırılabilir.',
   ],
 };
