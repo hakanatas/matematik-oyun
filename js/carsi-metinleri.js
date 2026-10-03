@@ -1,0 +1,97 @@
+/* Nokta'nın Çarşısı · 5. sınıf Sayılar ve Nicelikler (MAT.5.1) tema sonu gözlem ortamı.
+   ÖĞRETMENLER İÇİN: Nokta'nın bütün metinleri, görevler ve öğretmen notları aşağıdadır.
+   Metinleri burada değiştirmeniz yeterli. Kasaba ile aynı altyapıyı (js/kasaba.js) kullanır. */
+(window.DUNYALAR = window.DUNYALAR || {}).carsi = {
+  dunya: { id: 'carsi', ad: 'Nokta’nın Çarşısı', yer: 'Çarşı', key: 'nokta-carsi', tema: '5. sınıf · Sayılar ve Nicelikler (MAT.5.1)', WMIN: 3250, WW: 7800, LAMPS: [3600, 4330, 5560, 6560, 7330], avAd: 'sayı avı', avYer: 'Çarşıda', avIpucu: 'Tabelalara, vitrinlere, otobüslere ve etiketlere dokun!',
+    soz: ['Çarşıda 5 sayı sakladım. Tabelalara bak!', 'Ay’a 384 400 km var. Sağdan üçer üçer oku!', 'Kalanlı bölmede kalanı unutma: bir otobüs daha!', 'Paydası büyük olan kesir büyük müdür? Pazarda sorarız.', '3/4 = 0,75 = %75. Aynı miktar, üç kılık!'] },
+  tanitim: [
+    { hedef: null, metin: 'Merhaba, ben <b>Nokta</b>! Burası çarşı: gözlemevinde dev sayılar, otogarda otobüsler, pastanede ve pazarda kesirler var.' },
+    { hedef: '#world', metin: 'Tahtayı <b>sürükleyerek</b> çarşıda gezebilirsin. Fare tekerleği de sağa sola kaydırır.' },
+    { hedef: '#stations', metin: 'Dört gözlem noktası var. Numaraya dokununca oraya giderim.' },
+    { hedef: '#scard', metin: 'Her noktada önce bir gözlem, sonra bir <b>“Sence?”</b> sorusu ve görevler var. Tahminini seç, sonra dene.' },
+    { hedef: '#zoomBtn', metin: '<b>Yakından incele</b> ile sayıları bölüklere ayırır, otobüsleri doldurur, tepsiyi dilimlersin.' },
+    { hedef: '#avBtn', metin: 'Çarşıda <b>sayılar</b> saklı! Tabelalara, vitrinlere ve etiketlere dokun.' },
+    { hedef: '#defterBtn', metin: 'Gözlemlerin <b>deftere</b> yazılır. Sonunda raporunu indirebilirsin.' },
+    { hedef: null, metin: 'Önce gözlemevine gidelim. Hazır mısın?' },
+  ],
+  istasyonlar: [
+    {
+      id: 'gozlemevi', ad: 'Gözlemevi', kod: 'MAT.5.1.1', x: 3880, mx: 3880, my: 220, nx: -240, hit: [3730, 4030, 300, 650], varis: 'Teleskopla Ay’a bakıyoruz. Ama uzaklığı nasıl okuyacağız?',
+      gozlem: 'Gözlemevinin tabelasında Ay’a uzaklık 384400 km, Güneş’e 149600000 km yazıyor. Bu kadar uzun sayıları okumak için rakamları <b>bölüklere</b> ayırırız.',
+      soru: 'Ay’a uzaklık 384400 km. Bu sayıyı okumak için rakamları nereden başlayarak üçer üçer ayırırız?',
+      secenekler: ['Soldan', 'Sağdan', 'Fark etmez'], dogru: 1,
+      gorevler: [
+        { id: 'bolukle', metin: 'Dev sayıyı sağdan üçer üçer bölüklere ayır.' },
+        { id: 'oku', metin: 'Bölüklere ayırdığın sayının doğru okunuşunu seç.' },
+        { id: 'yaz', metin: 'Okunuşu verilen sayıyı rakam çarklarıyla yaz.' },
+        { id: 'sifir', metin: 'İçinde 000 bölüğü olan bir sayıyı yaz.' },
+      ],
+      aciklama: 'Çok basamaklı sayıları okumak için rakamları <b>sağdan</b> başlayarak üçer üçer ayırırız: birler, binler, milyonlar, milyarlar bölüğü. Her bölüğün içinde yine birler, onlar, yüzler var; bu düzen hep tekrar eder. Okurken her bölüğü üç basamaklı bir sayı gibi okuyup bölüğün adını söyleriz: 149 600 000 → yüz kırk dokuz <b>milyon</b> altı yüz <b>bin</b>. Bütün rakamları 0 olan bölüğün adı okunmaz.',
+      sunum: 'Dev sayıları nasıl okuruz? Rakamları nereden başlayarak ayırırız?',
+      film: { ad: 'Üçer Üçer Bölükler', id: 'ucer-ucer-bolukler' },
+      ogretmen: 'MAT.5.1.1 Altı basamaklı sayıları okuma ve yazmayı çok basamaklı sayılara genelleyebilme. Bölüklere ayırma, okunuş seçme ve okunuşu verilen sayıyı yazma; 000 bölüğü okunmaz. Uzay mesafeleri ve nüfus gibi gerçek bağlamlar kullanılır; sayılar her açılışta değişir. İlgili film: Üçer Üçer Bölükler.',
+    },
+    {
+      id: 'otogar', ad: 'Otogar', kod: 'MAT.5.1.2', x: 4980, mx: 4980, my: 330, nx: -330, hit: [4700, 5280, 380, 650], varis: 'Okul gezisi var! Kaç otobüs kiralamalıyız?',
+      gozlem: 'Okul gezisine öğrenciler ve öğretmenler katılacak. Otobüsler 45 kişilik. Kaç otobüs gerektiğini bulmak için önce toplam kişiyi, sonra bölmeyi kullanırız. Ama kalanı unutmamalıyız!',
+      soru: '370 kişi 45 kişilik otobüslere binecek. 370 ÷ 45 = 8, kalan 10. Kaç otobüs kiralamalıyız?',
+      secenekler: ['8 otobüs', '9 otobüs', '10 otobüs'], dogru: 1,
+      gorevler: [
+        { id: 'topla', metin: 'Geziye katılan toplam kişi sayısını bul.' },
+        { id: 'bol', metin: 'Toplamı otobüs kapasitesine böl: bölüm ve kalan.' },
+        { id: 'yorum', metin: 'Kalanı yorumla: kaç otobüs gerekir?' },
+        { id: 'kontrol', metin: 'Otobüsleri doldurarak çözümünü kontrol et.' },
+      ],
+      aciklama: 'Problemi çözmek için önce <b>toplam</b> kişiyi buluruz, sonra otobüs kapasitesine <b>böleriz</b>. Bölüm, tamamen dolan otobüs sayısıdır; <b>kalan</b> kişiler de bir otobüse daha binmelidir. Kalan 0 değilse gereken otobüs sayısı <b>bölüm + 1</b>’dir. Sonucu otobüsleri doldurarak ya da çarpma ile kontrol ederiz: 8 × 45 = 360, 360 + 10 = 370.',
+      sunum: 'Kalanlı bölmede sonucu nasıl yorumlarız?',
+      film: { ad: 'Kaç Otobüs?', id: 'kac-otobus' },
+      ogretmen: 'MAT.5.1.2 Doğal sayılar ve işlemler içeren gerçek yaşam problemlerini çözebilme. Anlama (toplam kişi), plan (bölme), uygulama (bölüm ve kalan), kontrol (otobüsleri doldurma ve çarpma) ve yorum (kalan 0 değilse bir otobüs daha) adımları ayrı görevlerdir. Sayılar her açılışta değişir. İlgili film: Kaç Otobüs?',
+    },
+    {
+      id: 'pastane', ad: 'Pastane', kod: 'MAT.5.1.3', x: 5935, mx: 5935, my: 250, nx: -250, hit: [5760, 6110, 340, 650], varis: 'Mmm, taze baklava! Bugün siparişler kesirle geliyor.',
+      gozlem: 'Pastanenin sipariş defterinde “3/4 tepsi baklava”, “2 1/4 bardak un”, “%25 indirim” yazıyor. Aynı miktarı tepsiyle, ölçü kabıyla, sayı doğrusuyla ya da yüzlük kartla gösterebiliriz.',
+      soru: 'Bir tepsiyi 4 eş parçaya bölüp 3’ünü, öbür tepsiyi 8 eş parçaya bölüp 6’sını alıyoruz. Hangisinde daha çok baklava var?',
+      secenekler: ['4’e bölünende (3/4)', '8’e bölünende (6/8)', 'İkisinde de aynı'], dogru: 2,
+      gorevler: [
+        { id: 'model', metin: 'Tepside siparişi göster: istenen kesir kadar dilim seç.' },
+        { id: 'denk', metin: 'Aynı miktarı başka sayıda dilimle göster: denk kesir.' },
+        { id: 'kap', metin: 'Ölçü kaplarını tarifteki tam sayılı kesir kadar doldur.' },
+        { id: 'yuzluk', metin: 'Yüzlük kartta siparişi boya: kesir, ondalık ve yüzde.' },
+      ],
+      aciklama: 'Aynı miktar farklı biçimlerde gösterilebilir: <b>3/4</b> tepsi = <b>6/8</b> tepsi (denk kesir) = <b>0,75</b> = <b>%75</b>. 2 tam 1/4 bardak un <b>2 1/4</b> (tam sayılı kesir) = <b>9/4</b> (bileşik kesir) = <b>2,25</b> bardaktır; sayı doğrusunda 2 ile 3 arasında. Duruma uygun modeli seçmek de önemli: tepsi için daire, un için ölçü kabı, indirim için yüzlük kart.',
+      sunum: 'Aynı miktarı kaç farklı biçimde gösterebiliriz?',
+      oyun: { ad: 'Kesir Fırını', url: 'kesir-firini.html' },
+      ogretmen: 'MAT.5.1.3 Gerçek yaşam durumlarına karşılık gelen kesirleri farklı biçimlerde temsil edebilme. Tepsi (daire/alan modeli), ölçü kabı (tam sayılı ve bileşik kesir, sayı doğrusu) ve yüzlük kart (ondalık ve yüzde) aynı miktarın farklı temsilleridir. Denk kesir görevi, parça sayısı değişince seçilen parça sayısının da aynı oranda değiştiğini gösterir. Sipariş sayıları her açılışta değişir. İlgili film: Bir Kesir, Dört Kılık.',
+    },
+    {
+      id: 'pazar', ad: 'Pazar', kod: 'MAT.5.1.4', x: 6970, mx: 6970, my: 330, nx: -330, hit: [6680, 7260, 400, 650], varis: 'Pazar kurulmuş! Kim daha çok çilek almış, bakalım.',
+      gozlem: 'Dört arkadaş çilek almış: Ali 3/4 kg, Ece 0,7 kg, Can 1 kilonun %72’si kadar, Su 2/3 kg. Miktarlar farklı biçimlerde yazılmış. Karşılaştırmak için şerit modeli ve sayı doğrusu işe yarar.',
+      soru: 'Manav “Paydası büyük olan kesir daha büyüktür: 1/5 kg, 1/3 kg’dan çoktur” diyor. Sence?',
+      secenekler: ['Doğru: payda büyükse kesir büyük', 'Yanlış: 1/3 kg daha çok', 'İkisi eşit'], dogru: 1,
+      gorevler: [
+        { id: 'varsayim', metin: 'Şeritlerle manavın iddiasını çürüten bir örnek bul.' },
+        { id: 'denk', metin: 'İki şeridi farklı paydalarla eşit yap.' },
+        { id: 'sirala', metin: 'Dört çilek etiketini sayı doğrusuna yerleştir.' },
+        { id: 'encok', metin: 'En çok çileği kimin aldığını bul.' },
+      ],
+      aciklama: 'Payda büyüdükçe bütün daha çok parçaya bölünür, her parça <b>küçülür</b>: 1/5 < 1/3. Payları eşit kesirlerde paydası küçük olan büyüktür. Farklı gösterimleri karşılaştırmak için hepsini aynı biçime çeviririz: 3/4 = %75, 0,7 = %70, %72, 2/3 ≈ %66,7. Sayı doğrusunda sağdaki daha büyüktür: en çok <b>Ali</b> almış. Kesirleri <b>yarımla</b> (1/2) karşılaştırmak hızlı bir tahmin yoludur.',
+      sunum: 'Paydası büyük olan kesir büyük müdür? Farklı gösterimleri nasıl karşılaştırırız?',
+      oyun: { ad: 'Kesir Yarışı', url: 'kesir-yarisi.html' },
+      ogretmen: 'MAT.5.1.4 Farklı gösterimlerle ifade edilen kesirlerin karşılaştırılmasına yönelik çıkarım yapabilme. Şerit modeli aynı bütün üzerinde karşılaştırma sağlar; “payda büyükse kesir büyüktür” yaygın kavram yanılgısı tek bir karşı örnekle çürütülür. Sayı doğrusu kesir, ondalık ve yüzde gösterimlerini tek ölçekte sıralar. İlgili film: Hangisi Büyük?',
+    },
+  ],
+  avlar: [
+    { id: 'ay', ad: '384 400', metin: 'Gözlemevi tabelası: <b>384 400 km</b>. Sağdan üçer üçer ayırınca <b>384</b> binler, <b>400</b> birler bölüğü: üç yüz seksen dört bin dört yüz.', x: 3880, y: 484, r: 46 },
+    { id: 'nufus', ad: '8 milyar', metin: 'Pankartta <b>8 000 000 000</b>: sekiz milyar. Bütün rakamları 0 olan bölüklerin adı okunmaz.', x: 3470, y: 452, r: 46 },
+    { id: 'plaka', ad: '45 kişilik', metin: 'Otobüsün yanında <b>45 kişilik</b> yazıyor. 370 kişi için 8 otobüs yetmez: 8 × 45 = 360, 10 kişi açıkta kalır. <b>9</b> otobüs gerekir.', x: 5140, y: 488, r: 44 },
+    { id: 'baklava', ad: '6/8', metin: 'Vitrindeki tepsi 8 eş dilime bölünmüş, 6’sı kalmış: <b>6/8 = 3/4</b> tepsi.', x: 5840, y: 520, r: 44 },
+    { id: 'yarim', ad: 'Yarım', metin: 'Üç tezgâhta <b>1/2 kg</b>, <b>0,5 kg</b> ve <b>%50</b> yazıyor: üçü de aynı miktar, <b>yarım</b>!', x: 6975, y: 505, r: 70 },
+  ],
+  ogretmenGenel: [
+    'Bu bir oyun değil, <b>gözlem ortamı</b>: puan yok. Öğrenci tahmin eder, dener, gözlemini deftere yazar. <b>5. sınıf Sayılar ve Nicelikler</b> temasının sonunda kullanılmak üzere hazırlandı.',
+    'Sınıfta: akıllı tahtada <b>sunum modu</b> (P) ile istasyonun sorusunu büyük gösterin; öğrencilere tahmin ettirin; sonra “Yakından incele”de birlikte deneyin.',
+    'Kesir istasyonlarının sonunda ilgili <b>oyuna</b>, diğerlerinde ilgili <b>filme</b> bağlantı var.',
+    'Defter ve sayı avı yalnızca o tarayıcıda saklanır. Rapor HTML dosyası olarak iner; yazdırılabilir.',
+  ],
+};
+var KASABA_METINLERI = window.DUNYALAR.carsi;

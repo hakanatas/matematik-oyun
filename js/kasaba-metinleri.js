@@ -3,11 +3,12 @@
 
    ÖĞRETMENLER İÇİN: Nokta'nın bütün metinleri, görevler ve öğretmen notları
    aşağıdaki KASABA_METINLERI nesnesindedir. Metinleri burada değiştirmeniz yeterli. */
-const KASABA_METINLERI = {
+(window.DUNYALAR = window.DUNYALAR || {}).kasaba = {
+  dunya: { id: 'kasaba', ad: 'Nokta’nın Kasabası', yer: 'Kasaba', key: 'nokta-kasaba', tema: '5. sınıf · Geometrik Şekiller (MAT.5.3)', WMIN: -1500, WW: 5450, LAMPS: [-300, 470, 1120, 1480, 2240, 3200, 4180, 5030], avAd: 'şekil avı', avYer: 'Kasabada', avIpucu: 'Çatılara, pencerelere, tabelalara ve çitlere dokun!' },
   tanitim: [
     { hedef: null, metin: 'Merhaba, ben <b>Nokta</b>! Bu kasabanın her köşesinde geometri saklı. Birlikte gözlem yapalım mı?' },
     { hedef: '#world', metin: 'Tahtayı <b>sürükleyerek</b> kasabada gezebilirsin. Fare tekerleği de sağa sola kaydırır.' },
-    { hedef: '#stations', metin: 'Sekiz gözlem noktası var: altısı geometri, ikisi kesirler. Numaraya dokununca oraya giderim.' },
+    { hedef: '#stations', metin: 'Altı gözlem noktası var. Numaraya dokununca oraya giderim.' },
     { hedef: '#scard', metin: 'Her noktada önce bir gözlem, sonra bir <b>“Sence?”</b> sorusu ve görevler var. Tahminini seç, sonra dene.' },
     { hedef: '#zoomBtn', metin: '<b>Yakından incele</b> ile saatin kollarını, sokakları ya da havuzdaki taşları kendin değiştirirsin.' },
     { hedef: '#avBtn', metin: 'Kasabada <b>8 şekil</b> saklı: üçgen çatı, paralel çit… İkisi hareket ediyor! Gördüğünde üstüne dokun.' },
@@ -114,38 +115,6 @@ const KASABA_METINLERI = {
       oyun: { ad: 'Pergel Ustası', url: 'pergel-ustasi.html' },
       ogretmen: 'MAT.5.3.7 İki noktada kesişen çember çiftinin merkezleri ve kesişim noktalarından biri ile inşa edilen üçgenlerin kenar özelliklerine yönelik çıkarım yapabilme. Su halkaları dinamik bir çember modelidir; zaman kaydırıcısı yarıçapı değiştirir. Yağmurlu havada damlaların halkaları da çember gözlemine bağlanabilir.',
     },
-    {
-      id: 'pastane', ad: 'Pastane', kod: 'MAT.5.1.3', x: 5935, mx: 5935, my: 250, nx: -250, hit: [5760, 6110, 340, 650], varis: 'Mmm, taze baklava! Bugün siparişler kesirle geliyor.',
-      gozlem: 'Pastanenin sipariş defterinde “3/4 tepsi baklava”, “2 1/4 bardak un”, “%25 indirim” yazıyor. Aynı miktarı tepsiyle, ölçü kabıyla, sayı doğrusuyla ya da yüzlük kartla gösterebiliriz.',
-      soru: 'Bir tepsiyi 4 eş parçaya bölüp 3’ünü, öbür tepsiyi 8 eş parçaya bölüp 6’sını alıyoruz. Hangisinde daha çok baklava var?',
-      secenekler: ['4’e bölünende (3/4)', '8’e bölünende (6/8)', 'İkisinde de aynı'], dogru: 2,
-      gorevler: [
-        { id: 'model', metin: 'Tepside siparişi göster: istenen kesir kadar dilim seç.' },
-        { id: 'denk', metin: 'Aynı miktarı başka sayıda dilimle göster: denk kesir.' },
-        { id: 'kap', metin: 'Ölçü kaplarını tarifteki tam sayılı kesir kadar doldur.' },
-        { id: 'yuzluk', metin: 'Yüzlük kartta siparişi boya: kesir, ondalık ve yüzde.' },
-      ],
-      aciklama: 'Aynı miktar farklı biçimlerde gösterilebilir: <b>3/4</b> tepsi = <b>6/8</b> tepsi (denk kesir) = <b>0,75</b> = <b>%75</b>. 2 tam 1/4 bardak un <b>2 1/4</b> (tam sayılı kesir) = <b>9/4</b> (bileşik kesir) = <b>2,25</b> bardaktır; sayı doğrusunda 2 ile 3 arasında. Duruma uygun modeli seçmek de önemli: tepsi için daire, un için ölçü kabı, indirim için yüzlük kart.',
-      sunum: 'Aynı miktarı kaç farklı biçimde gösterebiliriz?',
-      oyun: { ad: 'Kesir Fırını', url: 'kesir-firini.html' },
-      ogretmen: 'MAT.5.1.3 Gerçek yaşam durumlarına karşılık gelen kesirleri farklı biçimlerde temsil edebilme. Tepsi (daire/alan modeli), ölçü kabı (tam sayılı ve bileşik kesir, sayı doğrusu) ve yüzlük kart (ondalık ve yüzde) aynı miktarın farklı temsilleridir. Denk kesir görevi, parça sayısı değişince seçilen parça sayısının da aynı oranda değiştiğini gösterir. Sipariş sayıları her açılışta değişir. İlgili film: Bir Kesir, Dört Kılık.',
-    },
-    {
-      id: 'pazar', ad: 'Pazar', kod: 'MAT.5.1.4', x: 6970, mx: 6970, my: 330, nx: -330, hit: [6680, 7260, 400, 650], varis: 'Pazar kurulmuş! Kim daha çok çilek almış, bakalım.',
-      gozlem: 'Dört arkadaş çilek almış: Ali 3/4 kg, Ece 0,7 kg, Can 1 kilonun %72’si kadar, Su 2/3 kg. Miktarlar farklı biçimlerde yazılmış. Karşılaştırmak için şerit modeli ve sayı doğrusu işe yarar.',
-      soru: 'Manav “Paydası büyük olan kesir daha büyüktür: 1/5 kg, 1/3 kg’dan çoktur” diyor. Sence?',
-      secenekler: ['Doğru: payda büyükse kesir büyük', 'Yanlış: 1/3 kg daha çok', 'İkisi eşit'], dogru: 1,
-      gorevler: [
-        { id: 'varsayim', metin: 'Şeritlerle manavın iddiasını çürüten bir örnek bul.' },
-        { id: 'denk', metin: 'İki şeridi farklı paydalarla eşit yap.' },
-        { id: 'sirala', metin: 'Dört çilek etiketini sayı doğrusuna yerleştir.' },
-        { id: 'encok', metin: 'En çok çileği kimin aldığını bul.' },
-      ],
-      aciklama: 'Payda büyüdükçe bütün daha çok parçaya bölünür, her parça <b>küçülür</b>: 1/5 < 1/3. Payları eşit kesirlerde paydası küçük olan büyüktür. Farklı gösterimleri karşılaştırmak için hepsini aynı biçime çeviririz: 3/4 = %75, 0,7 = %70, %72, 2/3 ≈ %66,7. Sayı doğrusunda sağdaki daha büyüktür: en çok <b>Ali</b> almış. Kesirleri <b>yarımla</b> (1/2) karşılaştırmak hızlı bir tahmin yoludur.',
-      sunum: 'Paydası büyük olan kesir büyük müdür? Farklı gösterimleri nasıl karşılaştırırız?',
-      oyun: { ad: 'Kesir Yarışı', url: 'kesir-yarisi.html' },
-      ogretmen: 'MAT.5.1.4 Farklı gösterimlerle ifade edilen kesirlerin karşılaştırılmasına yönelik çıkarım yapabilme. Şerit modeli aynı bütün üzerinde karşılaştırma sağlar; “payda büyükse kesir büyüktür” yaygın kavram yanılgısı tek bir karşı örnekle çürütülür. Sayı doğrusu kesir, ondalık ve yüzde gösterimlerini tek ölçekte sıralar. İlgili film: Hangisi Büyük?',
-    },
   ],
   avlar: [
     { id: 'cati', ad: 'Üçgen', metin: 'Çatı bir <b>üçgen</b>: 3 kenar, 3 köşe, 3 iç açı.', x: 905, y: 392, r: 46 },
@@ -161,8 +130,7 @@ const KASABA_METINLERI = {
     'Bu bir oyun değil, <b>gözlem ortamı</b>: puan yok. Öğrenci tahmin eder, dener, gözlemini deftere yazar.',
     'Sınıfta: akıllı tahtada <b>sunum modu</b> (P) ile istasyonun sorusunu büyük gösterin; öğrencilere tahmin ettirin; sonra “Yakından incele”de birlikte deneyin.',
     'Her istasyonun sonunda ilgili <b>oyuna</b> bağlantı var; pekiştirme ödevi olarak verilebilir.',
-    'İlk altı istasyon <b>5. sınıf Geometrik Şekiller</b> (MAT.5.3), son ikisi <b>kesirler</b> (MAT.5.1.3 – 5.1.4) içindir.',
     'Defter ve şekil avı yalnızca o tarayıcıda saklanır. Rapor HTML dosyası olarak iner; yazdırılabilir.',
   ],
 };
-
+var KASABA_METINLERI = window.DUNYALAR.kasaba;

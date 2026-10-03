@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Benim İlerlemem · Nokta'nın Oyunları</title>
-<meta name="description" content="Nokta'nın Oyunları'nda kazandığın yıldızlar ve Nokta'nın Kasabası'ndaki gözlemlerin tek sayfada. Yazdırılabilir.">
+<meta name="description" content="Nokta'nın Oyunları'nda kazandığın yıldızlar ve gözlem ortamlarındaki (Kasaba, Çarşı) gözlemlerin tek sayfada. Yazdırılabilir.">
 <link rel="icon" href="img/nokta.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/oyun.css?v=202610031012">
+<link rel="stylesheet" href="css/oyun.css?v=202610031403">
 <style>
   .wrap { max-width: 980px; }
   .topline { display: flex; align-items: center; gap: 12px; padding-top: 22px; flex-wrap: wrap; }
@@ -90,21 +90,21 @@
 
   <section class="sum" aria-label="Özet">
     <div class="tile"><span>Yıldızlar</span><b id="sStar">0 / 24</b><div class="bar"><i id="bStar"></i></div></div>
-    <div class="tile"><span>Kasaba görevleri</span><b id="sTask">0 / 0</b><div class="bar"><i id="bTask"></i></div></div>
-    <div class="tile"><span>Şekil avı</span><b id="sAv">0 / 0</b><div class="bar"><i id="bAv"></i></div></div>
+    <div class="tile"><span>Gözlem görevleri</span><b id="sTask">0 / 0</b><div class="bar"><i id="bTask"></i></div></div>
+    <div class="tile"><span>Şekil ve sayı avı</span><b id="sAv">0 / 0</b><div class="bar"><i id="bAv"></i></div></div>
   </section>
 
   <h2 class="sec">Oyunlar · 5. sınıf</h2>
   <div class="games" id="games"></div>
 
-  <h2 class="sec">Nokta'nın Kasabası · gözlemlerim</h2>
-  <div id="kasaba"></div>
+  <div id="dunyalar"></div>
 
   <p class="note noprint">Kayıtlar yalnızca bu tarayıcıda saklanır. Başka bir bilgisayarda ya da gizli pencerede oynanan oyunlar burada görünmez. Sınıfta paylaşılan bir bilgisayarda, yeni öğrenciye geçmeden önce “Kayıtları sil” düğmesini kullanabilirsiniz.</p>
 </div>
 
-<script src="js/ortak.js?v=202610031012"></script>
-<script src="js/kasaba-metinleri.js?v=202610031012"></script>
+<script src="js/ortak.js?v=202610031403"></script>
+<script src="js/carsi-metinleri.js?v=202610031403"></script>
+<script src="js/kasaba-metinleri.js?v=202610031403"></script>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
@@ -120,15 +120,16 @@
     { id: 'ucgenin-sirri', title: 'Üçgenin Sırrı', code: 'MAT.5.3.6' },
     { id: 'pergel-ustasi', title: 'Pergel Ustası', code: 'MAT.5.3.7' },
   ];
-  const T = KASABA_METINLERI, STS = T.istasyonlar;
-  let saved = N.load(), K = {};
-  try { K = JSON.parse(localStorage.getItem('nokta-kasaba')) || {}; } catch (_) {}
+  const WORLDS = ['carsi', 'kasaba'].map((id) => window.DUNYALAR[id]).filter(Boolean);
+  let saved = N.load();
+  const readK = (W) => { try { return JSON.parse(localStorage.getItem(W.dunya.key)) || {}; } catch (_) { return {}; } };
+  let KS = WORLDS.map(readK);
   const pct = (a, b) => (b ? Math.round(a / b * 100) : 0) + '%';
   const date = (ms) => new Date(ms).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' });
 
   function render() {
     $('#tarih').textContent = new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
-    $('#ad').value = K.ad || '';
+    $('#ad').value = KS.map((K) => K.ad).find(Boolean) || '';
     // oyunlar
     let stars = 0;
     $('#games').innerHTML = GAMES.map((G) => {
@@ -138,28 +139,30 @@
         <div class="meta">${r ? `en iyi ${r.score} puan<br>${date(r.at)}` : 'henüz oynanmadı'}</div></div>`;
     }).join('');
     $('#sStar').textContent = `${stars} / ${GAMES.length * 3}`; $('#bStar').style.width = pct(stars, GAMES.length * 3);
-    // kasaba
-    const done = K.done || {}, sence = K.sence || {}, log = K.log || {}, son = K.son || {};
-    let nT = 0, nD = 0;
-    $('#kasaba').innerHTML = STS.map((S, i) => {
-      const tasks = S.gorevler.map((t) => ({ t, ok: !!done[S.id + '.' + t.id] })), k = tasks.filter((x) => x.ok).length;
-      nT += tasks.length; nD += k;
-      const obs = (log[S.id] || []).filter((l) => !l.startsWith('Tahminim'));
-      return `<div class="stn"><div class="h"><h3>${i + 1}. ${esc(S.ad)}</h3><span class="code">${S.kod}</span><span class="cnt">${k}/${tasks.length} görev</span></div>
-        <p class="q"><b>Sence?</b> ${strip(S.soru)} → <b>Tahminim:</b> ${sence[S.id] != null ? esc(strip(S.secenekler[sence[S.id]])) : '—'}</p>
-        <ul>${tasks.map((x) => `<li class="${x.ok ? 'ok' : ''}"><i></i><span>${strip(x.t.metin)}</span></li>`).join('')}</ul>
-        ${obs.length ? `<p class="q"><b>Gözlemlerim:</b></p><ul class="obs">${obs.map((l) => `<li>${esc(strip(l))}</li>`).join('')}</ul>` : ''}
-        ${son[S.id] ? `<p class="son">“${esc(son[S.id])}”</p>` : ''}</div>`;
+    // gözlem ortamları
+    let nT = 0, nD = 0, nA = 0, tA = 0;
+    $('#dunyalar').innerHTML = WORLDS.map((W, wi) => {
+      const K = KS[wi], done = K.done || {}, sence = K.sence || {}, log = K.log || {}, son = K.son || {};
+      const av = K.av || {}; nA += W.avlar.filter((A) => av[A.id]).length; tA += W.avlar.length;
+      return `<h2 class="sec">${esc(W.dunya.ad.replace('’', "'"))} · gözlemlerim <small style="font-family:var(--mono);font-size:13px;color:var(--amber-deep)">${esc(W.dunya.tema)}</small></h2>` + W.istasyonlar.map((S, i) => {
+        const tasks = S.gorevler.map((t) => ({ t, ok: !!done[S.id + '.' + t.id] })), k = tasks.filter((x) => x.ok).length;
+        nT += tasks.length; nD += k;
+        const obs = (log[S.id] || []).filter((l) => !l.startsWith('Tahminim'));
+        return `<div class="stn"><div class="h"><h3>${i + 1}. ${esc(S.ad)}</h3><span class="code">${S.kod}</span><span class="cnt">${k}/${tasks.length} görev</span></div>
+          <p class="q"><b>Sence?</b> ${strip(S.soru)} → <b>Tahminim:</b> ${sence[S.id] != null ? esc(strip(S.secenekler[sence[S.id]])) : '—'}</p>
+          <ul>${tasks.map((x) => `<li class="${x.ok ? 'ok' : ''}"><i></i><span>${strip(x.t.metin)}</span></li>`).join('')}</ul>
+          ${obs.length ? `<p class="q"><b>Gözlemlerim:</b></p><ul class="obs">${obs.map((l) => `<li>${esc(strip(l))}</li>`).join('')}</ul>` : ''}
+          ${son[S.id] ? `<p class="son">“${esc(son[S.id])}”</p>` : ''}</div>`;
+      }).join('');
     }).join('');
     $('#sTask').textContent = `${nD} / ${nT}`; $('#bTask').style.width = pct(nD, nT);
-    const av = K.av || {}, nA = T.avlar.filter((A) => av[A.id]).length;
-    $('#sAv').textContent = `${nA} / ${T.avlar.length}`; $('#bAv').style.width = pct(nA, T.avlar.length);
+    $('#sAv').textContent = `${nA} / ${tA}`; $('#bAv').style.width = pct(nA, tA);
   }
-  $('#ad').addEventListener('input', (e) => { K.ad = e.target.value; try { localStorage.setItem('nokta-kasaba', JSON.stringify(K)); } catch (_) {} });
+  $('#ad').addEventListener('input', (e) => { WORLDS.forEach((W, wi) => { KS[wi].ad = e.target.value; try { localStorage.setItem(W.dunya.key, JSON.stringify(KS[wi])); } catch (_) {} }); });
   $('#reset').onclick = () => {
-    if (!confirm('Bu tarayıcıdaki bütün oyun yıldızları ve kasaba gözlemleri silinsin mi? Bu geri alınamaz.')) return;
-    try { localStorage.removeItem('nokta-oyunlari'); localStorage.removeItem('nokta-kasaba'); } catch (_) {}
-    saved = {}; K = {}; render();
+    if (!confirm('Bu tarayıcıdaki bütün oyun yıldızları ve gözlem ortamlarındaki gözlemler silinsin mi? Bu geri alınamaz.')) return;
+    try { localStorage.removeItem('nokta-oyunlari'); WORLDS.forEach((W) => { localStorage.removeItem(W.dunya.key); localStorage.removeItem(W.dunya.key + '-tanitim'); }); } catch (_) {}
+    saved = {}; KS = WORLDS.map(() => ({})); render();
   };
   render();
 })();

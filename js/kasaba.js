@@ -1,15 +1,25 @@
-/* Nokta'nın Kasabası · geometri gözlem ortamı.
-   Metinler js/kasaba-metinleri.js içindeki KASABA_METINLERI nesnesindedir. */
+/* Nokta'nın gözlem ortamları: Kasaba (Geometrik Şekiller), Çarşı (Sayılar ve Nicelikler)…
+   Ortak motor. Hangi dünyanın açılacağını sayfadaki metin dosyası (js/<dünya>-metinleri.js) belirler:
+   o dosya KASABA_METINLERI nesnesini ve dunya ayarlarını (id, kayıt anahtarı, dünya genişliği) verir. */
 (() => {
   const { g, d } = N;
   const T = KASABA_METINLERI, STS = T.istasyonlar;
-  const WH = 760, GROUND = 600, WW = 7800, WMIN = -1500, FX = 4800;
-  const LAMPS = [-300, 470, 1120, 1480, 2240, 3200, 4180, 5030, 5600, 6560, 7330];
+  const DW = T.dunya, WH = 760, GROUND = 600, WW = DW.WW, WMIN = DW.WMIN, FX = 4800;
+  const LAMPS = DW.LAMPS;
   const $ = (s) => document.querySelector(s);
-  const KEY = 'nokta-kasaba';
+  const KEY = DW.key;
   { const mb = $('#menuBtn'), tr = $('#toolsR'); if (mb) { mb.onclick = () => { const o = tr.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); mb.textContent = o ? '× kapat' : '☰ menü'; }; tr.addEventListener('click', (e) => { if (e.target !== mb && e.target.closest('button') && innerWidth <= 700) { tr.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); mb.textContent = '☰ menü'; } }); } }
 
   /* ══════════ durum ══════════ */
+  if (DW.id === 'carsi') try { // kesir istasyonları önce kasabadaydı: eski kayıtları bir kez taşı
+    const old = JSON.parse(localStorage.getItem('nokta-kasaba') || '{}'), cur = JSON.parse(localStorage.getItem(KEY) || '{}'), ids = ['pastane', 'pazar'];
+    if (!cur.tasindi && old.done && Object.keys(old.done).some((k) => ids.includes(k.split('.')[0]))) {
+      cur.done = cur.done || {}; cur.log = cur.log || {}; cur.sence = cur.sence || {}; cur.son = cur.son || {};
+      Object.keys(old.done).forEach((k) => { if (ids.includes(k.split('.')[0])) cur.done[k] = true; });
+      ids.forEach((id) => { ['log', 'sence', 'son'].forEach((f) => { if (old[f] && old[f][id] != null) cur[f][id] = old[f][id]; }); });
+      cur.ad = cur.ad || old.ad; cur.tasindi = true; localStorage.setItem(KEY, JSON.stringify(cur));
+    }
+  } catch (_) {}
   const save0 = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (_) { return {}; } })();
   const st = {
     cur: 0, hava: save0.hava || 'sabah', t: 0,
@@ -19,7 +29,7 @@
     son: save0.son || {}, ad: save0.ad || '',
     av: save0.av || {}, cardMin: false, present: false,
   };
-  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({ hava: st.hava, done: st.done, sence: st.sence, log: st.log, son: st.son, ad: st.ad, av: st.av })); } catch (_) {} };
+  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({ hava: st.hava, done: st.done, sence: st.sence, log: st.log, son: st.son, ad: st.ad, av: st.av, tasindi: true })); } catch (_) {} };
   const isDone = (sid, tid) => !!st.done[sid + '.' + tid];
   const stationDone = (S) => S.gorevler.every((t) => isDone(S.id, t.id));
   function markDone(sid, tid) {
@@ -558,6 +568,12 @@
     ctx.strokeStyle = 'rgba(23,20,17,.18)'; ctx.lineWidth = 1.5;
     for (let r = 0; r < 4; r++) { const y = GROUND + 18 + r * 22; ctx.beginPath(); for (let x = WMIN - 400 + (r % 2) * 22; x < WW + 400; x += 44) { ctx.moveTo(x, y); ctx.arc(x + 20, y, 20, Math.PI, 0); } ctx.stroke(); }
     if (st.hava === 'yagmur') for (let i = 0; i < 18; i++) { const k = ((st.t * .6 + i * .29) % 1), x = WMIN + (i * 263) % (WW - WMIN), y = GROUND + 30 + (i * 37) % 100; ctx.beginPath(); ctx.ellipse(x, y, 4 + k * 26, 1 + k * 5, 0, 0, 7); ctx.strokeStyle = `rgba(255,255,255,${.7 * (1 - k)})`; ctx.lineWidth = 1.5; ctx.stroke(); }
+    if (DW.id === 'carsi') carsiGround(); else kasabaGround();
+    LAMPS.forEach(lamp);
+    walkers(); pigeons(); bike();
+    SK = false;
+  }
+  function kasabaGround() {
     trainStation();
     bunting({ x: 300, y: 395 }, { x: 588, y: 330 }, 40, 9);
     house(150, 150, 210, '#b8741a', { chimney: 105, box: true }); tree(370, .9);
@@ -571,11 +587,81 @@
     tileShop(); house(3240, 140, 180, '#8a6a4a', { box: true, chimney: 100 }); tree(3500, .9);
     river(); bridge(); tree(4170, .95); house(4250, 150, 200, '#c4432b', { shutters: '#87a074' });
     fountain(); tree(5090, 1.05); house(5200, 160, 230, '#b8741a', { chimney: 30, box: true });
-    tree(5470, .9); pastane(); tree(6200, .95); house(6290, 140, 190, '#8a6a4a', { shutters: '#e58b8b', box: true });
+  }
+  /* ── Çarşı: gözlemevi, pankart, otogar ── */
+  function billboard() {
+    const x0 = 3400, w = 140, y0 = GROUND - 190;
+    groundShadow(x0 + w / 2, 120); [x0 + 22, x0 + w - 22].forEach((px) => inkLine({ x: px, y: GROUND }, { x: px, y: y0 + 70 }, 4, '#6b4f35'));
+    inkRect(x0, y0, w, 74, '#fffaf0', 3); hatch(rectPts(x0 + w - 18, y0, 18, 74), { gap: 5, alpha: .18 });
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = N.INK; ctx.font = `400 19px ${N.BRUSH}`; ctx.fillText('Dünya nüfusu', x0 + w / 2, y0 + 20);
+    ctx.font = `600 15px ${N.MONO}`; ctx.fillStyle = N.SEAL; ctx.fillText('8 000 000 000', x0 + w / 2, y0 + 46); ctx.font = `400 15px ${N.BRUSH}`; ctx.fillStyle = N.SOFT; ctx.fillText('ve artıyor', x0 + w / 2, y0 + 64);
+  }
+  function gozlemevi() {
+    const cx = 3880, w = 240, h = 200, top = GROUND - h, x0 = cx - w / 2, aks = st.hava === 'aksam';
+    groundShadow(cx, w * 1.4);
+    inkRect(x0, top, w, h, '#eceff1');
+    ctx.save(); ctx.beginPath(); ctx.rect(x0, top, w, h); ctx.clip(); ctx.strokeStyle = 'rgba(23,20,17,.12)'; ctx.lineWidth = 1.3; for (let y = top + 30; y < GROUND; y += 30) { ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x0 + w, y); ctx.stroke(); } ctx.restore();
+    hatch(rectPts(x0 + w * .82, top + 2, w * .18 - 1.5, h - 2), { gap: 6, alpha: .16 });
+    // teleskop (kubbenin yarığından çıkar, yavaşça döner)
+    const ang = -Math.PI / 2 + .55 + Math.sin(st.t * .15) * .18, base = { x: cx, y: top - 50 }, tip = { x: base.x + Math.cos(ang) * 150, y: base.y + Math.sin(ang) * 150 };
+    ctx.save(); ctx.lineCap = 'round'; ctx.strokeStyle = N.INK; ctx.lineWidth = 24; ctx.beginPath(); ctx.moveTo(base.x, base.y); ctx.lineTo(tip.x, tip.y); ctx.stroke(); ctx.strokeStyle = '#5b6b78'; ctx.lineWidth = 18; ctx.stroke();
+    [.45, .8].forEach((k) => { const p = { x: base.x + Math.cos(ang) * 150 * k, y: base.y + Math.sin(ang) * 150 * k }; ctx.strokeStyle = N.AMBER; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(p.x - Math.sin(ang) * 11, p.y + Math.cos(ang) * 11); ctx.lineTo(p.x + Math.sin(ang) * 11, p.y - Math.cos(ang) * 11); ctx.stroke(); });
+    ctx.restore();
+    // kubbe
+    const R = 128; ctx.beginPath(); ctx.moveTo(cx - R, top); ctx.arc(cx, top, R, Math.PI, 0); ctx.closePath();
+    const gr = ctx.createLinearGradient(cx - R, 0, cx + R, 0); gr.addColorStop(0, '#e4e8ec'); gr.addColorStop(.55, '#c3cad2'); gr.addColorStop(1, '#9aa3ad'); ctx.fillStyle = gr; ctx.fill();
+    ctx.save(); ctx.clip(); ctx.strokeStyle = 'rgba(23,20,17,.22)'; ctx.lineWidth = 1.5; for (let k = -3; k <= 3; k++) { ctx.beginPath(); ctx.ellipse(cx, top, Math.abs(k) * R / 3.4 + 1, R, 0, Math.PI, 0); ctx.stroke(); }
+    ctx.fillStyle = aks ? '#1d2233' : '#3b3530'; ctx.save(); ctx.translate(cx, top); ctx.rotate(.55 + Math.sin(st.t * .15) * .18); ctx.fillRect(-15, -R - 4, 30, R - 8); ctx.restore(); ctx.restore();
+    ctx.beginPath(); ctx.moveTo(cx - R, top); ctx.arc(cx, top, R, Math.PI, 0); ctx.closePath(); ctx.strokeStyle = N.INK; ctx.lineWidth = 3; ctx.stroke();
+    inkLine({ x: x0 - 14, y: top }, { x: x0 + w + 14, y: top }, 5);
+    // tabela: Ay'a 384 400 km
+    inkRect(cx - 80, 464, 160, 40, '#1f2a44', 3); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.font = `400 16px ${N.BRUSH}`; ctx.fillStyle = '#f3e7c4'; ctx.fillText('Ay’a uzaklık', cx, 475); ctx.font = `600 16px ${N.MONO}`; ctx.fillStyle = '#ffd27a'; ctx.fillText('384 400 km', cx, 494);
+    for (let k = 0; k < 5; k++) { ctx.beginPath(); ctx.arc(cx - 70 + k * 35, 469 + (k % 2) * 28, 1.6, 0, 7); ctx.fillStyle = '#fffaf0'; ctx.fill(); }
+    // yuvarlak pencereler ve kapı
+    [cx - 78, cx + 78].forEach((wx) => { inkCircle(wx, top + 44, 18, { fill: aks ? '#f5c06a' : '#d7e1e4', w: 2.5 }); });
+    ctx.beginPath(); ctx.moveTo(cx - 26, GROUND); ctx.lineTo(cx - 26, GROUND - 64); ctx.arc(cx, GROUND - 64, 26, Math.PI, 0); ctx.lineTo(cx + 26, GROUND); ctx.closePath(); ctx.fillStyle = '#5b6b78'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx + 14, GROUND - 32, 3, 0, 7); ctx.fillStyle = N.AMBER; ctx.fill();
+    ctx.font = `400 22px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.fillText('GÖZLEMEVİ', cx, top + 24);
+  }
+  function bus(x, y, col, k = 1, door = true) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+    ctx.beginPath(); ctx.ellipse(90, 4, 96, 7, 0, 0, 7); ctx.fillStyle = 'rgba(23,20,17,.18)'; ctx.fill();
+    inkPoly([{ x: 0, y: -14 }, { x: 0, y: -92 }, { x: 160, y: -92 }, { x: 180, y: -70 }, { x: 180, y: -14 }], { fill: col, w: 3 });
+    hatch([{ x: 140, y: -14 }, { x: 140, y: -92 }, { x: 160, y: -92 }, { x: 180, y: -70 }, { x: 180, y: -14 }], { gap: 5, alpha: .2 });
+    const lit = st.hava === 'aksam';
+    for (let i = 0; i < 6; i++) inkRect(10 + i * 22, -84, 18, 26, lit ? '#f5c06a' : '#d7e1e4', 2);
+    inkPoly([{ x: 160, y: -88 }, { x: 176, y: -70 }, { x: 160, y: -70 }], { fill: lit ? '#f5c06a' : '#d7e1e4', w: 2 });
+    if (door) inkRect(146, -66, 22, 52, '#5b6b78', 2);
+    ctx.fillStyle = 'rgba(255,250,240,.85)'; ctx.fillRect(8, -50, 128, 4);
+    [34, 140].forEach((wx) => { ctx.beginPath(); ctx.arc(wx, -12, 14, 0, 7); ctx.fillStyle = '#2f2a26'; ctx.fill(); ctx.strokeStyle = N.INK; ctx.lineWidth = 2; ctx.stroke(); ctx.beginPath(); ctx.arc(wx, -12, 5, 0, 7); ctx.fillStyle = '#9b8f80'; ctx.fill(); });
+    ctx.restore();
+  }
+  function otogar() {
+    const x0 = 4700, aks = st.hava === 'aksam';
+    groundShadow(4890, 420);
+    // peron saçağı
+    [4730, 4880, 5030].forEach((px) => inkLine({ x: px, y: GROUND }, { x: px, y: GROUND - 160 }, 5));
+    inkPoly([{ x: x0, y: GROUND - 176 }, { x: 5070, y: GROUND - 176 }, { x: 5080, y: GROUND - 160 }, { x: x0 - 10, y: GROUND - 160 }], { fill: '#5b7a8c', w: 3 });
+    hatch(rectPts(x0, GROUND - 176, 370, 16), { gap: 6, alpha: .2 });
+    inkRect(4810, GROUND - 214, 150, 38, '#fffaf0', 3); ctx.font = `400 26px ${N.BRUSH}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('OTOGAR', 4885, GROUND - 194);
+    // kalkış tablosu
+    inkRect(4900, GROUND - 140, 116, 70, '#1f2a44', 2.5); ctx.font = `500 11px ${N.MONO}`; ctx.textAlign = 'left';
+    [['İZMİR', '08:30'], ['ANKARA', '09:15'], ['GEZİ', '10:00']].forEach(([a, b], i) => { ctx.fillStyle = i === 2 ? '#ffd27a' : '#e9e2d0'; ctx.fillText(a, 4908, GROUND - 124 + i * 20); ctx.fillText(b, 4974, GROUND - 124 + i * 20); });
+    // bank ve sıradakiler
+    inkRect(4745, GROUND - 40, 110, 8, '#9b7653', 2.5); [4752, 4848].forEach((lx) => inkLine({ x: lx, y: GROUND - 32 }, { x: lx, y: GROUND }, 3));
+    [4770, 4800, 4830].forEach((px, i) => person(px, GROUND - 32, 1, [N.AMBER, N.SEAL, '#87a074'][i], Math.sin(st.t * 2 + i) * .3, false));
+    // park etmiş otobüs: 45 kişilik
+    bus(5090, GROUND + 2, N.AMBER);
+    inkLine({ x: 5112, y: 508 }, { x: 5112, y: 498 }, 2); inkLine({ x: 5168, y: 508 }, { x: 5168, y: 498 }, 2); inkRect(5096, 474, 88, 26, '#fffaf0', 2.5); ctx.font = `600 13px ${N.MONO}`; ctx.fillStyle = N.INK; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('45 kişilik', 5140, 488);
+    if (!N.reduced) for (let k = 0; k < 4; k++) { const ph = (st.t * .8 + k / 4) % 1; ctx.beginPath(); ctx.arc(5084 - ph * 30, GROUND - 14 - ph * 10, 4 + ph * 8, 0, 7); ctx.fillStyle = `rgba(120,110,100,${.35 * (1 - ph)})`; ctx.fill(); }
+    void aks;
+  }
+  function carsiGround() {
+    tree(3320, .9); billboard(); gozlemevi(); tree(4110, .95); house(4170, 140, 190, '#c4432b', { shutters: '#5b7a8c', box: true });
+    tree(4420, .85); house(4480, 140, 220, '#8a6a4a', { chimney: 30, awning: '#5b7a8c' }); otogar();
+    tree(5400, .9); pastane(); tree(6200, .95); house(6290, 140, 190, '#8a6a4a', { shutters: '#e58b8b', box: true });
     pazar(); house(7420, 150, 210, '#c4432b', { chimney: 110, shutters: '#87a074' }); tree(7660, 1.05);
-    LAMPS.forEach(lamp);
-    walkers(); pigeons(); bike();
-    SK = false;
   }
   /* ── Pastane ve Pazar (kesirler) ── */
   function pastane() {
@@ -900,7 +986,7 @@
     const ac = amb.ac; if (!ac) return;
     const off = sesKapali() || document.hidden, now = ac.currentTime;
     amb.rain.gain.setTargetAtTime(off || st.hava !== 'yagmur' ? 0 : .05, now, .4);
-    amb.water.gain.setTargetAtTime(off ? 0 : .035 * near(FX, 700), now, .2);
+    amb.water.gain.setTargetAtTime(off || DW.id !== 'kasaba' ? 0 : .035 * near(FX, 700), now, .2);
     if (off) return;
     if (st.hava === 'sabah' && (amb.nextBird -= dt) < 0) { // kuş cıvıltısı
       amb.nextBird = 3 + Math.random() * 6; const v = .025 + .02 * Math.random(), f = 2400 + Math.random() * 1600, n = 2 + Math.floor(Math.random() * 3);
@@ -913,7 +999,7 @@
     if ((amb.trainP < .2 && p >= .2) || (amb.trainP < 15.1 && p >= 15.1)) whistle(.05 * near(trainFront().x, 1300));
     amb.trainP = p;
     const m = Math.floor(st.t / 120); // iki dakikada bir kule çanı (kasabanın "saat başı")
-    if (m > amb.lastBell) { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
+    if (m > amb.lastBell && DW.id === 'kasaba') { amb.lastBell = m; const v = near(650, 1600); if (v > .05) { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => blip(f, f * .995, 1.2, .1 * v, 'sine', i * .38)); } }
   }
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now; if (!N.reduced) st.t += dt; else st.t += dt * .25;
@@ -948,15 +1034,15 @@
   function hitWorld(cx, cy) {
     const w = toWorld(cx, cy);
     const av = (id) => T.avlar.find((A) => A.id === id);
-    if (st.hava !== 'yagmur') { const b = birdsAt(), q = toLayer(cx, cy, .2); if (g.dist(q, { x: b.x - 45, y: b.y }) < 75) return { av: av('kuslar') }; }
-    const bk = bikeAt(); if (g.dist(w, { x: bk.x - 30, y: bk.y - 21 }) < 30 || g.dist(w, { x: bk.x + 30, y: bk.y - 21 }) < 30) return { av: av('tekerlek') };
+    if (st.hava !== 'yagmur' && av('kuslar')) { const b = birdsAt(), q = toLayer(cx, cy, .2); if (g.dist(q, { x: b.x - 45, y: b.y }) < 75) return { av: av('kuslar') }; }
+    const bk = bikeAt(); if (av('tekerlek') && (g.dist(w, { x: bk.x - 30, y: bk.y - 21 }) < 30 || g.dist(w, { x: bk.x + 30, y: bk.y - 21 }) < 30)) return { av: av('tekerlek') };
     for (const A of T.avlar) if (!A.dyn && g.dist(w, A) < A.r) return { av: A };
-    if (g.dist(w, { x: 650, y: 140 }) < 36) return { bell: true };
+    if (DW.id === 'kasaba' && g.dist(w, { x: 650, y: 140 }) < 36) return { bell: true };
     for (let k = 0; k < STS.length; k++) { const [x0, x1, y0, y1] = STS[k].hit; if (w.x > x0 && w.x < x1 && w.y > y0 && w.y < y1) return { st: k }; }
     if (Math.abs(w.x - nokta.x) < 50 && w.y > GROUND - 120 && w.y < GROUND) return { nokta: true };
     return null;
   }
-  const NOKTA_SOZ = ['Kasabada 8 şekil sakladım. Bazıları hareket ediyor!', 'Sence bir doğru hiç biter mi?', 'Bir noktadan sonsuz doğru geçer. Ben de bir noktayım!', 'Kuşlar V biçiminde uçuyor. O V bir açı!', 'Bisikletin tekerleğine bak: teller birer yarıçap.', 'Güvercinleri ürkütmeden yürümek zor!'];
+  const NOKTA_SOZ = DW.soz || ['Kasabada 8 şekil sakladım. Bazıları hareket ediyor!', 'Sence bir doğru hiç biter mi?', 'Bir noktadan sonsuz doğru geçer. Ben de bir noktayım!', 'Kuşlar V biçiminde uçuyor. O V bir açı!', 'Bisikletin tekerleğine bak: teller birer yarıçap.', 'Güvercinleri ürkütmeden yürümek zor!'];
   let soz = 0;
   function ring() { bellAmp = 1; [523, 392, 523, 392].forEach((f, i) => setTimeout(() => N.sfx.tick && toneBell(f), i * 380)); }
   function toneBell(f) { try { const ac = toneBell.ac || (toneBell.ac = new (window.AudioContext || window.webkitAudioContext)()); if (localStorage.getItem('nokta-ses') === 'kapali') return; const o = ac.createOscillator(), gn = ac.createGain(); o.type = 'sine'; o.frequency.value = f; gn.gain.setValueAtTime(.0001, ac.currentTime); gn.gain.exponentialRampToValueAtTime(.12, ac.currentTime + .01); gn.gain.exponentialRampToValueAtTime(.0001, ac.currentTime + 1.2); o.connect(gn).connect(ac.destination); o.start(); o.stop(ac.currentTime + 1.3); } catch (_) {} }
@@ -975,7 +1061,7 @@
     $('#stations').innerHTML = STS.map((S, i) => `<button class="st-btn ${stationDone(S) ? 'done' : ''}" type="button" data-i="${i}" aria-current="${i === st.cur}"><b>${stationDone(S) ? '✓' : i + 1}</b><span>${S.ad}</span></button>`).join('');
     $('#stations').querySelectorAll('button').forEach((b) => (b.onclick = () => go(+b.dataset.i)));
   }
-  function renderAv() { const n = T.avlar.filter((A) => st.av[A.id]).length; $('#avBtn').textContent = `şekil avı ${n}/${T.avlar.length}`; }
+  function renderAv() { const n = T.avlar.filter((A) => st.av[A.id]).length; $('#avBtn').textContent = `${DW.avAd} ${n}/${T.avlar.length}`; }
   function renderCard() {
     const S = STS[st.cur], el = $('#scard'), picked = st.sence[S.id];
     const allDone = stationDone(S);
@@ -991,7 +1077,7 @@
         <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>
         <span class="lbl">Açıklama</span>
         ${allDone || st.showExp === S.id ? `<div class="explain">${S.aciklama}</div>` : '<button class="btn" id="expBtn" type="button">Açıklamayı göster</button> <span class="small">Önce görevleri denemeni öneririm.</span>'}
-        <div class="row2"><a class="btn" href="${S.oyun.url}">Pekiştir: ${S.oyun.ad} ↗</a>${st.cur < STS.length - 1 ? `<button class="btn" id="nextSt" type="button">Sonraki nokta →</button>` : ''}</div>
+        <div class="row2">${S.oyun ? `<a class="btn" href="${S.oyun.url}">Pekiştir: ${S.oyun.ad} ↗</a>` : S.film ? `<a class="btn" href="https://hakanatas.github.io/nokta-filmleri/#${S.film.id}" target="_blank" rel="noopener">Filmi izle: ${S.film.ad} ↗</a>` : ''}${st.cur < STS.length - 1 ? `<button class="btn" id="nextSt" type="button">Sonraki nokta →</button>` : ''}</div>
       </div>`}`;
     if (picked == null && !st.cardMin) N.choices(el.querySelector('#senceBox'), S.secenekler.map((t, i) => ({ t, i, ok: true })), (o) => { st.sence[S.id] = o.i; persist(); addLog(S.id, `Tahminim: ${o.t}`); N.sfx.tick(); setTimeout(renderCard, 350); }, 'one');
     $('#fold').onclick = () => { st.cardMin = !st.cardMin; renderCard(); };
@@ -1020,7 +1106,7 @@
   function openZoom() {
     zoomOpen = true; $('#zoom').classList.add('open'); const S = STS[st.cur];
     Z.onDown = Z.onMove = Z.onUp = null;
-    ({ tren: setupTren, saat: setupClock, kavsak: setupMap, cini: setupCini, kopru: setupKopru, cesme: setupPool, pastane: setupPastane, pazar: setupPazar })[S.id]();
+    ({ tren: setupTren, saat: setupClock, kavsak: setupMap, cini: setupCini, kopru: setupKopru, cesme: setupPool, pastane: setupPastane, pazar: setupPazar, gozlemevi: setupGozlemevi, otogar: setupOtogar })[S.id]();
     renderZSide(); setTimeout(() => { Z.resize(); }, 30);
     addEventListener('keydown', zoomEsc);
   }
@@ -1036,7 +1122,7 @@
       <span class="label" style="margin-top:4px">Görevler</span>
       <ul class="tasks">${S.gorevler.map((t) => `<li class="${isDone(S.id, t.id) ? 'ok' : ''}"><i></i><span>${t.metin}</span></li>`).join('')}</ul>`;
     $('#zClose').onclick = closeZoom;
-    ({ tren: ctlTren, saat: ctlClock, kavsak: ctlMap, cini: ctlCini, kopru: ctlKopru, cesme: ctlPool, pastane: ctlPastane, pazar: ctlPazar })[S.id]($('#zctl'));
+    ({ tren: ctlTren, saat: ctlClock, kavsak: ctlMap, cini: ctlCini, kopru: ctlKopru, cesme: ctlPool, pastane: ctlPastane, pazar: ctlPazar, gozlemevi: ctlGozlemevi, otogar: ctlOtogar })[S.id]($('#zctl'));
   }
   let zhint = '';
   const say = (html) => { zhint = html; hint(html); };
@@ -1057,6 +1143,145 @@
   const knob = (c, p, hot) => { c.beginPath(); c.arc(p.x, p.y, hot ? 15 : 12, 0, 7); c.fillStyle = hot ? N.AMBER : N.SHEET; c.fill(); c.lineWidth = 3; c.strokeStyle = N.DEEP; c.stroke(); };
   const turnDelta = (a, b) => { let dl = a - b; while (dl > Math.PI) dl -= 2 * Math.PI; while (dl < -Math.PI) dl += 2 * Math.PI; return dl; };
 
+  /* ── sayıları yazıyla okuma ── */
+  const BIR = ['', 'bir', 'iki', 'üç', 'dört', 'beş', 'altı', 'yedi', 'sekiz', 'dokuz'], ONL = ['', 'on', 'yirmi', 'otuz', 'kırk', 'elli', 'altmış', 'yetmiş', 'seksen', 'doksan'], BOLUK = ['', 'bin', 'milyon', 'milyar'], BOLUK_AD = ['birler', 'binler', 'milyonlar', 'milyarlar'];
+  const uc = (n) => { const y = Math.floor(n / 100), o = Math.floor((n % 100) / 10), b = n % 10; return [y ? (y === 1 ? 'yüz' : BIR[y] + ' yüz') : '', ONL[o], BIR[b]].filter(Boolean).join(' '); };
+  const gruplar = (n) => { const r = []; do { r.push(n % 1000); n = Math.floor(n / 1000); } while (n > 0); return r; }; // birlerden başlayarak
+  function sayiYazi(n, ad = BOLUK) { if (!n) return 'sıfır'; const G = gruplar(n), out = []; G.forEach((g3, i) => { if (!g3) return; out.unshift(i === 1 && g3 === 1 && ad[i] === 'bin' ? 'bin' : uc(g3) + (ad[i] ? ' ' + ad[i] : '')); }); return out.join(' '); }
+  const bosluk = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+  /* ── Gözlemevi: bölüklere ayır, oku, yaz ── */
+  const GZ_DEV = g.pick([{ t: 'Güneş’e uzaklık', n: 149600000, b: 'km' }, { t: 'Jüpiter’e uzaklık', n: 628730000, b: 'km' }, { t: 'Satürn’e uzaklık', n: 1275000000, b: 'km' }, { t: 'Neptün’e uzaklık', n: 4495060000, b: 'km' }, { t: 'Işığın bir saatte gittiği yol', n: 1079252849, b: 'km' }]);
+  const GZ_YAZ = g.pick([72450316, 230615048, 9087731, 806214530]), GZ_SIF = g.pick([5000012, 3000400000, 40000007, 7000250]);
+  const gz = { part: null, gaps: new Set(), wheel: Array(10).fill(0), target: GZ_YAZ, readOk: false, readChoices: null };
+  const GZ_LIST = [['bolukle', 'Bölükler', 'oku'], ['yaz', 'Rakam çarkları', 'sifir']];
+  const GZ_HINT = { bolukle: `${GZ_DEV.t}: <b>${GZ_DEV.n}</b> ${GZ_DEV.b}. Rakamların arasına dokunarak sayıyı <b>bölüklere</b> ayır.`, yaz: 'Rakam çarklarını çevir: üst yarıya dokununca artar, alt yarıya dokununca azalır. Okunuşu verilen sayıyı yaz.' };
+  const GDX = 90, GW = 72;
+  const digitsOf = (n) => String(n).split('').map(Number);
+  const wheelVal = () => gz.wheel.reduce((s, dg) => s * 10 + dg, 0);
+  function setupGozlemevi() {
+    const open = GZ_LIST.find(([, , tid]) => !isDone('gozlemevi', tid)); gz.part = gz.part || (open ? open[0] : 'bolukle');
+    if (isDone('gozlemevi', 'yaz')) gz.target = GZ_SIF;
+    zhint = GZ_HINT[gz.part];
+    Z.draw = (c) => {
+      c.fillStyle = '#1f2a44'; c.fillRect(0, 0, ZW, ZH);
+      for (let i = 0; i < 70; i++) { c.beginPath(); c.arc((i * 137) % ZW, (i * 71) % ZH, (i % 3) * .6 + .6, 0, 7); c.fillStyle = `rgba(255,248,230,${.35 + .4 * Math.abs(Math.sin(st.t * .7 + i))})`; c.fill(); }
+      if (gz.part === 'bolukle') {
+        const D = digitsOf(GZ_DEV.n), n = D.length, x0 = 450 - (n * GW) / 2, ok = isDone('gozlemevi', 'bolukle');
+        d.text(c, `${GZ_DEV.t} (${GZ_DEV.b})`, 450, 70, { size: 30, color: '#f3e7c4', halo: false });
+        let gapShift = 0;
+        D.forEach((dg, i) => {
+          const x = x0 + i * GW + gapShift; c.fillStyle = '#fffaf0'; c.fillRect(x + 6, 170, GW - 12, 96); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(x + 6, 170, GW - 12, 96);
+          d.text(c, String(dg), x + GW / 2, 220, { size: 62, halo: false });
+          if (i < n - 1) { const gx = x + GW; if (gz.gaps.has(i + 1)) { c.fillStyle = N.AMBER; c.beginPath(); c.arc(gx + 2, 276, 7, 0, 7); c.fill(); gapShift += 18; } else { c.strokeStyle = 'rgba(243,231,196,.35)'; c.setLineDash([4, 5]); c.beginPath(); c.moveTo(gx, 160); c.lineTo(gx, 276); c.stroke(); c.setLineDash([]); } }
+        });
+        if (ok) { // bölük adları
+          const G = gruplar(GZ_DEV.n); let i0 = 0, shift = 0;
+          for (let gi = G.length - 1; gi >= 0; gi--) { const len = gi === G.length - 1 ? n - (G.length - 1) * 3 : 3, xa = x0 + i0 * GW + shift, xb = xa + len * GW;
+            c.strokeStyle = N.AMBER; c.lineWidth = 3; c.beginPath(); c.moveTo(xa + 8, 300); c.lineTo(xa + 8, 312); c.lineTo(xb - 8, 312); c.lineTo(xb - 8, 300); c.stroke();
+            d.text(c, BOLUK_AD[gi], (xa + xb) / 2, 340, { size: 24, color: '#ffd27a', halo: false }); i0 += len; shift += 18; }
+          d.text(c, bosluk(GZ_DEV.n), 450, 420, { size: 48, color: '#fffaf0', halo: false, font: N.MONO });
+          if (gz.readOk) d.text(c, sayiYazi(GZ_DEV.n), 450, 500, { size: 30, color: '#ffd27a', halo: false });
+        } else d.text(c, 'ipucu: birler bölüğü en sağda', 450, 380, { size: 22, color: 'rgba(243,231,196,.6)', halo: false });
+      } else {
+        const x0 = 450 - (10 * GW) / 2 - 27, v = wheelVal();
+        d.text(c, 'Yaz:', 450, 50, { size: 24, color: 'rgba(243,231,196,.7)', halo: false });
+        d.text(c, sayiYazi(gz.target), 450, 88, { size: 30, color: '#ffd27a', halo: false });
+        let lead = true;
+        gz.wheel.forEach((dg, i) => {
+          const gi = Math.floor((9 - i) / 3), x = x0 + i * GW + (3 - gi) * 18; if (dg) lead = false; const dim = lead && i < 9;
+          c.fillStyle = '#fffaf0'; c.globalAlpha = dim ? .45 : 1; c.fillRect(x + 6, 170, GW - 12, 130); c.globalAlpha = 1; c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(x + 6, 170, GW - 12, 130);
+          d.text(c, '▲', x + GW / 2, 186, { size: 14, color: N.SOFT, halo: false }); d.text(c, '▼', x + GW / 2, 286, { size: 14, color: N.SOFT, halo: false });
+          d.text(c, String(dg), x + GW / 2, 236, { size: 58, color: dim ? N.SOFT : N.INK, halo: false });
+        });
+        for (let gi = 0; gi < 4; gi++) { const iA = gi === 3 ? 0 : 9 - gi * 3 - 2, iB = 9 - gi * 3, xa = x0 + iA * GW + (3 - gi) * 18, xb = x0 + iB * GW + (3 - gi) * 18 + GW; c.strokeStyle = N.AMBER; c.lineWidth = 3; c.beginPath(); c.moveTo(xa + 8, 312); c.lineTo(xa + 8, 322); c.lineTo(xb - 8, 322); c.lineTo(xb - 8, 312); c.stroke(); d.text(c, BOLUK_AD[gi], (xa + xb) / 2, 346, { size: 20, color: '#ffd27a', halo: false }); }
+        d.text(c, 'Çarkların okunuşu', 450, 420, { size: 22, color: 'rgba(243,231,196,.7)', halo: false });
+        d.text(c, v ? bosluk(v) : '0', 450, 462, { size: 40, color: '#fffaf0', halo: false, font: N.MONO });
+        d.text(c, sayiYazi(v), 450, 515, { size: 26, color: v === gz.target ? '#ffd27a' : '#f3e7c4', halo: false });
+      }
+    };
+    const gzWheelAt = (p) => { const x0 = 450 - (10 * GW) / 2 - 27; for (let i = 0; i < 10; i++) { const gi = Math.floor((9 - i) / 3), x = x0 + i * GW + (3 - gi) * 18; if (p.x > x + 6 && p.x < x + GW - 6 && p.y > 170 && p.y < 300) return { i, up: p.y < 235 }; } return null; };
+    Z.onDown = (p) => {
+      if (gz.part === 'bolukle') {
+        if (isDone('gozlemevi', 'bolukle')) return;
+        const D = digitsOf(GZ_DEV.n), n = D.length, x0 = 450 - (n * GW) / 2; let shift = 0, best = -1, bd = 26;
+        for (let i = 1; i < n; i++) { const gx = x0 + i * GW + shift; if (Math.abs(p.x - gx) < bd && p.y > 150 && p.y < 300) { bd = Math.abs(p.x - gx); best = i; } if (gz.gaps.has(i)) shift += 18; }
+        if (best < 0) return; gz.gaps.has(best) ? gz.gaps.delete(best) : gz.gaps.add(best); N.sfx.tick();
+        const want = new Set(); for (let i = 1; i < n; i++) if ((n - i) % 3 === 0) want.add(i);
+        const same = want.size === gz.gaps.size && [...want].every((k) => gz.gaps.has(k));
+        if (same) { N.sfx.good(); say(`Sağdan üçer üçer: <b>${bosluk(GZ_DEV.n)}</b>. En sağda <b>birler</b>, sonra <b>binler</b>, <b>milyonlar</b>${gruplar(GZ_DEV.n).length > 3 ? ', <b>milyarlar</b>' : ''} bölüğü. Şimdi doğru okunuşu seç.`); addLog('gozlemevi', `${GZ_DEV.n} → ${bosluk(GZ_DEV.n)} (sağdan üçer üçer)`); markDone('gozlemevi', 'bolukle'); }
+        else if (gz.gaps.size >= want.size && !same) say('Bölükler <b>sağdan</b> başlar: en sağdaki üç rakam birler bölüğü. Soldan ayırınca en sağda üçten az rakam kalır mı?');
+        renderZSide(); Z.ask(); return;
+      }
+      const w = gzWheelAt(p); if (!w) return;
+      gz.wheel[w.i] = (gz.wheel[w.i] + (w.up ? 1 : 9)) % 10; N.sfx.tick();
+      if (wheelVal() === gz.target) {
+        if (!isDone('gozlemevi', 'yaz')) { N.sfx.good(); say(`Doğru: <b>${bosluk(gz.target)}</b>. Şimdi içinde <b>000</b> bölüğü olan bir sayı yaz: “${sayiYazi(GZ_SIF)}”.`); addLog('gozlemevi', `“${sayiYazi(gz.target)}” → ${bosluk(gz.target)}`); markDone('gozlemevi', 'yaz'); gz.target = GZ_SIF; gz.wheel.fill(0); }
+        else if (gz.target === GZ_SIF && !isDone('gozlemevi', 'sifir')) { N.sfx.good(); say(`<b>${bosluk(GZ_SIF)}</b>: rakamları 0 olan bölüğün adı okunmadı ama <b>yazarken 000</b> yazmak zorundayız; yoksa sayı değişir!`); addLog('gozlemevi', `“${sayiYazi(GZ_SIF)}” → ${bosluk(GZ_SIF)} (000 bölüğü)`); markDone('gozlemevi', 'sifir'); }
+      }
+      Z.ask();
+    };
+    Z.onMove = null; Z.onUp = null;
+    Z.ask();
+  }
+  function ctlGozlemevi(host) {
+    if (gz.part === 'bolukle') {
+      host.innerHTML = isDone('gozlemevi', 'bolukle') && !isDone('gozlemevi', 'oku') ? '<p class="small" style="margin:0 0 6px">Doğru okunuş hangisi?</p><div id="gzRead"></div>' : '<div class="row"><button class="btn" id="gzClr" type="button">Ayırmaları sil</button></div>';
+      const cl = $('#gzClr'); if (cl) cl.onclick = () => { if (isDone('gozlemevi', 'bolukle')) return; gz.gaps.clear(); Z.ask(); };
+      const rd = $('#gzRead');
+      if (rd) {
+        const G = gruplar(GZ_DEV.n), up = sayiYazi(GZ_DEV.n, ['', 'milyon', 'milyar', 'trilyon']), drop = (() => { const out = []; G.forEach((g3, i) => { if (!g3) return; out.unshift(uc(g3) + (BOLUK[i] && i !== 1 ? ' ' + BOLUK[i] : '')); }); return out.join(' '); })();
+        gz.readChoices = gz.readChoices || g.shuffle([{ t: sayiYazi(GZ_DEV.n), ok: true }, { t: up, ok: false }, { t: drop, ok: false }]);
+        N.choices(rd, gz.readChoices, (o) => { if (o.ok) { gz.readOk = true; N.sfx.good(); say('Her bölüğü üç basamaklı bir sayı gibi oku, sonra bölüğün adını söyle. İşte bu kadar!'); addLog('gozlemevi', `Okunuş: ${o.t}`); markDone('gozlemevi', 'oku'); Z.ask(); } else { N.sfx.bad(); say('Bölük adlarına dikkat: en sağdaki üç rakam <b>birler</b>, sonraki üç <b>bin</b>, sonraki üç <b>milyon</b>.'); } }, 'one');
+      }
+    } else host.innerHTML = '<div class="row"><button class="btn" id="gzZero" type="button">Çarkları sıfırla</button></div>';
+    const zb = $('#gzZero'); if (zb) zb.onclick = () => { gz.wheel.fill(0); Z.ask(); };
+    partTabs(host, gz, GZ_LIST, 'gozlemevi', () => say(GZ_HINT[gz.part]));
+  }
+
+  /* ── Otogar: toplam, bölme, kalanı yorumla, doldurarak kontrol ── */
+  const OT = (() => { let S, T, C; do { S = g.rnd(300, 440); T = g.rnd(15, 30); C = g.pick([40, 45, 50]); } while ((S + T) % C === 0 || Math.floor((S + T) / C) + 1 > 12 || (S + T) % C > C - 3); return { S, T, C, N: S + T, q: Math.floor((S + T) / C), r: (S + T) % C }; })();
+  const ot = { fill: 0, anim: false };
+  function setupOtogar() {
+    zhint = `Geziye <b>${OT.S} öğrenci</b> ve <b>${OT.T} öğretmen</b> katılıyor. Otobüsler <b>${OT.C} kişilik</b>. Adım adım çöz: sağdaki kutulara yaz.`;
+    Z.draw = (c) => {
+      c.fillStyle = '#efe8d8'; c.fillRect(0, 0, ZW, ZH);
+      // kalabalık
+      const left = OT.N - ot.fill, per = 40, sp = 17;
+      d.text(c, `${OT.S} öğrenci + ${OT.T} öğretmen${isDone('otogar', 'topla') ? ` = ${OT.N} kişi` : ''}`, 450, 34, { size: 26 });
+      for (let i = 0; i < OT.N; i++) { if (i < ot.fill) continue; const k = i - ot.fill, x = 450 - (per * sp) / 2 + (k % per) * sp + 8, y = 66 + Math.floor(k / per) * sp; c.beginPath(); c.arc(x, y, 6, 0, 7); c.fillStyle = i >= OT.S ? N.SEAL : N.AMBER; c.fill(); }
+      if (!left) d.text(c, 'herkes otobüste!', 450, 110, { size: 26, color: N.DEEP });
+      // otobüsler
+      const nb = isDone('otogar', 'bol') ? OT.q + 1 : 1, bw = 136, bh = 96, cols = 6;
+      for (let b = 0; b < nb; b++) {
+        const col = b % cols, row = Math.floor(b / cols), x = 450 - (Math.min(nb, cols) * (bw + 10)) / 2 + col * (bw + 10), y = 280 + row * (bh + 46);
+        const inBus = Math.max(0, Math.min(OT.C, ot.fill - b * OT.C)), extra = b === OT.q;
+        c.fillStyle = extra && isDone('otogar', 'yorum') ? '#f6dcae' : '#fffaf0'; c.fillRect(x, y, bw, bh); d.poly(c, rectPts(x, y, bw, bh), { w: 2.5, color: extra ? N.SEAL : N.INK });
+        const sc = OT.C === 40 ? 8 : OT.C === 45 ? 9 : 10, srow = Math.ceil(OT.C / sc);
+        for (let s2 = 0; s2 < OT.C; s2++) { const sx = x + 12 + (s2 % sc) * ((bw - 24) / (sc - 1)), sy = y + 14 + Math.floor(s2 / sc) * ((bh - 28) / (srow - 1)); c.beginPath(); c.arc(sx, sy, 4.5, 0, 7); if (s2 < inBus) { c.fillStyle = b * OT.C + s2 >= OT.S ? N.SEAL : N.AMBER; c.fill(); } else { c.strokeStyle = 'rgba(23,20,17,.25)'; c.lineWidth = 1.2; c.stroke(); } }
+        [x + 26, x + bw - 26].forEach((wx) => { c.beginPath(); c.arc(wx, y + bh + 6, 9, 0, 7); c.fillStyle = '#2f2a26'; c.fill(); });
+        d.text(c, nb === 1 && !isDone('otogar', 'bol') ? `${OT.C} kişilik` : `${b + 1}.${ot.fill ? ` · ${inBus}` : ''}`, x + bw / 2, y + bh + 26, { size: 20, color: extra ? N.SEAL : N.SOFT });
+      }
+      if (isDone('otogar', 'kontrol')) d.text(c, `${OT.q} × ${OT.C} = ${OT.q * OT.C};  ${OT.q * OT.C} + ${OT.r} = ${OT.N}`, 450, 580, { size: 26, color: N.DEEP });
+    };
+    Z.onDown = null; Z.onMove = null; Z.onUp = null;
+    Z.ask();
+  }
+  function ctlOtogar(host) {
+    const D = (id) => isDone('otogar', id);
+    const inp = (id, w = 90) => `<input class="num-in" id="${id}" inputmode="numeric" style="width:${w}px;font-size:22px;padding:6px 8px" autocomplete="off">`;
+    let h = '';
+    h += `<p style="margin:0 0 4px"><b>1. Anla:</b> geziye kaç kişi katılıyor?</p>${D('topla') ? `<p class="small">✓ ${OT.S} + ${OT.T} = <b>${OT.N}</b> kişi</p>` : `<div class="row">${inp('otTop')}<button class="btn" id="otTopB" type="button">Kontrol</button></div>`}`;
+    if (D('topla')) h += `<p style="margin:10px 0 4px"><b>2. Planla ve uygula:</b> ${OT.N} ÷ ${OT.C} = ?</p>${D('bol') ? `<p class="small">✓ bölüm <b>${OT.q}</b>, kalan <b>${OT.r}</b></p>` : `<div class="row"><span class="small">bölüm</span>${inp('otQ', 70)}<span class="small">kalan</span>${inp('otR', 70)}<button class="btn" id="otBolB" type="button">Kontrol</button></div>`}`;
+    if (D('bol')) h += `<p style="margin:10px 0 4px"><b>3. Yorumla:</b> kaç otobüs kiralamalıyız?</p>${D('yorum') ? `<p class="small">✓ <b>${OT.q + 1}</b> otobüs: kalan ${OT.r} kişi için bir otobüs daha</p>` : '<div id="otYor"></div>'}`;
+    if (D('yorum')) h += `<p style="margin:10px 0 4px"><b>4. Kontrol et:</b></p>${D('kontrol') ? '<p class="small">✓ Otobüsler dolduruldu.</p>' : '<button class="btn primary" id="otFill" type="button">Otobüsleri doldur ▶</button>'}`;
+    host.innerHTML = h;
+    const num = (id) => N.num(($('#' + id) || {}).value || '');
+    const tb = $('#otTopB'); if (tb) { const go2 = () => { if (num('otTop') === OT.N) { N.sfx.good(); say(`Toplam <b>${OT.N}</b> kişi: ${OT.S} öğrenci ve ${OT.T} öğretmen. Öğretmenleri unutmadın!`); addLog('otogar', `Toplam: ${OT.S} + ${OT.T} = ${OT.N}`); markDone('otogar', 'topla'); Z.ask(); } else { N.sfx.bad(); say(num('otTop') === OT.S ? 'Öğretmenler de otobüse binecek!' : 'Öğrenci ve öğretmen sayılarını topla.'); } }; tb.onclick = go2; $('#otTop').onkeydown = (e) => { if (e.key === 'Enter') go2(); }; }
+    const bb = $('#otBolB'); if (bb) bb.onclick = () => { if (num('otQ') === OT.q && num('otR') === OT.r) { N.sfx.good(); say(`${OT.N} ÷ ${OT.C}: bölüm <b>${OT.q}</b>, kalan <b>${OT.r}</b>. ${OT.q} otobüs tamamen doluyor, ${OT.r} kişi açıkta kalıyor.`); addLog('otogar', `${OT.N} ÷ ${OT.C} = ${OT.q}, kalan ${OT.r}`); markDone('otogar', 'bol'); Z.ask(); } else { N.sfx.bad(); say(`İpucu: ${OT.C} × ${OT.q} = ${OT.C * OT.q}. Kalan, bölenden (${OT.C}) küçük olmalı.`); } };
+    const yr = $('#otYor'); if (yr) N.choices(yr, g.shuffle([{ t: `${OT.q} otobüs`, k: 0 }, { t: `${OT.q + 1} otobüs`, k: 1, ok: true }, { t: `${OT.r} otobüs`, k: 2 }]), (o) => { if (o.ok) { N.sfx.good(); say(`Evet, <b>${OT.q + 1}</b>. Kalan ${OT.r} kişiyi bırakamayız: <b>kalan 0 değilse bölüme 1 ekleriz</b>.`); addLog('otogar', `Kalan ${OT.r} ≠ 0 → ${OT.q} + 1 = ${OT.q + 1} otobüs`); markDone('otogar', 'yorum'); Z.ask(); } else { N.sfx.bad(); say(o.k === 0 ? `${OT.q} otobüse ${OT.q * OT.C} kişi sığar; ${OT.r} kişi ne olacak?` : 'Kalan, açıkta kalan kişi sayısı; otobüs sayısı değil.'); } }, 'one');
+    const fb = $('#otFill'); if (fb) fb.onclick = () => { if (ot.anim) return; ot.anim = true; ot.fill = 0; fb.disabled = true; N.sfx.draw(); N.tween(N.reduced ? 200 : 3600, (t) => { ot.fill = Math.round(OT.N * t); Z.ask(); }, (t) => t).then(() => { ot.anim = false; N.sfx.good(); say(`${OT.q} otobüs dolu, ${OT.q + 1}. otobüste ${OT.r} kişi var. Çarpmayla da kontrol: ${OT.q} × ${OT.C} = ${OT.q * OT.C}, ${OT.q * OT.C} + ${OT.r} = ${OT.N}. ✓`); addLog('otogar', `Kontrol: ${OT.q} × ${OT.C} + ${OT.r} = ${OT.N}`); markDone('otogar', 'kontrol'); Z.ask(); }); };
+  }
   /* ── kesir yardımcıları ── */
   const gcd = (a, b) => (b ? gcd(b, a % b) : a);
   function frac(c, a, b, x, y, size = 40, color = N.INK) { // üst üste yazılmış kesir
@@ -1895,8 +2120,8 @@
         <p class="small"><b>Soru:</b> ${S.soru}<br><b>Tahminim:</b> ${st.sence[S.id] != null ? S.secenekler[st.sence[S.id]] : '—'}</p>
         <ul>${(st.log[S.id] || []).filter((l) => !l.startsWith('Tahminim')).map((l) => `<li>${l}</li>`).join('') || '<li class="small">Henüz gözlem yok.</li>'}</ul>
         <label class="small">Son düşüncem</label><textarea data-son="${S.id}" placeholder="Ne fark ettin? Tahminin doğru çıktı mı?">${st.son[S.id] || ''}</textarea>`).join('')}
-      <h3>Kasabada bulduğum şekiller (${T.avlar.filter((A) => st.av[A.id]).length}/${T.avlar.length})</h3>
-      <ul>${T.avlar.filter((A) => st.av[A.id]).map((A) => `<li>${A.metin}</li>`).join('') || '<li class="small">Henüz yok. Kasabada dolaşıp şekillere dokun.</li>'}</ul>
+      <h3>${DW.avYer} bulduklarım (${T.avlar.filter((A) => st.av[A.id]).length}/${T.avlar.length})</h3>
+      <ul>${T.avlar.filter((A) => st.av[A.id]).map((A) => `<li>${A.metin}</li>`).join('') || `<li class="small">Henüz yok. ${DW.avIpucu}</li>`}</ul>
       <div class="row2"><button class="btn primary" id="rapor" type="button">Raporu indir</button><a class="btn" href="../ilerleme.html">Benim ilerlemem ↗</a><button class="btn" id="sifirla" type="button">Defteri temizle</button></div>`;
     box.querySelector('[data-close]').onclick = closeSheets;
     $('#adIn').oninput = (e) => { st.ad = e.target.value; persist(); };
@@ -1906,16 +2131,16 @@
   }
   function report() {
     const esc = (x) => String(x).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    const html = `<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Gözlem raporu · Nokta'nın Kasabası</title>
+    const html = `<!doctype html><html lang="tr"><head><meta charset="utf-8"><title>Gözlem raporu · ${DW.ad}</title>
 <style>body{font-family:Georgia,serif;max-width:760px;margin:32px auto;padding:0 18px;color:#171411;background:#fffaf0;line-height:1.5}h1{font-size:30px;margin:0}h2{font-size:22px;border-bottom:2px solid #e8a33d;padding-bottom:4px;margin-top:28px}.k{font-family:monospace;color:#b8741a;font-size:13px}.q{background:#f1eadc;padding:8px 12px;border-radius:8px}</style></head><body>
-<h1>Gözlem raporu: Nokta'nın Kasabası</h1><p class="k">${esc(st.ad || 'İsimsiz')} · ${new Date().toLocaleDateString('tr-TR')}</p>
+<h1>Gözlem raporu: ${DW.ad}</h1><p class="k">${esc(st.ad || 'İsimsiz')} · ${new Date().toLocaleDateString('tr-TR')}</p>
 ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class="q"><b>Soru:</b> ${esc(S.soru)}<br><b>Tahminim:</b> ${st.sence[S.id] != null ? esc(S.secenekler[st.sence[S.id]]) : '—'}</p>
 <p><b>Gözlemlerim:</b></p><ul>${(st.log[S.id] || []).filter((l) => !l.startsWith('Tahminim')).map((l) => `<li>${esc(l)}</li>`).join('') || '<li>—</li>'}</ul>
 <p><b>Görevler:</b> ${S.gorevler.filter((t) => isDone(S.id, t.id)).length} / ${S.gorevler.length}</p>
 <p><b>Son düşüncem:</b> ${esc(st.son[S.id] || '—')}</p>`).join('')}
-<h2>Kasabada bulduğum şekiller</h2><ul>${T.avlar.filter((A) => st.av[A.id]).map((A) => `<li>${A.metin.replace(/<[^>]+>/g, '')}</li>`).join('') || '<li>—</li>'}</ul>
+<h2>${DW.avYer} bulduklarım</h2><ul>${T.avlar.filter((A) => st.av[A.id]).map((A) => `<li>${A.metin.replace(/<[^>]+>/g, '')}</li>`).join('') || '<li>—</li>'}</ul>
 </body></html>`;
-    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = 'nokta-kasaba-gozlem-raporu.html';
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = `${KEY}-gozlem-raporu.html`;
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
   }
   function renderOgretmen() {
@@ -1948,8 +2173,8 @@ ${STS.map((S) => `<h2>${esc(S.ad)} <span class="k">${S.kod}</span></h2><p class=
 
   /* ══════════ bağlantılar ══════════ */
   function renderAll() { renderStations(); renderCard(); renderAv(); document.querySelectorAll('[data-hava]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.hava === st.hava))); }
-  document.querySelectorAll('[data-hava]').forEach((b) => (b.onclick = () => { st.hava = b.dataset.hava; persist(); renderAll(); if (zoomOpen) Z.ask(); toast({ sabah: 'Günaydın kasaba!', aksam: 'Akşam oldu: pencereler ve fenerler yandı.', yagmur: 'Yağmur başladı: havuza ve su birikintilerine bak. Her damla bir <b>çember</b> çiziyor!' }[st.hava]); }));
-  $('#avBtn').onclick = () => { const n = T.avlar.filter((A) => st.av[A.id]).length; toast(n === T.avlar.length ? 'Bütün şekilleri buldun! Defterine bak.' : `Kasabada saklı <b>${T.avlar.length - n}</b> şekil daha var. Çatılara, pencerelere, tabelalara ve çitlere dokun!`); };
+  document.querySelectorAll('[data-hava]').forEach((b) => (b.onclick = () => { st.hava = b.dataset.hava; persist(); renderAll(); if (zoomOpen) Z.ask(); toast({ sabah: `Günaydın ${DW.yer.toLocaleLowerCase('tr')}!`, aksam: 'Akşam oldu: pencereler ve fenerler yandı.', yagmur: 'Yağmur başladı: su birikintilerine bak. Her damla bir <b>çember</b> çiziyor!' }[st.hava]); }));
+  $('#avBtn').onclick = () => { const n = T.avlar.filter((A) => st.av[A.id]).length; toast(n === T.avlar.length ? 'Hepsini buldun! Defterine bak.' : `${DW.avYer} saklı <b>${T.avlar.length - n}</b> şey daha var. ${DW.avIpucu}`); };
   $('#defterBtn').onclick = () => { renderDefter(); openSheet('defter'); };
   $('#ogretmenBtn').onclick = () => { renderOgretmen(); openSheet('ogretmen'); };
   $('#sunumBtn').onclick = togglePresent;

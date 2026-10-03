@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/oyun.css?v=202610031012">
+<link rel="stylesheet" href="css/oyun.css?v=202610031403">
 <style>
   .wrap { max-width: 1120px; }
   header.hero { position: relative; padding-top: clamp(36px, 7vw, 84px); padding-bottom: 28px; }
@@ -80,9 +80,12 @@
   .theme-head span { display: block; font-family: var(--mono); font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber-deep); margin-bottom: 6px; }
   .theme-soon { position: relative; display: grid; grid-template-columns: 64px 1fr; gap: 28px; padding: 10px 0 18px; }
   .theme-soon div:last-child { border: 2.5px dashed var(--ink-faint); border-radius: 8px; padding: 14px 18px; color: var(--ink-soft); font-size: 15.5px; }
+  .theme-end div:last-child { border: 2.5px solid var(--amber); background: var(--amber-wash); color: var(--ink); }
+  .theme-end a { font-weight: 600; }
   .theme-soon b { font-family: var(--brush); font-weight: 400; font-size: 24px; color: var(--ink); margin-right: 8px; }
 
   .featured { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 26px; align-items: center; margin: 0 0 26px; padding: 22px; border-radius: 14px; background: rgba(255, 252, 244, .6); box-shadow: 0 0 0 1.5px var(--ink), 0 18px 34px -26px rgba(60,40,10,.6); }
+  .sub-title { font-family: var(--brush); font-weight: 400; font-size: 30px; margin: 6px 0 12px; }
   .featured .tag { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #fbeee6; background: var(--seal); padding: 3px 8px; border-radius: 4px; }
   @media (max-width: 820px) { .featured { grid-template-columns: 1fr; padding: 16px; } }
   .teach { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; margin-top: 8px; }
@@ -141,13 +144,24 @@
 <main class="wrap">
   <h2 class="section-title">Konu sırasıyla oyna</h2>
   <p class="section-sub">Önce sınıfı seç. Her oyun bir öğrenme çıktısına karşılık gelir ve aynı konunun filmiyle eşleşir: önce filmi izle, sonra oyunla pekiştir.</p>
+  <h3 class="sub-title stage" style="--i:3">Tema sonu gözlem ortamları</h3>
   <div class="featured stage" style="--i:4">
+    <a class="thumb" href="oyunlar/carsi.html" aria-label="Nokta'nın Çarşısı'nı aç"><img src="img/carsi.jpg" alt="" loading="lazy" width="960" height="540"><span class="play"><i></i>GEZ · gözlem</span></a>
+    <div class="meta">
+      <span class="tag">1. tema sonu</span> <span class="code">MAT.5.1.1 – 5.1.4 · 4 istasyon</span>
+      <h3>Nokta'nın Çarşısı</h3>
+      <p class="en">A market town of numbers</p>
+      <p class="what">Sayılar ve Nicelikler temasının sonunda: gözlemevinde Güneş’e uzaklığı sağdan üçer üçer bölüklere ayır ve oku, otogarda gezi için kaç otobüs gerektiğini bul ve kalanı yorumla, pastanede siparişleri tepsiyle, ölçü kabıyla ve yüzlük kartla göster, pazarda kim daha çok çilek almış karşılaştır. Çarşıda 5 sayı saklı.</p>
+      <div class="links"><a class="primary" href="oyunlar/carsi.html">▶ Çarşıya gir</a> <span class="kprog" id="cprog"></span></div>
+    </div>
+  </div>
+  <div class="featured stage" style="--i:5">
     <a class="thumb" href="oyunlar/kasaba.html" aria-label="Nokta'nın Kasabası'nı aç"><img src="img/kasaba.jpg" alt="" loading="lazy" width="960" height="540"><span class="play"><i></i>GEZ · gözlem</span></a>
     <div class="meta">
-      <span class="tag">gözlem ortamı</span> <span class="code">MAT.5.3 · MAT.5.1.3 – 5.1.4 · 8 istasyon</span>
+      <span class="tag">3. tema sonu</span> <span class="code">MAT.5.3.1 – 5.3.7 · 6 istasyon</span>
       <h3>Nokta'nın Kasabası</h3>
       <p class="en">A town to observe</p>
-      <p class="what">Puan yok, gözlem var. Kasabada gez: istasyonda rayların neden hiç birleşmediğini ölç, saat kulesinde akrep ile yelkovan arasındaki açıyı ölç, kavşakta sokakları çevir, çini atölyesinde çokgen çiniler yap ve döşe, köprüde üçgenin sırrını bul, çeşmede iki taşın halkalarından üçgen kur. Yeni: pastanede siparişleri tepsiyle, ölçü kabıyla ve yüzlük kartla göster; pazarda kim daha çok çilek almış, şeritle ve sayı doğrusuyla karşılaştır. Önce “Sence?”, sonra dene; gözlemler deftere yazılır. Kasabada 8 şekil de saklı; ikisi hareket ediyor.</p>
+      <p class="what">Geometrik Şekiller temasının sonunda: istasyonda rayların neden hiç birleşmediğini ölç, saat kulesinde akrep ile yelkovan arasındaki açıyı ölç, kavşakta sokakları çevir, çini atölyesinde çokgen çiniler yap ve döşe, köprüde üçgenin sırrını bul, çeşmede iki taşın halkalarından üçgen kur. Puan yok, gözlem var; kasabada 8 şekil saklı.</p>
       <div class="links"><a class="primary" href="oyunlar/kasaba.html">▶ Kasabaya gir</a> <span class="kprog" id="kprog"></span></div>
     </div>
   </div>
@@ -175,7 +189,7 @@
   <span><a href="https://hakanatas.github.io/nokta-filmleri/" target="_blank" rel="noopener">Nokta'nın Filmleri ↗</a></span>
 </footer>
 
-<script src="js/ortak.js?v=202610031012"></script>
+<script src="js/ortak.js?v=202610031403"></script>
 <script>
   const FILMS = 'https://hakanatas.github.io/nokta-filmleri/';
   const GAMES = [
@@ -216,9 +230,9 @@
   ];
   const GRADES = {
     5: { themes: [
-      { t: 'MAT.5.1', name: 'Sayılar ve Nicelikler', n: 4, games: GAMES_KESIR },
+      { t: 'MAT.5.1', name: 'Sayılar ve Nicelikler', n: 4, games: GAMES_KESIR, dunya: { ad: 'Nokta’nın Çarşısı', url: 'oyunlar/carsi.html' } },
       { t: 'MAT.5.2', name: 'İşlemlerle Cebirsel Düşünme', n: 4 },
-      { t: 'MAT.5.3', name: 'Geometrik Şekiller', n: 7, games: GAMES },
+      { t: 'MAT.5.3', name: 'Geometrik Şekiller', n: 7, games: GAMES, dunya: { ad: 'Nokta’nın Kasabası', url: 'oyunlar/kasaba.html' } },
       { t: 'MAT.5.4', name: 'Geometrik Nicelikler', n: 4 },
       { t: 'MAT.5.5', name: 'İstatistiksel Araştırma Süreci', n: 2 },
       { t: 'MAT.5.6', name: 'Veriden Olasılığa', n: 2 },
@@ -228,7 +242,7 @@
   const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const ring = `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M50 14 A 25 25 0 1 0 55 26" fill="rgba(241,234,220,.95)" stroke="#e8a33d" stroke-width="4" stroke-linecap="round"/></svg>`;
   const saved = N.load();
-  try { const K = JSON.parse(localStorage.getItem('nokta-kasaba')) || {}, n = Object.keys(K.done || {}).length; if (n) document.getElementById('kprog').textContent = `${n} görev tamamlandı`; } catch (_) {}
+  [['nokta-kasaba', 'kprog'], ['nokta-carsi', 'cprog']].forEach(([k, el]) => { try { const K = JSON.parse(localStorage.getItem(k)) || {}, n = Object.keys(K.done || {}).filter((t) => k !== 'nokta-kasaba' || !/^(pastane|pazar)\./.test(t)).length; if (n) document.getElementById(el).textContent = `${n} görev tamamlandı`; } catch (_) {} });
   const stars = (id) => { const s = saved[id] && saved[id].stars; return s ? `<span class="done" aria-label="${s} yıldız">${[0, 1, 2].map((i) => N.starSvg(i < s).replace(' class="got"', '')).join('')}</span>` : ''; };
 
   function render(g) {
@@ -250,6 +264,7 @@
           <div class="links"><a class="primary" href="oyunlar/${f.id}.html">▶ Oyna</a><a href="${FILMS}#${f.film}" target="_blank" rel="noopener">Filmi izle: ${esc(f.filmTitle)} ↗</a></div>
         </div>
       </li>`; });
+      if (T.dunya) html += `<li class="theme-soon theme-end stage" style="--i:${n + 4}"><div></div><div><b>tema sonu</b>Bütün çıktıları bir arada gözlemle: <a href="${T.dunya.url}">${esc(T.dunya.ad)} →</a></div></li>`;
       if (!T.games) html += `<li class="theme-soon stage" style="--i:${n + 4}"><div></div><div><b>yakında</b>Bu temanın ${T.n} öğrenme çıktısının oyunları sırayla hazırlanıyor.</div></li>`;
       else if (T.t === 'MAT.5.1') html += `<li class="theme-soon stage" style="--i:${n + 4}"><div></div><div><b>yakında</b>Bu temanın kesirler dışındaki öğrenme çıktılarının (MAT.5.1.1 – 5.1.2) oyunları hazırlanıyor.</div></li>`;
     });
