@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/oyun.css?v=202610031004">
+<link rel="stylesheet" href="css/oyun.css?v=202610031012">
 <style>
   .wrap { max-width: 980px; }
   .topline { display: flex; align-items: center; gap: 12px; padding-top: 22px; flex-wrap: wrap; }
@@ -89,12 +89,12 @@
   </header>
 
   <section class="sum" aria-label="Özet">
-    <div class="tile"><span>Yıldızlar</span><b id="sStar">0 / 18</b><div class="bar"><i id="bStar"></i></div></div>
+    <div class="tile"><span>Yıldızlar</span><b id="sStar">0 / 24</b><div class="bar"><i id="bStar"></i></div></div>
     <div class="tile"><span>Kasaba görevleri</span><b id="sTask">0 / 0</b><div class="bar"><i id="bTask"></i></div></div>
     <div class="tile"><span>Şekil avı</span><b id="sAv">0 / 0</b><div class="bar"><i id="bAv"></i></div></div>
   </section>
 
-  <h2 class="sec">Oyunlar · 5. sınıf Geometrik Şekiller</h2>
+  <h2 class="sec">Oyunlar · 5. sınıf</h2>
   <div class="games" id="games"></div>
 
   <h2 class="sec">Nokta'nın Kasabası · gözlemlerim</h2>
@@ -103,14 +103,16 @@
   <p class="note noprint">Kayıtlar yalnızca bu tarayıcıda saklanır. Başka bir bilgisayarda ya da gizli pencerede oynanan oyunlar burada görünmez. Sınıfta paylaşılan bir bilgisayarda, yeni öğrenciye geçmeden önce “Kayıtları sil” düğmesini kullanabilirsiniz.</p>
 </div>
 
-<script src="js/ortak.js?v=202610031004"></script>
-<script src="js/kasaba-metinleri.js?v=202610031004"></script>
+<script src="js/ortak.js?v=202610031012"></script>
+<script src="js/kasaba-metinleri.js?v=202610031012"></script>
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const strip = (s) => String(s).replace(/<[^>]+>/g, '');
   const GAMES = [
+    { id: 'kesir-firini', title: 'Kesir Fırını', code: 'MAT.5.1.3' },
+    { id: 'kesir-yarisi', title: 'Kesir Yarışı', code: 'MAT.5.1.4' },
     { id: 'arac-ustasi', title: 'Araç Ustası', code: 'MAT.5.3.1 – 5.3.2' },
     { id: 'aci-avcisi', title: 'Açı Avcısı', code: 'MAT.5.3.3' },
     { id: 'kesisme-dedektifi', title: 'Kesişme Dedektifi', code: 'MAT.5.3.4' },

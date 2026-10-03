@@ -4,10 +4,12 @@ Ortaokul matematik için mürekkep oyunları. [Nokta'nın Filmleri](https://haka
 
 Canlı sürüm: **https://hakanatas.github.io/matematik-oyun/**
 
-İlk tema: **5. sınıf · MAT.5.3 Geometrik Şekiller**
+Temalar: **5. sınıf · MAT.5.3 Geometrik Şekiller** (6 oyun) ve **MAT.5.1 Sayılar ve Nicelikler · kesirler** (2 oyun)
 
 | Kod | Oyun | Ne yapılıyor? | Film |
 |---|---|---|---|
+| MAT.5.1.3 | [Kesir Fırını](oyunlar/kesir-firini.html) | Siparişleri pasta ve tepsi dilimleri, ölçü kapları, sayı doğrusu ve yüzlük kartla göster; denk kesir, tam sayılı ve bileşik kesir, ondalık ve yüzde; sonunda aynı miktarın bütün kılıklarını tuzaklar arasından seç. | Bir Kesir, Dört Kılık |
+| MAT.5.1.4 | [Kesir Yarışı](oyunlar/kesir-yarisi.html) | “Paydası büyük olan büyüktür” iddiasını şeritlerle çürüt; şerit karşılaştırma, yarımla karşılaştırma; kesir, ondalık, yüzde ve şekli sayı doğrusunda (yakınlaştırarak) sırala; önermeler. | Hangisi Büyük? |
 | MAT.5.3.1 – 5.3.2 | [Araç Ustası](oyunlar/arac-ustasi.html) | Doğru aracı seç (ölçüsüz cetvel, pergel, gönye) ve kullan: cetvelle sürükle, pergeli döndür, gönyeyi kaydır. Doğru, doğru parçası, ışın, çember, açı, dikme ve paralel çizildikçe yelkenli sahnesi canlanır. Sonunda çizimlerden çıkarım soruları var. | Noktadan Çembere |
 | MAT.5.3.3 | [Açı Avcısı](oyunlar/aci-avcisi.html) | Önce tahmin et, sonra sürüklenip döndürülebilen açıölçerle ölç. Açıyı sınıflandır, verilen ölçüde açı ve eş açı kur. | Kaç Derece? |
 | MAT.5.3.4 | [Kesişme Dedektifi](oyunlar/kesisme-dedektifi.html) | Paralel, kesişen, dik ve çakışık doğrular. Açı bulmacalarında ters, komşu bütünler ve tümler açılar. Doğruları çevirerek “6 dar açı” gibi görevleri tamamla. | Doğrular Kesişince |
