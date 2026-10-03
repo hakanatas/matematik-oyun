@@ -1037,6 +1037,7 @@
     const av = (id) => T.avlar.find((A) => A.id === id);
     if (st.hava !== 'yagmur' && av('kuslar')) { const b = birdsAt(), q = toLayer(cx, cy, .2); if (g.dist(q, { x: b.x - 45, y: b.y }) < 75) return { av: av('kuslar') }; }
     const bk = bikeAt(); if (av('tekerlek') && (g.dist(w, { x: bk.x - 30, y: bk.y - 21 }) < 30 || g.dist(w, { x: bk.x + 30, y: bk.y - 21 }) < 30)) return { av: av('tekerlek') };
+    for (let k = 0; k < STS.length; k++) if (g.dist(w, { x: STS[k].mx, y: STS[k].my }) < 36) return { st: k }; // gökyüzündeki numaralı işaret
     for (const A of T.avlar) if (!A.dyn && g.dist(w, A) < A.r) return { av: A };
     if (DW.id === 'kasaba' && g.dist(w, { x: 650, y: 140 }) < 36) return { bell: true };
     for (let k = 0; k < STS.length; k++) { const [x0, x1, y0, y1] = STS[k].hit; if (w.x > x0 && w.x < x1 && w.y > y0 && w.y < y1) return { st: k }; }
@@ -1113,7 +1114,7 @@
     if (S.gorevler.some((t) => t.yonerge)) zhint = ''; // yönerge kutusu var: Nokta yalnız geri bildirim verir
     const baseDraw = Z.draw; Z.draw = (c) => { baseDraw(c); drawGuide(c); };
     const baseUp = Z.onUp; Z.onUp = (p) => { if (baseUp) baseUp(p); nudgeSide(); };
-    const baseDown = Z.onDown; Z.onDown = (p) => { if (baseDown) baseDown(p); nudgeSide(); };
+    const baseDown = Z.onDown; Z.onDown = (p) => { const t = curTask(S); if (t) tried[S.id + '.' + t.id] = true; if (baseDown) baseDown(p); nudgeSide(); };
     renderZSide(); setTimeout(() => { Z.resize(); }, 30);
     addEventListener('keydown', zoomEsc);
   }
@@ -1140,6 +1141,7 @@
   /* ══════════ rehber: her an tek görev, açık yönerge, ipucu, tahtada işaret ══════════ */
   let zDone = null; // az önce biten görev (başarı kutusu için)
   const ipc = {}; // açılan ipucu sayısı
+  const tried = {}; // öğrenci bu görevde tahtaya dokundu mu
   const curTask = (S) => S.gorevler.find((t) => !isDone(S.id, t.id));
   const partState = () => ({ tren, pastane: pas, pazar: paz, gozlemevi: gz })[STS[st.cur].id];
   function toTaskPart(S, t) { const ps = partState(); if (t && t.part && ps && ps.part !== t.part) { ps.part = t.part; Z.dragK = null; } }
@@ -1147,31 +1149,37 @@
   function guideFor(S, t) {
     if (!t) return {};
     const k = S.id + '.' + t.id;
-    if (k === 'gozlemevi.bolukle') { const n = String(GZ_DEV.n).length, x0 = 450 - (n * 72) / 2; for (let i = n - 3; i > 0; i -= 3) if (!gz.gaps.has(i)) { let sh = 0; for (let j = 1; j < i; j++) if (gz.gaps.has(j)) sh += 18; return { pt: { x: x0 + i * 72 + sh, y: 282, t: 'bu aralığa dokun', below: true } }; } return {}; }
+    if (k === 'gozlemevi.bolukle') { const n = String(GZ_DEV.n).length, x0 = 450 - (n * 72) / 2, gx = (i) => { let sh = 0; for (let j = 1; j < i; j++) if (gz.gaps.has(j)) sh += 18; return x0 + i * 72 + sh + (gz.gaps.has(i) ? 9 : 0); };
+      const how = { x: (gx(1) + gx(n - 1)) / 2, y: 300, t: 'ayırma düğmeleri: rakamların arasında', box: [gx(1) - 24, gx(n - 1) + 24] };
+      for (let i = n - 3; i > 0; i -= 3) if (!gz.gaps.has(i)) return { how, pt: { x: gx(i), y: 300, t: 'buraya ayır', below: true } }; return { how }; }
     if (k === 'gozlemevi.oku') return { sel: '#gzRead' };
-    if (k === 'gozlemevi.yaz' || k === 'gozlemevi.sifir') { const tg = String(gz.target).padStart(10, '0').split('').map(Number), x0 = 450 - 360 - 27; for (let i = 0; i < 10; i++) if (tg[i] !== gz.wheel[i]) { const gi = Math.floor((9 - i) / 3), up = (tg[i] - gz.wheel[i] + 10) % 10 <= 5; return { pt: { x: x0 + i * 72 + (3 - gi) * 18 + 36, y: up ? 190 : 282, t: up ? 'üst yarıya dokun' : 'alt yarıya dokun', below: !up } }; } return {}; }
+    if (k === 'gozlemevi.yaz' || k === 'gozlemevi.sifir') { const tg = String(gz.target).padStart(10, '0').split('').map(Number), x0 = 450 - 360 - 27; for (let i = 0; i < 10; i++) if (tg[i] !== gz.wheel[i]) { const gi = Math.floor((9 - i) / 3), up = (tg[i] - gz.wheel[i] + 10) % 10 <= 5; return { how: { x: x0 + 9 * 72 + 36, y: 190, t: 'üst yarı: artır', below: false }, pt: { x: x0 + i * 72 + (3 - gi) * 18 + 36, y: up ? 190 : 282, t: up ? 'üst yarıya dokun' : 'alt yarıya dokun', below: !up } }; } return {}; }
     if (S.id === 'otogar') return { sel: { topla: '#otTop', bol: '#otQ', yorum: '#otYor', kontrol: '#otFill' }[t.id] };
     if (k === 'pastane.model' || k === 'pastane.denk') {
       const [a, b] = PAS_ORD, want = k === 'pastane.model' ? b : (pas.n === pas.firstN || (a * pas.n) % b ? null : pas.n);
       if (k === 'pastane.model' && pas.n !== b) return { sel: pas.n < b ? '#pN\\+' : '#pN-' };
       if (k === 'pastane.denk' && want == null) return { sel: '#pN\\+' };
       const need = (a * pas.n) / b; if (pas.sel.size > need) return { sel: '#pClr' };
-      for (let i = 0; i < pas.n; i++) if (!pas.sel.has(i)) { const ang = -Math.PI / 2 + (i + .5) * 2 * Math.PI / pas.n; return { pt: { x: TC.x + Math.cos(ang) * TRAD * .62, y: TC.y + Math.sin(ang) * TRAD * .62, t: 'dokun' } }; }
+      for (let i = 0; i < pas.n; i++) if (!pas.sel.has(i)) { const ang = -Math.PI / 2 + (i + .5) * 2 * Math.PI / pas.n; return { how: { x: TC.x + Math.cos(ang) * TRAD * .62, y: TC.y + Math.sin(ang) * TRAD * .62, t: 'dilime dokun' } }; }
       return {};
     }
-    if (k === 'pastane.kap') { const q = PAS_CUP[0], ci = Math.floor((q - 1) / 4), f = q - ci * 4; if (pas.q === q) return {}; return { pt: { x: CUPS[ci].x + CUP_W / 2, y: CUP_BOT - ((CUP_BOT - CUP_TOP) / 4) * f + 14, t: 'dokun' } }; }
-    if (k === 'pastane.yuzluk') { const v = PAS_YUZ.v; if (pas.grid.size > v) return { sel: '#pClr' }; for (let i = 0; i < 100; i++) if (!pas.grid.has(i)) return { pt: { x: GX + (i % 10) * GC + GC / 2, y: GY + Math.floor(i / 10) * GC + GC / 2, t: 'sürükle' } }; return {}; }
+    if (k === 'pastane.kap') { const q = PAS_CUP[0], ci = Math.floor((q - 1) / 4), f = q - ci * 4; if (pas.q === q) return {}; return { how: { x: CUPS[0].x + CUP_W / 2, y: CUP_TOP + 30, t: 'bardağa dokun' }, pt: { x: CUPS[ci].x + CUP_W / 2, y: CUP_BOT - ((CUP_BOT - CUP_TOP) / 4) * f + 14, t: 'buraya kadar' } }; }
+    if (k === 'pastane.yuzluk') { const v = PAS_YUZ.v; if (pas.grid.size > v) return { sel: '#pClr' }; for (let i = 0; i < 100; i++) if (!pas.grid.has(i)) return { how: { x: GX + (i % 10) * GC + GC / 2, y: GY + Math.floor(i / 10) * GC + GC / 2, t: 'dokun ya da sürükle' } }; return {}; }
     if (k === 'pazar.varsayim') { const tg = [[1, 3], [1, 5]]; for (let i = 0; i < 2; i++) { const [a, b] = paz.s[i]; if (b !== tg[i][1]) return { sel: `[data-z="${i},1,${b < tg[i][1] ? 1 : -1}"]` }; if (a !== tg[i][0]) return { sel: `[data-z="${i},0,${a < tg[i][0] ? 1 : -1}"]` }; } return {}; }
     if (k === 'pazar.denk') return { sel: '[data-z]' };
-    if (k === 'pazar.sirala') { const i = paz.tags.findIndex((T2) => T2.x == null); return i < 0 || paz.drag >= 0 ? {} : { pt: { x: paz.tags[i].home.x, y: paz.tags[i].home.y + 32, t: 'sürükle' } }; }
+    if (k === 'pazar.sirala') { const i = paz.tags.findIndex((T2) => T2.x == null); return i < 0 || paz.drag >= 0 ? {} : { how: { x: paz.tags[i].home.x, y: paz.tags[i].home.y + 32, t: 'sürükle' } }; }
     if (k === 'pazar.encok') return { sel: '#zWho' };
     return {};
   }
   if (/[?&]test/.test(location.search)) window.__rehber = () => { const S = STS[st.cur], t = curTask(S); return { sid: S.id, tid: t && t.id, done: zDone, ot: OT, part: (partState() || {}).part, dragK: Z.dragK, down: Z.down, grid: pas.grid.size, q: pas.q, ...guideFor(S, t) }; };
   function drawGuide(c) {
-    const S = STS[st.cur]; if (zDone || Z.dragK) return; const p = guideFor(S, curTask(S)).pt; if (!p) return;
+    const S = STS[st.cur], t = curTask(S); if (zDone || Z.dragK || !t) return;
+    const k = S.id + '.' + t.id, G = guideFor(S, t), allHints = (ipc[k] || 0) >= (t.ipucu || []).length && (t.ipucu || []).length > 0;
+    const p = allHints && G.pt ? G.pt : !tried[k] ? (G.how || G.pt) : null; // başta nasıl, denedikten sonra yok, bütün ipuçlarından sonra nerede
+    if (!p) return;
     const ph = (st.t * 1.6) % 1, bob = Math.sin(st.t * 5) * 5;
     c.save(); c.setLineDash([]);
+    if (p.box) { const [a, b] = p.box, al = .55 + .45 * Math.sin(st.t * 5); c.strokeStyle = `rgba(232,163,61,${al})`; c.lineWidth = 4; c.beginPath(); c.roundRect ? c.roundRect(a, p.y - 24, b - a, 48, 24) : c.rect(a, p.y - 24, b - a, 48); c.stroke(); d.text(c, p.t, p.x, p.y + 50, { size: 22, color: '#ffd27a', halo: false }); c.restore(); return; }
     c.beginPath(); c.arc(p.x, p.y, 14 + ph * 26, 0, 7); c.strokeStyle = `rgba(232,163,61,${1 - ph})`; c.lineWidth = 4; c.stroke();
     c.beginPath(); c.arc(p.x, p.y, 9, 0, 7); c.fillStyle = 'rgba(232,163,61,.9)'; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 2; c.stroke();
     const sg = p.below ? -1 : 1, ay = p.y - sg * 30 + bob; c.beginPath(); c.moveTo(p.x, ay); c.lineTo(p.x - 12, ay - sg * 18); c.lineTo(p.x - 5, ay - sg * 18); c.lineTo(p.x - 5, ay - sg * 40); c.lineTo(p.x + 5, ay - sg * 40); c.lineTo(p.x + 5, ay - sg * 18); c.lineTo(p.x + 12, ay - sg * 18); c.closePath(); c.fillStyle = N.SEAL; c.fill(); c.strokeStyle = N.INK; c.lineWidth = 2; c.stroke();
@@ -1247,7 +1255,11 @@
         D.forEach((dg, i) => {
           const x = x0 + i * GW + gapShift; c.fillStyle = '#fffaf0'; c.fillRect(x + 6, 170, GW - 12, 96); c.strokeStyle = N.INK; c.lineWidth = 2.5; c.strokeRect(x + 6, 170, GW - 12, 96);
           d.text(c, String(dg), x + GW / 2, 220, { size: 62, halo: false });
-          if (i < n - 1) { const gx = x + GW; if (gz.gaps.has(i + 1)) { c.fillStyle = N.AMBER; c.beginPath(); c.arc(gx + 2, 276, 7, 0, 7); c.fill(); gapShift += 18; } else { c.strokeStyle = 'rgba(243,231,196,.35)'; c.setLineDash([4, 5]); c.beginPath(); c.moveTo(gx, 160); c.lineTo(gx, 276); c.stroke(); c.setLineDash([]); } }
+          if (i < n - 1 && !isDone('gozlemevi', 'bolukle')) { const on = gz.gaps.has(i + 1), gx = x + GW + (on ? 9 : 0);
+            if (on) { c.strokeStyle = N.AMBER; c.lineWidth = 4; c.beginPath(); c.moveTo(gx, 160); c.lineTo(gx, 276); c.stroke(); }
+            c.beginPath(); c.arc(gx, 300, 13, 0, 7); c.fillStyle = on ? N.AMBER : 'rgba(255,250,240,.16)'; c.fill(); c.strokeStyle = on ? N.INK : 'rgba(243,231,196,.75)'; c.lineWidth = 2; c.stroke();
+            c.strokeStyle = on ? N.INK : 'rgba(243,231,196,.9)'; c.lineWidth = 2.5; c.beginPath(); c.moveTo(gx, 293); c.lineTo(gx, 307); c.stroke(); }
+          if (i < n - 1 && gz.gaps.has(i + 1)) gapShift += 18;
         });
         if (ok) { // bölük adları
           const G = gruplar(GZ_DEV.n); let i0 = 0, shift = 0;
@@ -1256,7 +1268,7 @@
             d.text(c, BOLUK_AD[gi], (xa + xb) / 2, 340, { size: 24, color: '#ffd27a', halo: false }); i0 += len; shift += 18; }
           d.text(c, bosluk(GZ_DEV.n), 450, 420, { size: 48, color: '#fffaf0', halo: false, font: N.MONO });
           if (gz.readOk) d.text(c, sayiYazi(GZ_DEV.n), 450, 500, { size: 30, color: '#ffd27a', halo: false });
-        } else d.text(c, 'ipucu: birler bölüğü en sağda', 450, 380, { size: 22, color: 'rgba(243,231,196,.6)', halo: false });
+        } else if (gz.gaps.size) d.text(c, `${gz.gaps.size} ayırma koydun`, 450, 390, { size: 22, color: 'rgba(243,231,196,.7)', halo: false });
       } else {
         const x0 = 450 - (10 * GW) / 2 - 27, v = wheelVal();
         d.text(c, 'Yaz:', 450, 50, { size: 24, color: 'rgba(243,231,196,.7)', halo: false });
@@ -1279,7 +1291,7 @@
       if (gz.part === 'bolukle') {
         if (isDone('gozlemevi', 'bolukle')) return;
         const D = digitsOf(GZ_DEV.n), n = D.length, x0 = 450 - (n * GW) / 2; let shift = 0, best = -1, bd = 26;
-        for (let i = 1; i < n; i++) { const gx = x0 + i * GW + shift; if (Math.abs(p.x - gx) < bd && p.y > 150 && p.y < 300) { bd = Math.abs(p.x - gx); best = i; } if (gz.gaps.has(i)) shift += 18; }
+        for (let i = 1; i < n; i++) { const gx = x0 + i * GW + shift + (gz.gaps.has(i) ? 9 : 0); if (Math.abs(p.x - gx) < bd && p.y > 150 && p.y < 322) { bd = Math.abs(p.x - gx); best = i; } if (gz.gaps.has(i)) shift += 18; }
         if (best < 0) return; gz.gaps.has(best) ? gz.gaps.delete(best) : gz.gaps.add(best); N.sfx.tick();
         const want = new Set(); for (let i = 1; i < n; i++) if ((n - i) % 3 === 0) want.add(i);
         const same = want.size === gz.gaps.size && [...want].every((k) => gz.gaps.has(k));
